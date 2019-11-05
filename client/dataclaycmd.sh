@@ -47,63 +47,39 @@ shopt -s nocasematch # ignore case in case or if clauses
 TOOLNAME=$0
 SUPPORTEDLANGS="python | java"
 SUPPORTEDDSETS="public | private"
-
-
 echo ' **  ᴅᴀᴛᴀCʟᴀʏ command tool ** '
 
-# Classpaths
-SEPPARATOR=":"
-SCRIPTPATH="$(cd "$(dirname "$0")" && pwd -P)"
-LIBPATH=$SCRIPTPATH/lib
-CLIENTJAR=$SCRIPTPATH/dataclayclient.jar
-
-if [ ! -z $DATACLAY_JAR ]; then
-  # Environment set means we are in Mare or in some already-prepared computing Environment
-  # Assume everything is ok.
-  rm -f $CLIENTJAR
-  ln -s $DATACLAY_JAR $CLIENTJAR
-else
-   errorMsg "Cannot resolve dataClay jar library. Possible causes: 
-                   - DATACLAY_JAR=\"$DATACLAY_JAR\" is not defined or is not a valid path
-                   - a dataClay docker environment cannot be found."
-    exit -1
-fi
-
-if [ ! -z $DATACLAY_LIBPATH ]; then
-	LIBPATH=$DATACLAY_LIBPATH
-fi
-
-CLASSPATH=${CLIENTJAR}${SEPPARATOR}${LIBPATH}/*${SEPPARATOR}${CLASSPATH}
+# WARNING: Note that this script must be located among with pom.xml
 
 # Base ops commands
-JAVA_OPSBASE="java -Dlog4j.configurationFile=$LOG4J_CLASSPATH -cp $CLASSPATH"
+JAVA_OPSBASE="mvn exec:exec -Dlog4j.configurationFile=$LOG4J_CLASSPATH "
 PY_OPSBASE="python -m dataclay.tool"
 
 # Check if aspects must be applied to Java 
 
 # Basic operations
-NEW_ACCOUNT="$JAVA_OPSBASE dataclay.tool.NewAccount"
-GET_BACKENDS="$JAVA_OPSBASE dataclay.tool.GetBackends"
-ACCESS_NS_MODEL="$JAVA_OPSBASE dataclay.tool.AccessNamespace"
-GET_NAMESPACE_LANG="$JAVA_OPSBASE dataclay.tool.GetNamespaceLang"
-GET_NAMESPACES="$JAVA_OPSBASE dataclay.tool.GetNamespaces"
-NEW_DATACONTRACT="$JAVA_OPSBASE dataclay.tool.NewDataContract"
-GET_DATASETS="$JAVA_OPSBASE dataclay.tool.GetDatasets"
-NEW_DATASET="$JAVA_OPSBASE dataclay.tool.NewDataset"
+NEW_ACCOUNT="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.NewAccount"
+GET_BACKENDS="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.GetBackends"
+ACCESS_NS_MODEL="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.AccessNamespace"
+GET_NAMESPACE_LANG="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.GetNamespaceLang"
+GET_NAMESPACES="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.GetNamespaces"
+NEW_DATACONTRACT="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.NewDataContract"
+GET_DATASETS="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.GetDatasets"
+NEW_DATASET="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.NewDataset"
 
 # NewModel operations
-NEW_NAMESPACE="$JAVA_OPSBASE dataclay.tool.NewNamespace"
-JAVA_NEW_MODEL="$JAVA_OPSBASE dataclay.tool.NewModel"
+NEW_NAMESPACE="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.NewNamespace"
+JAVA_NEW_MODEL="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.NewModel"
 PY_NEW_MODEL="$PY_OPSBASE register_model"
 
 # Get stubs operations
-JAVA_GETSTUBS="$JAVA_OPSBASE dataclay.tool.GetStubs"
+JAVA_GETSTUBS="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.GetStubs"
 PY_GETSTUBS="$PY_OPSBASE get_stubs"
 
 # Federation
-GET_DATACLAYID="$JAVA_OPSBASE dataclay.tool.GetCurrentDataClayID"
-GET_EXT_DATACLAYID="$JAVA_OPSBASE dataclay.tool.GetExternalDataClayID"
-REG_EXT_DATACLAY="$JAVA_OPSBASE dataclay.tool.NewDataClayInstance"
+GET_DATACLAYID="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.GetCurrentDataClayID"
+GET_EXT_DATACLAYID="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.GetExternalDataClayID"
+REG_EXT_DATACLAY="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.NewDataClayInstance"
 
 if [ -z $1 ]; then
 	usage

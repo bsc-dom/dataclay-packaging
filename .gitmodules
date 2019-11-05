@@ -1,0 +1,6 @@
+[submodule "logicmodule/javaclay"]
+	path = logicmodule/javaclay
+	url = https://github.com/bsc-dom/javaclay
+[submodule "dspython/pyclay"]
+	path = dspython/pyclay
+	url = https://github.com/bsc-dom/pyclay

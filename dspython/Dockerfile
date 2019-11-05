@@ -1,9 +1,10 @@
-ARG DATACLAY_JAVA_DOCKER_TAG
-FROM bscdataclay/dsjava:${DATACLAY_JAVA_DOCKER_TAG}
+ARG BASE_VERSION
+FROM bscdataclay/logicmodule:${BASE_VERSION}
 LABEL maintainer dataClay team <support-dataclay@bsc.es>
 
 # Python EE extends dsjava to have Extrae installed + some configuration files
-ARG DATACLAY_PYVER=3
+
+ARG DATACLAY_PYVER=3.6
 ARG PYTHON_PIP_VERSION=3
 
 # ============ PRE-INSTALLATION ================== #
@@ -20,30 +21,29 @@ RUN python${DATACLAY_PYVER} -m virtualenv --python=/usr/bin/python${DATACLAY_PYV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN python --version
 
-
 # Create source
-RUN mkdir -p /usr/src/dataclay/deploy/source
+WORKDIR /usr/src/dataclay/pyclay/
+RUN mkdir -p /usr/src/dataclay/pyclay/deploy/source
 
 # =============== INSTALL DATACLAY REQUIREMENTS =================== #
 
-COPY requirements.txt requirements.txt
+COPY ./pyclay/requirements.txt requirements.txt
 RUN pip${PYTHON_PIP_VERSION} install -r requirements.txt
 
 # =================== EXTRAE ENVIRONMENT VARIABLES ======================== #
 
-ENV DATACLAY_EXTRAE_WRAPPER_LIB=/usr/src/dataclay/pyextrae/dataclay_extrae_wrapper.so
+ENV DATACLAY_EXTRAE_WRAPPER_LIB=/usr/src/dataclay/pyclay/pyextrae/dataclay_extrae_wrapper.so
 ENV PYEXTRAE_PATH=$EXTRAE_HOME/libexec:$EXTRAE_HOME/lib
 ENV PYTHONPATH=$PYEXTRAE_PATH:$PYTHONPATH
 
-# =============== INSTALL DATACLAY =================== #
+# Compile wrapper lib 
+COPY ./pyextrae pyextrae
+RUN cd pyextrae && gcc -L${EXTRAE_HOME}/lib -I${EXTRAE_HOME}/include extrae_wrapper.c -lpttrace --shared -o ${DATACLAY_EXTRAE_WRAPPER_LIB}
 
-RUN mkdir src
-COPY ./docker-health/ docker-health
-COPY ./src/dataclay src/dataclay
-COPY ./src/storage src/storage
-COPY ./setup.py setup.py
+# =============== INSTALL DATACLAY =================== #
+COPY ./health_check.sh health_check.sh
+COPY ./pyclay/ /usr/src/dataclay/pyclay/
 RUN python setup.py install
-RUN rm -rf src
 
 # Execute
 # Don't use CMD in order to keep compatibility with singularity container's generator
