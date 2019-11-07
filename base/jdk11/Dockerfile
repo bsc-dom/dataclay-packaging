@@ -36,14 +36,6 @@ ENV LC_ALL en_US.UTF-8
 WORKDIR /usr/src/dataclay
 
 # ================= ENVIRONMENT VARIABLES ====================== #
-
-# Dataclay classpath (also used in healthcheck)
-ENV DATACLAY_LIBPATH=/usr/src/dataclay/lib
-ENV DATACLAY_JAR=/usr/src/dataclay/dataclay.jar
-ENV DATACLAY_CLASSPATH=${DATACLAY_JAR}:${DATACLAY_LIBPATH}/*
 ENV LOG4J_CLASSPATH=/usr/src/dataclay/log4j2.xml
-ENV ASPECTS_DIR=/usr/src/dataclay/aspects/
-ENV ASPECTJ_WEAVER=/usr/src/dataclay/lib/aspectjweaver.jar
-ENV ASPECTJ_RT=/usr/src/dataclay/lib/aspectjrt.jar
 
 ENTRYPOINT ["echo", "This is dataClay's base image: nothing to do here"] 

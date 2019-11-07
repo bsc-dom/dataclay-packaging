@@ -32,6 +32,7 @@ cat << EOF
  GetDataClayID    
  GetExtDataClayID   <dc_host> <dc_port>
  RegisterDataClay   <dc_host> <dc_port>
+ WaitForDataClayToBeAlive	<max_retries> <retries_seconds>
 
 EOF
 exit 0
@@ -52,7 +53,7 @@ echo ' **  ᴅᴀᴛᴀCʟᴀʏ command tool ** '
 # WARNING: Note that this script must be located among with pom.xml
 
 # Base ops commands
-JAVA_OPSBASE="mvn exec:exec -Dlog4j.configurationFile=$LOG4J_CLASSPATH "
+JAVA_OPSBASE="/usr/src/dataclay/mvn-entry-point.sh"
 PY_OPSBASE="python -m dataclay.tool"
 
 # Check if aspects must be applied to Java 
@@ -80,6 +81,7 @@ PY_GETSTUBS="$PY_OPSBASE get_stubs"
 GET_DATACLAYID="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.GetCurrentDataClayID"
 GET_EXT_DATACLAYID="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.GetExternalDataClayID"
 REG_EXT_DATACLAY="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.NewDataClayInstance"
+WAIT_DATACLAY_ALIVE="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.WaitForDataClayToBeAlive"
 
 if [ -z $1 ]; then
 	usage
@@ -136,7 +138,7 @@ case $OPERATION in
 				fi
 				;;
 			'python')
-				$NEW_NAMESPACE $2 $3 $4 python
+				$NEW_NAMESPACE "$2 $3 $4 python"
 				if [ $? -ge 0 ]; then
 					if [ $# -gt 6 ]; then
 						errorMsg "Prefetching is only supported in Java applications."
@@ -181,6 +183,10 @@ case $OPERATION in
 		;;
 	'GetExtDataClayID')
 		$GET_EXT_DATACLAYID $2 $3
+		;;
+	'WaitForDataClayToBeAlive')
+		echo $WAIT_DATACLAY_ALIVE $2 $3
+		$WAIT_DATACLAY_ALIVE $2 $3
 		;;
 	*)
 		echo "[ERROR]: Operation $1 is not supported."

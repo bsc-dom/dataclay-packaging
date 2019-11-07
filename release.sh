@@ -1,34 +1,17 @@
 #!/bin/bash
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 DATACLAY_HOME_SRC=$SCRIPTDIR
-URL_DATACLAY_MAVEN_REPO="https://github.com/bsc-ssrg/dataclay-maven.git"
 SUPPORTED_JAVA_VERSIONS=(8 11)
-SUPPORTED_PYTHON_VERSIONS=(2.7 3.6)
+SUPPORTED_PYTHON_VERSIONS=(3.6)
 PLATFORMS=linux/amd64,linux/arm/v7
-# Unsupported platforms in openjdk or python dockerhub cannot be supported here
-INSTALLED_REQUIREMENTS=("mvn" "java" "javac" "python" "docker")
-REQUIRED_JAVA_VERSION=11
-REQUIRED_DOCKER_VERSION=19
 DEFAULT_JAVA=8
 DEFAULT_PYTHON=3.6
-RED="\033[0;31m"
-NOCOLOR="\033[0m"
-GREEN="\033[0;32m"
-# Extrae home in dockers (needed outside to configure LD preload on demand)
-EXTRAE_HOME=/usr/src/extrae
+URL_DATACLAY_MAVEN_REPO="https://github.com/bsc-ssrg/dataclay-maven.git"
 
-################################## WINDOWS #############################################
+# Update versions here
+DATACLAY_RELEASE_VERSION=2.0
+DATACLAY_DEVELOPMENT_VERSION=22
 
-if [[ "$OSTYPE" == "cygwin" ]]; then
-        # POSIX compatibility layer and Linux environment emulation for Windows
-        SCRIPTDIR=$(echo "$SCRIPTDIR" | sed -e 's/^\///' -e 's/\//\\/g' -e 's/^./\0:/')
-elif [[ "$OSTYPE" == "msys" ]]; then
-        # Lightweight shell and GNU utilities compiled for Windows (part of MinGW)
-        SCRIPTDIR=$(echo "$SCRIPTDIR" | sed -e 's/^\///' -e 's/\//\\/g' -e 's/^./\0:/')
-elif [[ "$OSTYPE" == "win32" ]]; then
-        # I'm not sure this can happen.
-        SCRIPTDIR=$(echo "$SCRIPTDIR" | sed -e 's/^\///' -e 's/\//\\/g' -e 's/^./\0:/')
-fi
 ################################## FUNCTIONS #############################################
 trap ctrl_c INT
 
@@ -37,53 +20,8 @@ function ctrl_c() {
 	exit -1
 }
 
-function usage {
-	FORMAT="%-30s %-30s \n"
-	echo ""
-	echo " Usage: $0 [options] "
-	echo ""
-	echo ""
-	echo "Options:"
-	printf "$FORMAT" "--build-jar"	"Indicates to build dataclay JAR: this will create a jar called dataclay.jar in current directory."
-	printf "$FORMAT" "--build-pyclay"	"Indicates to build pyclay "
-	printf "$FORMAT" "" "NOTE: Python virtual environment will be created (if needed) in pyclay/.pyenv<pythonversion>"
-	printf "$FORMAT" "--build-dockers"	"Indicates to build docker images for local usage."
-	printf "$FORMAT" "--push-dockers"	"Push dataclay to DockerHub. The docker will be build before pushing, to just build it for local usage use --build-dockers. USE IT CAREFULLY."
-	printf "$FORMAT" "--push-maven <dataclay-maven local repository>"	"Push dataclay to Maven. The jar will be build before pushing. To just build the jar, use --build-jar. USE IT CAREFULLY."
-	printf "$FORMAT" "--push-pypi"	"Push dataclay to Pypi. Pyclay will be build before pushing. To just install it in pyclay/.pyenv, use --build-pyclay. USE CAREFULLY."
-	printf "$FORMAT" "--push-all-debug <dataclay-maven-repo>"	"Push dataclay to DockerHub and Maven EXCEPT pypi, used for testing reasons."
-	printf "$FORMAT" "" "USE CAREFULLY. Reason: Pypi do not allow you to replace a version once is published."
-	printf "$FORMAT" "--push-all <dataclay-maven-repo>"	"Push dataclay to DockerHub, Maven and Pypi."
-	printf "$FORMAT" "" "USE CAREFULLY."
-	printf "$FORMAT" "" "Remember to clone in local repository folder: $URL_DATACLAY_MAVEN_REPO "
-	printf "$FORMAT" "--final-release"	"Indicates release is not a pre-release"
-	
-}
-
-function check_java_version { 
-	printf "Checking if java version >= $REQUIRED_JAVA_VERSION..."
-	version=$("java" -version 2>&1 | awk -F '"' '/version/ {print $2}' | awk -F '.' '{print $1}')
-	if (("$version" < "$REQUIRED_JAVA_VERSION")); then       
-	    echo "ERROR: java version is less than $REQUIRED_JAVA_VERSION"
-		return -1
-	fi
-	printf "OK\n"
-	printf "Checking if javac version >= $REQUIRED_JAVA_VERSION..."	
-	version=$("javac" -version 2>&1 | awk '{print $2}' | awk -F '.' '{print $1}')
-	if (("$version" < "$REQUIRED_JAVA_VERSION")); then    
-	    echo "ERROR: javac version is less than $REQUIRED_JAVA_VERSION"
-		return -1
-	fi
-	printf "OK\n"
-}
-
-function check_docker_version { 
-	printf "Checking if docker version >= $REQUIRED_DOCKER_VERSION..."
-	version=$(docker version --format '{{.Server.Version}}')
-	if [[ "$version" < "$REQUIRED_DOCKER_VERSION" ]]; then       
-	    echo "ERROR: Docker version is less than $REQUIRED_DOCKER_VERSION"
-		return -1
-	fi
+function check_docker_buildx_version { 
+	printf "Checking if docker buildx is available..."
 	docker buildx version 2>&1 > /dev/null
 	if [ $? -ne 0 ]; then return $?; fi
 	printf "OK\n"
@@ -434,21 +372,6 @@ function maven_push {
 	popd
 }
 
-function clean() { 
-	printf "Cleaning..."
-	if [ -f $SCRIPTDIR/pom.xml.orig ]; then 
-		mv $SCRIPTDIR/pom.xml.orig $SCRIPTDIR/pom.xml # sanity check if script was interrupted 
-	fi
-	rm -f $SCRIPTDIR/pom.xml.orig
-	
-	if [ -f $SCRIPTDIR/pyclay/setup.py.orig ]; then 
-		mv $SCRIPTDIR/pyclay/setup.py.orig $SCRIPTDIR/pyclay/setup.py
-	fi
-	
-	#rm -f dataclay.jar
-	printf "OK\n"
-}
-
 pushd () {
     command pushd "$@" > /dev/null
 }
@@ -466,170 +389,19 @@ echo "'"'
      | |     | |       / ____| |            
    __| | __ _| |_ __ _| |    | | __ _ _   _ 
   / _` |/ _` | __/ _` | |    | |/ _` | | | |
- | (_| | (_| | || (_| | |____| | (_| | |_| |  RELEASE SCRIPT 2019
+ | (_| | (_| | || (_| | |____| | (_| | |_| |  release script
   \__,_|\__,_|\__\__,_|\_____|_|\__,_|\__, |
                                        __/ |
                                       |___/ 
 '"'"
-echo " Welcome to dataClay release script! This script is intended to: "
-echo "		- Build dataClay and install in local maven repository"
-echo "		- Build pyClay and install in virtual environment"
-echo "		- Build new docker images of dataClay "
-echo "		- If push option selected: Publish dataClay in DockerHub, Maven or Pypi"
-echo ""
-if [[ $# -lt 1 ]]; then
-	echo " WARNING: You did not provide any argument!"
-	usage
-	exit -1
-fi
-
-# Check parameters
-BUILD_JAR=false
-BUILD_PYCLAY=false
-BUILD_DOCKERS=false
-
-PUSH_DOCKERS=false
-PUSH_MAVEN=false
-PUSH_PYPI=false
-FINAL_RELEASE=false 
-
-DATACLAY_MAVEN_REPO=""
-
-################################## OPTIONS #############################################
-while [[ $# -gt 0 ]]; do
-    key="$1"
-	case $key in
-	--push-all)
-		shift
-    	if [[ $# -ne 1 ]]; then 
-    		usage
-    		exit -1
-    	fi
-    	check_maven_repo $1
-    	DATACLAY_MAVEN_REPO=$1
-        BUILD_JAR=true
-    	BUILD_DOCKERS=true
-        BUILD_PYCLAY=true
-        # push
-		PUSH_MAVEN=true
-		PUSH_DOCKERS=true
-		PUSH_PYPI=true
-		shift
-        ;;
-	--push-all-debug)
-		shift
-    	if [[ $# -ne 1 ]]; then 
-    		usage
-    		exit -1
-    	fi
-    	check_maven_repo $1
-    	DATACLAY_MAVEN_REPO=$1
-        
-        BUILD_JAR=true
-    	BUILD_DOCKERS=true
-        BUILD_PYCLAY=false
-		PUSH_MAVEN=true
-		PUSH_DOCKERS=true
-		PUSH_PYPI=false
-		shift
-		;;
-    --push-maven)
-    	shift 
-    	if [[ $# -ne 1 ]]; then 
-    		usage
-    		exit -1
-    	fi
-    	check_maven_repo $1
-    	DATACLAY_MAVEN_REPO=$1
-        BUILD_JAR=true
-		PUSH_MAVEN=true
-    	shift
-        ;;
-    --push-dockers)
-    	BUILD_DOCKERS=true
-    	PUSH_DOCKERS=true
-    	shift
-        ;;  
-    --push-pypi)
-        BUILD_PYCLAY=true
-    	PUSH_PYPI=true
-    	shift
-        ;;
-    --build-all)
-        # local builds
-        BUILD_JAR=true
-        BUILD_PYCLAY=true
-        BUILD_DOCKERS=true 
-		shift
-        ;;
-    --build-jar) 
-   		BUILD_JAR=true
-   		shift
-   		;; 
-   	--build-pyclay)
-      	BUILD_PYCLAY=true
-   		shift
-   		;; 
-   	--build-dockers)
-    	BUILD_JAR=true 
-      	BUILD_PYCLAY=true 
-   		BUILD_DOCKERS=true
-   		
-   		shift
-   		;;
-	--final-release) 
-		JAR_SUFFIX="$DATACLAY_MAVEN_VERSION"
-		FINAL_RELEASE=true
-		shift
-        ;;
-    -h|--help)
-        usage
-        exit 0
-        ;;
-    *)
-        echo "  ERROR: Bad option $key"
-        shift
-        usage   # unknown option
-        exit 1
-        ;;
-    esac
-done
-
-
+echo " Welcome to dataClay release script! "
 
 echo " *** Checking requirements ... *** "
-# check java
-check_java_version java 
-if [ $? -ne 0 ]; then exit $?; fi
-
-# check commands
-for COMMAND in ${INSTALLED_REQUIREMENTS[@]}; do
-	printf "Checking if $COMMAND is installed..."
-	if ! foobar_loc="$(type -p "$COMMAND")" || [[ -z $foobar_loc ]]; then
-		echo "ERROR: please make sure $COMMAND is installed"
-	  	exit -1
-	fi 
-	printf "OK\n"
-done
-check_docker_version
-if [ $? -ne 0 ]; then exit $?; fi
-
-if [ "$PUSH_DOCKERS" = true ] ; then
-	prepare_docker_builder
-	if [ $? -ne 0 ]; then exit $?; fi
-fi
+./check_requirements.sh
+prepare_docker_builder
 echo " *** Requirements accomplished :) *** "
 
 ################################## PREPARE #############################################
-
-DATACLAY_RELEASE_VERSION=2.0
-DATACLAY_DEVELOPMENT_VERSION="-1"
-read -p "Enter dataClay version [$DATACLAY_RELEASE_VERSION]: " dataclay_version
-DATACLAY_RELEASE_VERSION=${dataclay_version:-$DATACLAY_RELEASE_VERSION}
-if [ "$FINAL_RELEASE" = false ] ; then
-	read -p "Enter dataClay development version: " dataclay_dev_version
-	DATACLAY_DEVELOPMENT_VERSION=${dataclay_dev_version:-$DATACLAY_DEVELOPMENT_VERSION}
-fi
 
 declare -a MAVEN_LIBS
 declare -a PYPI_LIBS
@@ -647,34 +419,9 @@ for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
 	DOCKER_IMAGES+=(bscdataclay/client:${DATACLAY_DOCKER_TAG})
 done
 PYPI_LIBS+=("dataclay=="$(get_pyclay_version))
-
-echo " ----------------------------------------------------------------------------------------------------------- "
-if [ "$BUILD_JAR" = true ] ; then
-	echo " -- I'm going to build and install in local maven repository: ${MAVEN_LIBS[@]} "
-fi
-if [ "$BUILD_PYCLAY" = true ] ; then
-	echo " -- I'm going to build pyclay libraries: ${PYPI_LIBS[@]} "
-fi 
-if [ "$BUILD_DOCKERS" = true ] ; then
-	echo " -- I'm going to build docker images: ${DOCKER_IMAGES[@]} "
-	echo " 
-										***** WARNING *****
-			If it's the first time you are building the dockers it may take LONG time (aprox. 2 hours!!!) 
-			due to ARM python requirements that must be compiled (grpcio and numpy) 
-			Next times, using same buildx builder (named dataclaybuilder) it will take much less.
-										*******************
-	"
-fi
-if [ "$PUSH_MAVEN" = true ] ; then
-	echo " -- I'm going to push following jars into maven using repository $MAVEN_REPOSITORY: ${MAVEN_LIBS[@]} "
-fi
-if [ "$PUSH_PYPI" = true ] ; then
-	echo " -- I'm going to push python libraries into pypi: ${PYPI_LIBS[@]} "
-fi
-if [ "$PUSH_DOCKERS" = true ] ; then
-	echo " -- I'm going to push into DockerHub docker images: ${DOCKER_IMAGES[@]} "
-fi
-echo " ----------------------------------------------------------------------------------------------------------- "
+echo " -- I'm going to push following jars into maven using repository $MAVEN_REPOSITORY: ${MAVEN_LIBS[@]} "
+echo " -- I'm going to push python libraries into pypi: ${PYPI_LIBS[@]} "
+echo " -- I'm going to push into DockerHub docker images: ${DOCKER_IMAGES[@]} "
 
 declare -a MAVEN_LIBS_BUILD
 declare -a PYPI_LIBS_BUILD
@@ -682,44 +429,8 @@ declare -a DOCKER_IMAGES_BUILD
 declare -a MAVEN_LIBS_PUSHED
 declare -a PYPI_LIBS_PUSHED
 declare -a DOCKER_IMAGES_PUSHED
-################################## BUILD #############################################
-
-
-pushd $SCRIPTDIR
-if [ "$BUILD_JAR" = true ] ; then
-	# Building dataclay 
-	install_local_maven_jar $JAVA_VERSION
-	if [ $? -ne 0 ]; then clean; exit $?; fi	
-fi 
-
-
-if [ "$BUILD_PYCLAY" = true ] ; then	
-	pushd $SCRIPTDIR/pyclay
-	for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
-		python_setup $PYTHON_VERSION
-		if [ $? -ne 0 ]; then clean; exit $?; fi
-	done
-	popd
-fi
-
-if [ "$BUILD_DOCKERS" = true ]; then	
-	build_java_dockers $JAVA_VERSION
-	if [ $? -ne 0 ]; then clean; exit $?; fi
-	build_python_dockers $PYTHON_VERSION
-	if [ $? -ne 0 ]; then clean; exit $?; fi
-	build_java_client_docker
-	if [ $? -ne 0 ]; then clean; exit $?; fi
-	build_python_client_docker
-	if [ $? -ne 0 ]; then clean; exit $?; fi
-fi
-
 
 ################################## PUSH #############################################
-if [ "$PUSH_DOCKERS" = false ] ; then
-	# push dockers implies build dockers (buildx will push them)
-	echo " ===== NOT Pushing any docker into DockerHub ====="
-fi
-popd
 
 if [ "$PUSH_MAVEN" = true ] ; then
 	echo " ===== Pushing dataclay $DATACLAY_MAVEN_VERSION into Maven ====="

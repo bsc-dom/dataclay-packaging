@@ -121,7 +121,9 @@ pushd $SCRIPTDIR/client
 # client will not have execution environemnt in version, like pypi
 CLIENT_TAG="$(get_client_container_version $DEFAULT_PYTHON)"
 echo "************* Building image named bscdataclay/client:$CLIENT_TAG *************"
-docker build --build-arg DATACLAY_PYCLAY_DOCKER_TAG=$PYCLAY_TAG -t bscdataclay/client:$CLIENT_TAG .
+docker build --build-arg DATACLAY_DSPYTHON_DOCKER_TAG=$PYCLAY_TAG \
+			 --build-arg DATACLAY_LOGICMODULE_DOCKER_TAG=$JAVACLAY_TAG \
+			 -t bscdataclay/client:$CLIENT_TAG .
 echo "************* bscdataclay/client:$CLIENT_TAG DONE! *************"
 popd 
 

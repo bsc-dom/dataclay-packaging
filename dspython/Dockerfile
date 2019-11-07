@@ -1,8 +1,6 @@
 ARG BASE_VERSION
-FROM bscdataclay/logicmodule:${BASE_VERSION}
+FROM bscdataclay/base:${BASE_VERSION}
 LABEL maintainer dataClay team <support-dataclay@bsc.es>
-
-# Python EE extends dsjava to have Extrae installed + some configuration files
 
 ARG DATACLAY_PYVER=3.6
 ARG PYTHON_PIP_VERSION=3
