@@ -53,8 +53,8 @@ echo ' **  ᴅᴀᴛᴀCʟᴀʏ command tool ** '
 # WARNING: Note that this script must be located among with pom.xml
 
 # Base ops commands
-JAVA_OPSBASE="/usr/src/dataclay/mvn-entry-point.sh"
-PY_OPSBASE="python -m dataclay.tool"
+JAVA_OPSBASE="/usr/src/dataclay/javaclay/mvn-entry-point.sh"
+PY_OPSBASE="/usr/src/dataclay/pyclay/python-entry-point.sh -m dataclay.tool"
 
 # Check if aspects must be applied to Java 
 
@@ -138,7 +138,7 @@ case $OPERATION in
 				fi
 				;;
 			'python')
-				$NEW_NAMESPACE "$2 $3 $4 python"
+				$NEW_NAMESPACE $2 $3 $4 python
 				if [ $? -ge 0 ]; then
 					if [ $# -gt 6 ]; then
 						errorMsg "Prefetching is only supported in Java applications."

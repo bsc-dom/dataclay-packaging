@@ -19,10 +19,10 @@ RUN mvn verify clean --fail-never
 COPY ./javaclay/	.
 
 # install it
-RUN mvn install
+RUN mvn clean install -DskipTests=true
 
 # Copy entrypoint
-COPY ./mvn-entry-point.sh /usr/src/dataclay/mvn-entry-point.sh
+COPY ./mvn-entry-point.sh /usr/src/dataclay/javaclay/mvn-entry-point.sh
 
 # Copy healthcheck
 COPY ./health_check.sh /usr/src/dataclay/health_check.sh
@@ -31,4 +31,4 @@ COPY ./health_check.sh /usr/src/dataclay/health_check.sh
 COPY ./javaclay/dataclay-common/cfglog/log4j2.xml ${LOG4J_CLASSPATH}
 
 # ================= SERVICE ==================== #
-ENTRYPOINT ["/usr/src/dataclay/mvn-entry-point.sh", "-Dexec.mainClass=es.bsc.dataclay.logic.server.LogicModuleSrv"] 
+ENTRYPOINT ["/usr/src/dataclay/javaclay/mvn-entry-point.sh", "-Dexec.mainClass=es.bsc.dataclay.logic.server.LogicModuleSrv"] 

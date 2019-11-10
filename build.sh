@@ -3,7 +3,7 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 SUPPORTED_JAVA_VERSIONS=(8 11)
 SUPPORTED_PYTHON_VERSIONS=(3.6)
 INSTALLED_REQUIREMENTS=("mvn" "java" "javac" "python" "docker")
-DEFAULT_JAVA=8
+DEFAULT_JAVA=11
 DEFAULT_PYTHON=3.6
 
 # Update versions here
@@ -75,14 +75,14 @@ echo " *** Requirements accomplished :) *** "
 ################################## BUILD #############################################
 
 # BASE IMAGES 
+pushd $SCRIPTDIR/base
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
-	pushd $SCRIPTDIR/base/jdk$JAVA_VERSION
 	BASE_VERSION_TAG="$(get_java_container_version $JAVA_VERSION)"
 	echo "************* Building image named bscdataclay/base:$BASE_VERSION_TAG *************"
-	docker build --build-arg BASE_JAVA_VERSION=$JAVA_VERSION -t bscdataclay/base:$BASE_VERSION_TAG .
-	echo "************* bscdataclay/base:$BASE_VERSION_TAG IMAGE DONE! *************"
-	popd 
+	docker build --build-arg JDK=$JAVA_VERSION -t bscdataclay/base:$BASE_VERSION_TAG .
+	echo "************* bscdataclay/base:$BASE_VERSION_TAG IMAGE DONE! *************" 
 done
+popd
 
 # LOGICMODULE
 pushd $SCRIPTDIR/logicmodule
@@ -113,7 +113,7 @@ echo "************* Building image named bscdataclay/dspython:$PYCLAY_TAG python
 docker build --build-arg BASE_VERSION=$BASE_VERSION \
 			 --build-arg DATACLAY_PYVER=$DEFAULT_PYTHON \
 			 --build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION -t bscdataclay/dspython:$PYCLAY_TAG .
-echo "************* bscdataclay/dsjava:$PYCLAY_TAG DONE! *************"
+echo "************* bscdataclay/dspython:$PYCLAY_TAG DONE! *************"
 popd 
 
 # CLIENT 

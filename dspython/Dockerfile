@@ -5,7 +5,7 @@ LABEL maintainer dataClay team <support-dataclay@bsc.es>
 ARG DATACLAY_PYVER=3.6
 ARG PYTHON_PIP_VERSION=3
 
-# ============ PRE-INSTALLATION ================== #
+# ============ REQUIREMENTS ================== #
 
 # Install extrae requirements
 RUN apt-get update \
@@ -32,17 +32,26 @@ RUN pip${PYTHON_PIP_VERSION} install -r requirements.txt
 
 ENV DATACLAY_EXTRAE_WRAPPER_LIB=/usr/src/dataclay/pyclay/pyextrae/dataclay_extrae_wrapper.so
 ENV PYEXTRAE_PATH=$EXTRAE_HOME/libexec:$EXTRAE_HOME/lib
+ENV EXTRAE_CONFIG_FILE=/usr/src/dataclay/extrae/extrae_basic.xml
 ENV PYTHONPATH=$PYEXTRAE_PATH:$PYTHONPATH
+
+# =================== EXTRAE wrapper ======================== #
 
 # Compile wrapper lib 
 COPY ./pyextrae pyextrae
 RUN cd pyextrae && gcc -L${EXTRAE_HOME}/lib -I${EXTRAE_HOME}/include extrae_wrapper.c -lpttrace --shared -o ${DATACLAY_EXTRAE_WRAPPER_LIB}
-
+# check pyextrae is installed
+RUN python -c "import pyextrae.common.extrae as pyextrae_module; print('import ok')"
+RUN python -c "from pyextrae.common.extrae import Extrae as extrae_dict_obj; print('import ok')"
+RUN python -c "from ctypes import cdll; cdll.LoadLibrary(\"/usr/src/dataclay/pyclay/pyextrae/dataclay_extrae_wrapper.so\")"
 # =============== INSTALL DATACLAY =================== #
-COPY ./health_check.sh health_check.sh
+ENV DEPLOY_PATH=/usr/src/dataclay/pyclay/deploy
 COPY ./pyclay/ /usr/src/dataclay/pyclay/
 RUN python setup.py install
 
+COPY ./health_check.sh health_check.sh
+COPY ./python-entry-point.sh /usr/src/dataclay/pyclay/python-entry-point.sh
+
 # Execute
 # Don't use CMD in order to keep compatibility with singularity container's generator
-ENTRYPOINT ["python","-m","dataclay.executionenv.server"]
+ENTRYPOINT ["/usr/src/dataclay/pyclay/python-entry-point.sh","-m","dataclay.executionenv.server"]
