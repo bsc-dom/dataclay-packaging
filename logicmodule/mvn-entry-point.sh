@@ -42,7 +42,7 @@ if [ "$EXEC_ARGS_PROVIDED" = true ] ; then
 else
 	cmd="mvn exec:java -q -Dlog4j.configurationFile=$LOG4J_CLASSPATH $ARGS -Dexec.cleanupDaemonThreads=false"
 fi
-#echo $cmd
+echo $cmd
 eval $cmd
 
 if [ "$TRACING" = true ] ; then 

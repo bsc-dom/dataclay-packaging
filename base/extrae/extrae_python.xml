@@ -15,10 +15,6 @@
       </set>
     </cpu>
   </counters>
-  
-  <pthread enabled="no">
-    <counters enabled="yes" />
-  </pthread>
 
   <storage enabled="no"/>
 

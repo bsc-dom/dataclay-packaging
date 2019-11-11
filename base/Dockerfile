@@ -15,13 +15,17 @@ RUN apt-get update \
         build-essential libiberty-dev gfortran libbfd-dev libxml2-dev papi-tools libpapi-dev curl dh-autoreconf locales aspectj maven \
         && rm -rf /var/lib/apt/lists/*
 
-# Set Java home. We create a symbolic link to be arch-independant 
+# Set Java 8 home for extrae
 RUN ln -s /usr/lib/jvm/java-8-openjdk* /usr/lib/jvm/java-8
 ENV JAVA8_HOME=/usr/lib/jvm/java-8
-#RUN update-alternatives --install "/usr/bin/java" "java" ${JAVA_HOME}/bin/java 99999 && \
-#	update-alternatives --install "/usr/bin/javac" "javac" ${JAVA_HOME}/bin/javac 99999 && \
-#	update-alternatives --set java ${JAVA_HOME}/bin/java && \
-#	update-alternatives --set javac ${JAVA_HOME}/bin/javac
+
+# Set Java home. We create a symbolic link to be arch-independant 
+RUN ln -s /usr/lib/jvm/java-${JDK}-openjdk* /usr/lib/jvm/java-${JDK}
+ENV JAVA_HOME=/usr/lib/jvm/java-${JDK}
+RUN update-alternatives --install "/usr/bin/java" "java" ${JAVA_HOME}/bin/java 99999 && \
+	update-alternatives --install "/usr/bin/javac" "javac" ${JAVA_HOME}/bin/javac 99999 && \
+	update-alternatives --set java ${JAVA_HOME}/bin/java && \
+	update-alternatives --set javac ${JAVA_HOME}/bin/javac
 
 # LC_CTYPE instanciated for singularity WARNING: do we need to force time zone?
 ENV LC_CTYPE=en_US.UTF-8
