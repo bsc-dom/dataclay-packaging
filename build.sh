@@ -128,5 +128,6 @@ docker images | grep "bscdataclay/base"
 docker images | grep "bscdataclay/logicmodule"
 docker images | grep "bscdataclay/dsjava"
 docker images | grep "bscdataclay/dspython"
+docker images | grep "bscdataclay/client"
 
 echo " ===== Done! ====="

@@ -4,13 +4,10 @@ DATACLAY_HOME_SRC=$SCRIPTDIR
 SUPPORTED_JAVA_VERSIONS=(8 11)
 SUPPORTED_PYTHON_VERSIONS=(3.6)
 PLATFORMS=linux/amd64,linux/arm/v7
-DEFAULT_JAVA=8
+DEFAULT_JAVA=11
 DEFAULT_PYTHON=3.6
-URL_DATACLAY_MAVEN_REPO="https://github.com/bsc-ssrg/dataclay-maven.git"
 
-# Update versions here
-DATACLAY_RELEASE_VERSION=2.0
-DATACLAY_DEVELOPMENT_VERSION=22
+#URL_DATACLAY_MAVEN_REPO="https://github.com/bsc-ssrg/dataclay-maven.git"
 
 ################################## FUNCTIONS #############################################
 trap ctrl_c INT

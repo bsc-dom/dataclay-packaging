@@ -42,6 +42,7 @@ if [ "$EXEC_ARGS_PROVIDED" = true ] ; then
 else
 	cmd="mvn exec:java -q -Dlog4j.configurationFile=$LOG4J_CLASSPATH $ARGS -Dexec.cleanupDaemonThreads=false"
 fi
+#export JDK_JAVA_OPTIONS=--add-opens java.base/java.lang=com.google.guice
 echo $cmd
 eval $cmd
 
