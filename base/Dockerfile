@@ -39,10 +39,6 @@ ENV LC_ALL en_US.UTF-8
 # Working dir 
 WORKDIR /usr/src/dataclay
 
-# ================= ENVIRONMENT VARIABLES ====================== #
-
-ENV LOG4J_CLASSPATH=/usr/src/dataclay/log4j2.xml
-
 # =================== EXTRAE ENVIRONMENT VARIABLES ======================== #
 ENV EXTRAE_HOME=/usr/src/extrae
 ENV EXTRAE_VERSION=3.6.1
@@ -81,6 +77,10 @@ COPY ./extrae extrae
 ENV LD_PRELOAD=${EXTRAE_HOME}/lib/libpttrace.so:${LD_PRELOAD}
 ENV PATH=${EXTRAE_HOME}/bin:${PATH}
 ENV LD_LIBRARY_PATH=${EXTRAE_HOME}/lib:${LD_LIBRARY_PATH}
+
+# ================= ENVIRONMENT VARIABLES ====================== #
+
+ENV LOG4J_CLASSPATH=/usr/src/dataclay/javaclay/log4j2.xml
 
 # ================= SERVICE ==================== #
 

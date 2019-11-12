@@ -3,6 +3,7 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 set -e
 TRACING=false
 EXEC_ARGS_PROVIDED=false
+DEBUG=false
 EXEC_ARGS=""
 ARGS=""
 ################################## OPTIONS #############################################
@@ -11,6 +12,10 @@ while [[ $# -gt 0 ]]; do
 	case $key in
 	--tracing)
 		TRACING=true
+		shift
+        ;;
+	--debug)
+		DEBUG=true
 		shift
         ;;
     *)
@@ -36,14 +41,24 @@ if [ "$TRACING" = true ] ; then
 	export MAVEN_OPTS="-javaagent:${HOME}/.m2/repository/org/aspectj/aspectjweaver/${ASPECTJ_VERSION}/aspectjweaver-${ASPECTJ_VERSION}.jar -Dorg.aspectj.weaver.showWeaveInfo=true"
 fi
 
+### ========================== LOGGING ============================= ##
+if [ "$DEBUG" = true ] ; then
+	ARGS="$ARGS -Dlog4j.configurationFile=$LOG4J_CLASSPATH"
+else 
+	ARGS="$ARGS -Dorg.apache.logging.log4j.simplelog.StatusLogger.level=OFF"	
+fi
+
 ### ========================== ENTRYPOINT ============================= ##
 if [ "$EXEC_ARGS_PROVIDED" = true ] ; then
-	cmd="mvn exec:java -q -Dlog4j.configurationFile=$LOG4J_CLASSPATH $ARGS -Dexec.cleanupDaemonThreads=false -Dexec.args=\"$EXEC_ARGS\""
+	cmd="mvn exec:java -q $ARGS -Dexec.cleanupDaemonThreads=false -Dexec.args=\"$EXEC_ARGS\" -Dcom.google.inject.internal.cglib.$experimental_asm7=true"
 else
-	cmd="mvn exec:java -q -Dlog4j.configurationFile=$LOG4J_CLASSPATH $ARGS -Dexec.cleanupDaemonThreads=false"
+	cmd="mvn exec:java -q $ARGS -Dexec.cleanupDaemonThreads=false -Dcom.google.inject.internal.cglib.$experimental_asm7=true"
 fi
-#export JDK_JAVA_OPTIONS=--add-opens java.base/java.lang=com.google.guice
-echo $cmd
+
+export JDK_JAVA_OPTIONS="--add-opens java.base/java.lang=ALL-UNNAMED"
+if [ "$DEBUG" = true ] ; then
+	echo $cmd
+fi
 eval $cmd
 
 if [ "$TRACING" = true ] ; then 

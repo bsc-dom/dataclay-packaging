@@ -1,5 +1,12 @@
 #!/bin/bash
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+grn=$'\e[1;32m'
+blu=$'\e[1;34m'
+end=$'\e[0m'
+function printMsg { 
+  echo "${blu}[dataClay build] $1 ${end}"
+}
+
 SUPPORTED_JAVA_VERSIONS=(8 11)
 SUPPORTED_PYTHON_VERSIONS=(3.6)
 INSTALLED_REQUIREMENTS=("mvn" "java" "javac" "python" "docker")
@@ -32,7 +39,7 @@ function get_container_version {
 }
 
 ################################## MAIN #############################################
-echo "'"'
+printMsg "'"'
       _       _         _____ _             
      | |     | |       / ____| |            
    __| | __ _| |_ __ _| |    | | __ _ _   _ 
@@ -42,11 +49,12 @@ echo "'"'
                                        __/ |
                                       |___/ 
 '"'"
-echo " Welcome to dataClay build script!"
+printMsg " Welcome to dataClay build script!"
 
 # Check requirements
-echo " *** Checking requirements ... *** "
+printMsg " Checking requirements ... "
 ./check_requirements.sh
+printMsg " Requirements accomplished! "
 ################################## BUILD #############################################
 
 DEFAULT_TAG="$(get_container_version)"
@@ -57,9 +65,9 @@ DEFAULT_PY_TAG="$(get_container_version py$DEFAULT_PYTHON)"
 pushd $SCRIPTDIR/base
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
 	BASE_VERSION_TAG="$(get_container_version jdk$JAVA_VERSION)"
-	echo "************* Building image named bscdataclay/base:$BASE_VERSION_TAG *************"
+	printMsg "Building image named bscdataclay/base:$BASE_VERSION_TAG"
 	docker build --build-arg JDK=$JAVA_VERSION -t bscdataclay/base:$BASE_VERSION_TAG .
-	echo "************* bscdataclay/base:$BASE_VERSION_TAG IMAGE DONE! *************" 
+	printMsg "bscdataclay/base:$BASE_VERSION_TAG IMAGE DONE!" 
 done
 popd
 
@@ -67,9 +75,9 @@ popd
 pushd $SCRIPTDIR/logicmodule
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
 	VERSION="$(get_container_version jdk$JAVA_VERSION)"
-	echo "************* Building image named bscdataclay/logicmodule:$JAVACLAY_TAG *************"
+	printMsg "Building image named bscdataclay/logicmodule:$VERSION"
 	docker build --build-arg BASE_VERSION=$VERSION -t bscdataclay/logicmodule:$VERSION .
-	echo "************* bscdataclay/logicmodule:$JAVACLAY_TAG IMAGE DONE! *************"
+	printMsg "bscdataclay/logicmodule:$VERSION IMAGE DONE!"
 done
 popd 
 
@@ -77,9 +85,9 @@ popd
 pushd $SCRIPTDIR/dsjava
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
 	VERSION="$(get_container_version jdk$JAVA_VERSION)"
-	echo "************* Building image named bscdataclay/dsjava:$JAVACLAY_TAG *************"
+	printMsg "Building image named bscdataclay/dsjava:$VERSION"
 	docker build --build-arg LOGICMODULE_VERSION=$VERSION -t bscdataclay/dsjava:$VERSION .
-	echo "************* bscdataclay/dsjava:$JAVACLAY_TAG DONE! *************"
+	printMsg " bscdataclay/dsjava:$VERSION DONE!"
 done
 popd 
 
@@ -94,11 +102,11 @@ for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
 	if [ $PYTHON_PIP_VERSION -eq "2" ]; then 
 		PYTHON_PIP_VERSION=""
 	fi 
-	echo "************* Building image named bscdataclay/dspython:$PYCLAY_TAG python version $DEFAULT_PYTHON and pip version $PYTHON_PIP_VERSION *************"
+	printMsg "Building image named bscdataclay/dspython:$VERSION python version $DEFAULT_PYTHON and pip version $PYTHON_PIP_VERSION"
 	docker build --build-arg BASE_VERSION=$BASE_VERSION \
 				 --build-arg DATACLAY_PYVER=$PYTHON_VERSION \
 				 --build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION -t bscdataclay/dspython:$VERSION .
-	echo "************* bscdataclay/dspython:$PYCLAY_TAG DONE! *************"
+	printMsg "bscdataclay/dspython:$VERSION DONE!"
 done
 popd 
 
@@ -108,11 +116,11 @@ pushd $SCRIPTDIR/client
 JAVACLAY_TAG="$(get_container_version jdk$DEFAULT_JAVA)"
 PYCLAY_TAG="$(get_container_version py$DEFAULT_PYTHON)"
 CLIENT_TAG="$(get_container_version)"
-echo "************* Building image named bscdataclay/client:$CLIENT_TAG *************"
+printMsg "Building image named bscdataclay/client:$CLIENT_TAG"
 docker build --build-arg DATACLAY_DSPYTHON_DOCKER_TAG=$PYCLAY_TAG \
 			 --build-arg DATACLAY_LOGICMODULE_DOCKER_TAG=$JAVACLAY_TAG \
 			 -t bscdataclay/client:$CLIENT_TAG .
-echo "************* bscdataclay/client:$CLIENT_TAG DONE! *************"
+printMsg "bscdataclay/client:$CLIENT_TAG DONE!"
 popd 
 
 
@@ -123,11 +131,12 @@ docker tag bscdataclay/dsjava:$DEFAULT_JDK_TAG bscdataclay/dsjava:$DEFAULT_TAG
 docker tag bscdataclay/dspython:$DEFAULT_PY_TAG bscdataclay/dspython:$DEFAULT_TAG
 
 # Check docker images 
-echo "Generated images:"
+printMsg "Generated images:"
 docker images | grep "bscdataclay/base"
 docker images | grep "bscdataclay/logicmodule"
 docker images | grep "bscdataclay/dsjava"
 docker images | grep "bscdataclay/dspython"
 docker images | grep "bscdataclay/client"
 
-echo " ===== Done! ====="
+echo "${grn}[dataClay build] Done! "
+echo ""

@@ -37,9 +37,14 @@ cat << EOF
 EOF
 exit 0
 }
+
+blu=$'\e[1;34m'
+red=$'\e[1;91m'
+end=$'\e[0m'
+
 errorMsg() {
 	echo ""
-	echo "[dataClay] [tool ERROR] $1"
+	echo " ${red} [dataClay] [ERROR] $1 ${end} "
 	echo ""
 	exit -1
 }
@@ -48,7 +53,7 @@ shopt -s nocasematch # ignore case in case or if clauses
 TOOLNAME=$0
 SUPPORTEDLANGS="python | java"
 SUPPORTEDDSETS="public | private"
-echo ' **  ᴅᴀᴛᴀCʟᴀʏ command tool ** '
+echo " ${blu} **  ᴅᴀᴛᴀCʟᴀʏ command tool ** ${end} "
 
 # WARNING: Note that this script must be located among with pom.xml
 
@@ -162,6 +167,7 @@ case $OPERATION in
 		LANG=`$GET_NAMESPACE_LANG $2 $3 $4 | tail -1`
 		case $LANG in
 			'LANG_JAVA')
+				echo $ACCESS_NS_MODEL $2 $3 $4
 				$ACCESS_NS_MODEL $2 $3 $4
 				if [ $? -ge 0 ]; then
 					$JAVA_GETSTUBS $2 $3 $4 $5
@@ -176,17 +182,16 @@ case $OPERATION in
 		esac
 		;;
 	'GetDataClayID')
-		$GET_DATACLAYID $2
+		$GET_DATACLAYID ${@:2}
 		;;
 	'RegisterDataClay')
-		$REG_EXT_DATACLAY $2 $3
+		$REG_EXT_DATACLAY ${@:2}
 		;;
 	'GetExtDataClayID')
-		$GET_EXT_DATACLAYID $2 $3
+		$GET_EXT_DATACLAYID ${@:2}
 		;;
 	'WaitForDataClayToBeAlive')
-		echo $WAIT_DATACLAY_ALIVE $2 $3
-		$WAIT_DATACLAY_ALIVE $2 $3
+		$WAIT_DATACLAY_ALIVE ${@:2}
 		;;
 	*)
 		echo "[ERROR]: Operation $1 is not supported."

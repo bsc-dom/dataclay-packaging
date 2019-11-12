@@ -4,6 +4,7 @@ DATACLAY_HOME_SRC=$SCRIPTDIR
 SUPPORTED_JAVA_VERSIONS=(8 11)
 SUPPORTED_PYTHON_VERSIONS=(3.6)
 PLATFORMS=linux/amd64,linux/arm/v7
+
 DEFAULT_JAVA=11
 DEFAULT_PYTHON=3.6
 
@@ -38,31 +39,6 @@ function check_maven_repo {
 	fi
 }
 
-function python_setup {  
-	PYTHON_VER=$1
-	export PYCLAY_VERSION="$(get_pyclay_version)"
-	
-	VIRTUAL_ENV=$SCRIPTDIR/pyclay/.pyenv${PYTHON_VER}
-	if [ ! -d "${VIRTUAL_ENV}" ]; then
-		echo " Creating virtual environment $VIRTUAL_ENV " 
-		virtualenv --python=/usr/bin/python${PYTHON_VER} $VIRTUAL_ENV
-	fi
-	echo " Calling python installation in virtual environment $VIRTUAL_ENV " 
-	source $VIRTUAL_ENV/bin/activate
-	pip install wheel
-	echo " * IMPORTANT: please make sure to remove build, dist and src/dataClay.egg if permission denied * " 
-	echo " * IMPORTANT: please make sure libyaml-dev libpython2.7-dev python-dev python3-dev python3-pip packages are installed * " 
-	python setup.py -q clean --all install || { echo 'installation of pyclay failed' ; deactivate; return -1; } 
-	if [ $? -ne 0 ]; then
-		echo "ERROR: error installing pyclay"
-		return -1
-	fi 	
-	pip freeze
-	deactivate
-	PYPI_LIBS+=("dataclay==$PYCLAY_VERSION")
-
-}
-
 function prepare_docker_builder { 
 	printf "Checking buildx dataclaybuilder exists..."
 	docker buildx use dataclaybuilder
@@ -94,68 +70,14 @@ function prepare_docker_builder {
 			fi
 		done
 		if [ "$FOUND" = false ] ; then
-			echo "ERROR: missing support for $i in buildx builder"
+			echo "ERROR: missing support for $i in buildx builder."
+			echo " Check https://github.com/multiarch/qemu-user-static for more information on how to simulate architectures"
 			return -1
 		fi
 		printf "OK\n"
 		
 	done
 	
-}
-
-function build_java_client_docker {
-	for DATACLAY_JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
-		DATACLAY_JAVA_DOCKER_TAG="$(get_java_container_version $DATACLAY_JAVA_VERSION)"
-		DATACLAY_DOCKER_TAG=$DATACLAY_JAVA_DOCKER_TAG
-		echo "Building image named bscdataclay/client:$DATACLAY_DOCKER_TAG"
-		if [ "$PUSH_DOCKERS" = true ] ; then
-			DOCKER_IMAGES_PUSHED+=(bscdataclay/client:$DATACLAY_DOCKER_TAG)
-			docker buildx build -f client.Dockerfile \
-				--build-arg DATACLAY_JAVA_DOCKER_TAG=$DATACLAY_JAVA_DOCKER_TAG \
-				-t bscdataclay/client:$DATACLAY_DOCKER_TAG --platform $PLATFORMS --push .
-		else
-			docker build -f client.Dockerfile \
-				--build-arg DATACLAY_JAVA_DOCKER_TAG=$DATACLAY_JAVA_DOCKER_TAG \
-				-t bscdataclay/client:$DATACLAY_DOCKER_TAG .			
-		fi
-		
-		if [ $? -ne 0 ]; then
-			echo "** bscdataclay/client:$DATACLAY_DOCKER_TAG BUILD FAILED! **"
-			return -1
-		fi
-	
-		DOCKER_IMAGES_BUILD+=(bscdataclay/client:$DATACLAY_DOCKER_TAG)
-	done
-}
-
-function build_python_client_docker {
-	pushd pyclay
-	for PYVER in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
-		
-		DATACLAY_PYCLAY_DOCKER_TAG="$(get_python_container_version $PYVER)"
-		DATACLAY_DOCKER_TAG=$DATACLAY_PYCLAY_DOCKER_TAG
-		echo "Building image named bscdataclay/client:$DATACLAY_DOCKER_TAG"
-		if [ "$PUSH_DOCKERS" = true ] ; then
-			DOCKER_IMAGES_PUSHED+=(bscdataclay/client:$DATACLAY_DOCKER_TAG)
-			docker buildx build -f client.Dockerfile \
-				--build-arg DATACLAY_PYCLAY_DOCKER_TAG=$DATACLAY_PYCLAY_DOCKER_TAG \
-				-t bscdataclay/client:$DATACLAY_DOCKER_TAG --platform $PLATFORMS --push .
-		else
-			docker build -f client.Dockerfile \
-				--build-arg DATACLAY_PYCLAY_DOCKER_TAG=$DATACLAY_PYCLAY_DOCKER_TAG \
-				-t bscdataclay/client:$DATACLAY_DOCKER_TAG .			
-		fi
-		
-		if [ $? -ne 0 ]; then
-			echo "** bscdataclay/client:$DATACLAY_DOCKER_TAG BUILD FAILED! **"
-			return -1
-		fi
-	
-		DOCKER_IMAGES_BUILD+=(bscdataclay/client:$DATACLAY_DOCKER_TAG)
-		
-	done	
-	popd
-
 }
 
 function build_java_dockers {
@@ -282,17 +204,16 @@ function install_local_maven_jar {
 	done
 }
 
-function get_dataclay_java_version { 
-	DATACLAY_JAVA_VERSION=$1
+function get_maven_version { 
 	if [ "$DATACLAY_DEVELOPMENT_VERSION" != "-1" ] ; then
-		DATACLAY_MAVEN_VERSION="${DATACLAY_RELEASE_VERSION}.${DATACLAY_JAVA_VERSION}-beta-${DATACLAY_DEVELOPMENT_VERSION}"
+		DATACLAY_MAVEN_VERSION="${DATACLAY_RELEASE_VERSION}-beta-${DATACLAY_DEVELOPMENT_VERSION}"
 	else 
-		DATACLAY_MAVEN_VERSION="$DATACLAY_RELEASE_VERSION.${DATACLAY_JAVA_VERSION}"
+		DATACLAY_MAVEN_VERSION="$DATACLAY_RELEASE_VERSION"
 	fi 
 	echo $DATACLAY_MAVEN_VERSION
 }
 
-function get_pyclay_version { 
+function get_pypi_version { 
 	if [ "$DATACLAY_DEVELOPMENT_VERSION" != "-1" ] ; then
 		DATACLAY_CONTAINER_VERSION="${DATACLAY_RELEASE_VERSION}.dev${DATACLAY_DEVELOPMENT_VERSION}"
 	else 
@@ -301,44 +222,57 @@ function get_pyclay_version {
 	echo ${DATACLAY_CONTAINER_VERSION}
 }
 
-function get_java_container_version {
-	JAVA_VERSION=$1 
-	echo $(get_container_version jdk $JAVA_VERSION) 
-}
-
-function get_python_container_version {
-	PYTHON_VERSION=$1 
-	echo $(get_container_version py $PYTHON_VERSION) 
-}
-
 function get_container_version { 
-	PREFIX=$1
-	EE_VERSION=$2 # i.e. can be python 3.6 or java 8
-	DATACLAY_EE_VERSION="${PREFIX}${EE_VERSION//./}"
-	if [ "$DATACLAY_DEVELOPMENT_VERSION" != "-1" ] ; then
-		DATACLAY_CONTAINER_VERSION="${DATACLAY_RELEASE_VERSION}.${DATACLAY_EE_VERSION}.dev${DATACLAY_DEVELOPMENT_VERSION}"
+	if [ $# -gt 0 ]; then 
+		EE_VERSION=$1 # i.e. can be python py3.6 or jdk8
+		DATACLAY_EE_VERSION="${EE_VERSION//./}"
+		if [ "$DATACLAY_DEVELOPMENT_VERSION" != "-1" ] ; then
+			DATACLAY_CONTAINER_VERSION="${DATACLAY_RELEASE_VERSION}.${DATACLAY_EE_VERSION}.dev${DATACLAY_DEVELOPMENT_VERSION}"
+		else 
+			DATACLAY_CONTAINER_VERSION="$DATACLAY_RELEASE_VERSION.${DATACLAY_EE_VERSION}"
+		fi 
 	else 
-		DATACLAY_CONTAINER_VERSION="$DATACLAY_RELEASE_VERSION.${DATACLAY_EE_VERSION}"
+		if [ "$DATACLAY_DEVELOPMENT_VERSION" != "-1" ] ; then
+			DATACLAY_CONTAINER_VERSION="${DATACLAY_RELEASE_VERSION}.dev${DATACLAY_DEVELOPMENT_VERSION}"
+		else 
+			DATACLAY_CONTAINER_VERSION="$DATACLAY_RELEASE_VERSION"
 	fi 
+	fi
 	echo ${DATACLAY_CONTAINER_VERSION}
 }
 
 
 
 function pypi_push { 
-	export PYCLAY_VERSION="$(get_pyclay_version)"
+	export PYCLAY_VERSION="$(get_pypi_version)"
+	
+	PYTHON_VER=$1
+	
+	VIRTUAL_ENV=$SCRIPTDIR/pyclay/.pyenv${PYTHON_VER}
+	if [ ! -d "${VIRTUAL_ENV}" ]; then
+		echo " Creating virtual environment $VIRTUAL_ENV " 
+		virtualenv --python=/usr/bin/python${PYTHON_VER} $VIRTUAL_ENV
+	fi
+	echo " Calling python installation in virtual environment $VIRTUAL_ENV " 
+	source $VIRTUAL_ENV/bin/activate
+	pip install wheel
+	echo " * IMPORTANT: please make sure to remove build, dist and src/dataClay.egg if permission denied * " 
+	echo " * IMPORTANT: please make sure libyaml-dev libpython2.7-dev python-dev python3-dev python3-pip packages are installed * " 
+	python setup.py -q clean --all install || { echo 'installation of pyclay failed' ; deactivate; return -1; } 
+	if [ $? -ne 0 ]; then
+		echo "ERROR: error installing pyclay"
+		return -1
+	fi 	
+	pip freeze
+	deactivate
+	PYPI_LIBS+=("dataclay==$PYCLAY_VERSION")
+	
 	pushd pyclay
 	# replace 
-	if [ -f setup.py.orig ]; then mv setup.py.orig setup.py; fi # sanity check
-	cp setup.py setup.py.orig
-	sed -i "s/trunk/${PYCLAY_VERSION}/g" setup.py
 	rm -rf dist
 	python setup.py sdist bdist_wheel
 	twine upload dist/*
-	mv setup.py.orig setup.py
-	popd
-	
-	PYPI_LIBS_PUSHED+=(${PYCLAY_VERSION})	
+ #--repository-url https://test.pypi.org/legacy/
 }
 
 function maven_push { 
@@ -398,54 +332,135 @@ echo " *** Checking requirements ... *** "
 prepare_docker_builder
 echo " *** Requirements accomplished :) *** "
 
+################################## VERSIONS #############################################
+
+DATACLAY_RELEASE_VERSION=2.0
+DATACLAY_DEVELOPMENT_VERSION="-1"
+DATACLAY_SNAPSHOT_VERSION="-1"
+
+read -p "Enter dataClay version [$DATACLAY_RELEASE_VERSION]: " dataclay_version
+DATACLAY_RELEASE_VERSION=${dataclay_version:-$DATACLAY_RELEASE_VERSION}
+
+read -p "Enter dataClay DEVELOPMENT version or -1 if it's a release [$DATACLAY_DEVELOPMENT_VERSION]: " dataclay_version
+DATACLAY_DEVELOPMENT_VERSION=${dataclay_version:-$DATACLAY_DEVELOPMENT_VERSION}
+
+echo "In a continuous integration environment, version plays a vital role in keeping the integration build 
+up-to-date while minimizing the amount of rebuilding that is required for each integration step. 
+
+In maven this means that we will push dataclay version $(get_maven_version)-SNAPSHOT
+In pypi this means that we will push dataclay library into testPypi repository with version: $(get_pypi_version)
+In dockers this means that we will push dataclay versions like $(get_container_version jdk$JAVA_VERSION)-SNAPSHOT
+ 
+"
+read -p "Do you wish to use it as a ?" yn
+case $yn in
+	[Yy]* ) make install; break;;
+	[Nn]* ) exit;;
+	* ) echo "Please answer yes or no.";;
+esac
+    
 ################################## PREPARE #############################################
 
-declare -a MAVEN_LIBS
-declare -a PYPI_LIBS
-declare -a DOCKER_IMAGES
+
+echo " -- I'm going to push following jar into maven using repository $MAVEN_REPOSITORY: dataclay-$(get_maven_version).jar "
+echo " -- I'm going to push python libraries into pypi: dataclay==$(get_pypi_version) "
+echo " -- I'm going to push into DockerHub docker images: "
+echo "                bscdataclay/logicmodule:${DATACLAY_RELEASE_VERSION})"
+echo "                bscdataclay/dsjava:${DATACLAY_RELEASE_VERSION})"
+echo "                bscdataclay/dspython:${DATACLAY_RELEASE_VERSION})"
+echo "                bscdataclay/client:${DATACLAY_RELEASE_VERSION})"
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
-	MAVEN_LIBS+=(dataclay$(get_dataclay_java_version $JAVA_VERSION).jar)
-	DATACLAY_DOCKER_TAG="$(get_java_container_version $JAVA_VERSION)"
-	DOCKER_IMAGES+=(bscdataclay/logicmodule:${DATACLAY_DOCKER_TAG})
-	DOCKER_IMAGES+=(bscdataclay/dsjava:${DATACLAY_DOCKER_TAG})
-	DOCKER_IMAGES+=(bscdataclay/client:${DATACLAY_DOCKER_TAG})
+	DATACLAY_DOCKER_TAG="$(get_container_version jdk$JAVA_VERSION)"
+	echo "                bscdataclay/logicmodule:${DATACLAY_DOCKER_TAG})"
+	echo "                bscdataclay/dsjava:${DATACLAY_DOCKER_TAG})"
 done
 for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
-	DATACLAY_DOCKER_TAG="$(get_python_container_version $PYTHON_VERSION)"
-	DOCKER_IMAGES+=(bscdataclay/dspython:${DATACLAY_DOCKER_TAG})
-	DOCKER_IMAGES+=(bscdataclay/client:${DATACLAY_DOCKER_TAG})
+	DATACLAY_DOCKER_TAG="$(get_container_version py$PYTHON_VERSION)"
+	echo "                bscdataclay/dspython:${DATACLAY_DOCKER_TAG})"
 done
-PYPI_LIBS+=("dataclay=="$(get_pyclay_version))
-echo " -- I'm going to push following jars into maven using repository $MAVEN_REPOSITORY: ${MAVEN_LIBS[@]} "
-echo " -- I'm going to push python libraries into pypi: ${PYPI_LIBS[@]} "
-echo " -- I'm going to push into DockerHub docker images: ${DOCKER_IMAGES[@]} "
 
-declare -a MAVEN_LIBS_BUILD
-declare -a PYPI_LIBS_BUILD
-declare -a DOCKER_IMAGES_BUILD
-declare -a MAVEN_LIBS_PUSHED
-declare -a PYPI_LIBS_PUSHED
-declare -a DOCKER_IMAGES_PUSHED
+exit -1
 
 ################################## PUSH #############################################
 
-if [ "$PUSH_MAVEN" = true ] ; then
-	echo " ===== Pushing dataclay $DATACLAY_MAVEN_VERSION into Maven ====="
-	maven_push
-	if [ $? -ne 0 ]; then clean; exit $?; fi
-else 
-	echo " ===== NOT Pushing into Maven ====="
-fi
+echo " ===== Pushing dataclay $DATACLAY_MAVEN_VERSION into Maven ====="
+#maven_push
 
-pushd $SCRIPTDIR
-if [ "$PUSH_PYPI" = true ] ; then
-	echo " ===== Pushing  dataclay into Pypi ====="
-	pypi_push
-	if [ $? -ne 0 ]; then clean; exit $?; fi
-else 
-	echo " ===== NOT Pushing dataclay into Pypi ====="	
-fi
+echo " ===== Pushing  dataclay into Pypi ====="
+# pypi_push
+
+DEFAULT_TAG="$(get_container_version)"
+DEFAULT_JDK_TAG="$(get_container_version jdk$DEFAULT_JAVA)"
+DEFAULT_PY_TAG="$(get_container_version py$DEFAULT_PYTHON)"
+
+# BASE IMAGES 
+pushd $SCRIPTDIR/base
+for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
+	BASE_VERSION_TAG="$(get_container_version jdk$JAVA_VERSION)"
+	echo "************* Pushing image named bscdataclay/base:$BASE_VERSION_TAG *************"
+	docker buildx build --build-arg JDK=$JAVA_VERSION -t bscdataclay/base:$BASE_VERSION_TAG --platform $PLATFORMS --push .
+	echo "************* bscdataclay/base:$BASE_VERSION_TAG IMAGE PUSHED! *************" 
+done
 popd
+
+# LOGICMODULE
+pushd $SCRIPTDIR/logicmodule
+for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
+	VERSION="$(get_container_version jdk$JAVA_VERSION)"
+	echo "************* Pushing image named bscdataclay/logicmodule:$JAVACLAY_TAG *************"
+	docker buildx build --build-arg BASE_VERSION=$VERSION -t bscdataclay/logicmodule:$VERSION --platform $PLATFORMS --push .
+	echo "************* bscdataclay/logicmodule:$JAVACLAY_TAG IMAGE PUSHED! *************"
+done
+popd 
+
+# DSJAVA
+pushd $SCRIPTDIR/dsjava
+for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
+	VERSION="$(get_container_version jdk$JAVA_VERSION)"
+	echo "************* Building image named bscdataclay/dsjava:$JAVACLAY_TAG *************"
+	docker buildx build --build-arg LOGICMODULE_VERSION=$VERSION -t bscdataclay/dsjava:$VERSION --platform $PLATFORMS --push .
+	echo "************* bscdataclay/dsjava:$JAVACLAY_TAG DONE! *************"
+done
+popd 
+
+# DSPYTHON
+pushd $SCRIPTDIR/dspython
+for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
+	BASE_VERSION="$(get_container_version jdk$DEFAULT_JAVA)"
+	VERSION="$(get_container_version py$PYTHON_VERSION)"
+	# Get python version without subversion to install it in some packages
+	PYTHON_PIP_VERSION=$PYTHON_VERSION
+	PYTHON_PIP_VERSION=$(echo $PYTHON_VERSION | awk -F '.' '{print $1}')
+	if [ $PYTHON_PIP_VERSION -eq "2" ]; then 
+		PYTHON_PIP_VERSION=""
+	fi 
+	echo "************* Building image named bscdataclay/dspython:$PYCLAY_TAG python version $DEFAULT_PYTHON and pip version $PYTHON_PIP_VERSION *************"
+	docker buildx build --build-arg BASE_VERSION=$BASE_VERSION \
+				 --build-arg DATACLAY_PYVER=$PYTHON_VERSION \
+				 --build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION -t bscdataclay/dspython:$VERSION --platform $PLATFORMS --push .
+	echo "************* bscdataclay/dspython:$PYCLAY_TAG DONE! *************"
+done
+popd 
+
+# CLIENT 
+pushd $SCRIPTDIR/client
+# client will not have execution environemnt in version, like pypi
+JAVACLAY_TAG="$(get_container_version jdk$DEFAULT_JAVA)"
+PYCLAY_TAG="$(get_container_version py$DEFAULT_PYTHON)"
+CLIENT_TAG="$(get_container_version)"
+echo "************* Building image named bscdataclay/client:$CLIENT_TAG *************"
+docker buildx build --build-arg DATACLAY_DSPYTHON_DOCKER_TAG=$PYCLAY_TAG \
+			 --build-arg DATACLAY_LOGICMODULE_DOCKER_TAG=$JAVACLAY_TAG \
+			 -t bscdataclay/client:$CLIENT_TAG --platform $PLATFORMS --push .
+echo "************* bscdataclay/client:$CLIENT_TAG DONE! *************"
+popd 
+
+
+## Tag default versions 
+docker tag bscdataclay/base:$DEFAULT_JDK_TAG bscdataclay/base:$DEFAULT_TAG
+docker tag bscdataclay/logicmodule:$DEFAULT_JDK_TAG bscdataclay/logicmodule:$DEFAULT_TAG
+docker tag bscdataclay/dsjava:$DEFAULT_JDK_TAG bscdataclay/dsjava:$DEFAULT_TAG
+docker tag bscdataclay/dspython:$DEFAULT_PY_TAG bscdataclay/dspython:$DEFAULT_TAG
 
 # Clean
 clean
