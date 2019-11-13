@@ -2,9 +2,13 @@
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 grn=$'\e[1;32m'
 blu=$'\e[1;34m'
+red=$'\e[1;91m'
 end=$'\e[0m'
 function printMsg { 
   echo "${blu}[dataClay build] $1 ${end}"
+}
+function printError { 
+  echo "${red}======== $1 ========${end}"
 }
 
 SUPPORTED_JAVA_VERSIONS=(8 11)

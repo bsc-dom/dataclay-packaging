@@ -15,6 +15,10 @@
       </set>
     </cpu>
   </counters>
+  
+  <pthread enabled="no">
+    <counters enabled="yes" />
+  </pthread>
 
   <storage enabled="no"/>
 
@@ -31,6 +35,6 @@
 
   <input-output enabled="no" />
 
-  <merge enabled="no" />
+  <merge enabled="no" keep-mpits="yes"/> 
 
 </trace>

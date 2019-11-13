@@ -32,7 +32,7 @@ RUN pip${PYTHON_PIP_VERSION} install -r requirements.txt
 
 ENV DATACLAY_EXTRAE_WRAPPER_LIB=/usr/src/dataclay/pyclay/pyextrae/dataclay_extrae_wrapper.so
 ENV PYEXTRAE_PATH=$EXTRAE_HOME/libexec:$EXTRAE_HOME/lib
-ENV EXTRAE_CONFIG_FILE=/usr/src/dataclay/extrae/extrae_basic.xml
+ENV EXTRAE_CONFIG_FILE=/usr/src/dataclay/extrae/extrae_python.xml
 ENV PYTHONPATH=$PYEXTRAE_PATH:$PYTHONPATH
 
 # =================== EXTRAE wrapper ======================== #
@@ -49,7 +49,7 @@ ENV DEPLOY_PATH=/usr/src/dataclay/pyclay/deploy
 COPY ./pyclay/ /usr/src/dataclay/pyclay/
 RUN python setup.py install
 
-COPY ./health_check.sh health_check.sh
+COPY ./health_check.sh /usr/src/dataclay/pyclay/health_check.sh
 COPY ./python-entry-point.sh /usr/src/dataclay/pyclay/python-entry-point.sh
 
 # Execute

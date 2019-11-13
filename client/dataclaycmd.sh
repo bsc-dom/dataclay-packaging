@@ -58,6 +58,8 @@ echo " ${blu} **  ᴅᴀᴛᴀCʟᴀʏ command tool ** ${end} "
 # WARNING: Note that this script must be located among with pom.xml
 
 # Base ops commands
+# Go to client pom.xml location
+pushd /usr/src/dataclay/client 
 JAVA_OPSBASE="/usr/src/dataclay/javaclay/mvn-entry-point.sh"
 PY_OPSBASE="/usr/src/dataclay/pyclay/python-entry-point.sh -m dataclay.tool"
 

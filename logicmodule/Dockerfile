@@ -15,6 +15,10 @@ WORKDIR /usr/src/dataclay/javaclay
 # If you change the pom.xml file, thus changing the dependencies, then all dependency downloads are done.
 RUN mvn verify clean --fail-never
 
+# Force mvn exec plugin to be downloaded
+RUN mvn exec:help
+RUN mvn exec:java -Dexec.skip=true
+
 # Copy source code
 COPY ./javaclay/	.
 
@@ -25,7 +29,7 @@ RUN mvn clean install -DskipTests=true
 COPY ./mvn-entry-point.sh /usr/src/dataclay/javaclay/mvn-entry-point.sh
 
 # Copy healthcheck
-COPY ./health_check.sh /usr/src/dataclay/health_check.sh
+COPY ./health_check.sh /usr/src/dataclay/javaclay/health_check.sh
 
 # Copy configurations and dynamic files (more likely to be changed)
 COPY ./javaclay/dataclay-common/cfglog/log4j2.xml ${LOG4J_CLASSPATH}

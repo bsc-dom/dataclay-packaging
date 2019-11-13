@@ -5,6 +5,7 @@ TRACING=false
 EXEC_ARGS_PROVIDED=false
 EXEC_ARGS=""
 DEBUG=false
+
 ################################## OPTIONS #############################################
 while [[ $# -gt 0 ]]; do
     key="$1"

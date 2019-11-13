@@ -26,11 +26,13 @@ RUN python -c "import pyextrae.common.extrae as pyextrae_module; print('import o
 RUN python -c "from pyextrae.common.extrae import Extrae as extrae_dict_obj; print('import ok')"
 
 # Move to javaclay since dataclay client tool is there
-WORKDIR /usr/src/dataclay/javaclay/
+COPY ./pom.xml /usr/src/dataclay/client/
+
+WORKDIR /usr/src/dataclay/client/
 # Environment variables
 # WARNING: Note that this script must be located among with dataclay pom.xml (see workdir)
-ENV DATACLAYCMD=/usr/src/dataclay/dataclaycmd.sh
+ENV DATACLAYCMD=/usr/src/dataclay/client/dataclaycmd.sh
 COPY dataclaycmd.sh ${DATACLAYCMD}
 
 # The command can contain additional options
-ENTRYPOINT ["bash", "/usr/src/dataclay/dataclaycmd.sh"]
+ENTRYPOINT ["bash", "/usr/src/dataclay/client/dataclaycmd.sh"]
