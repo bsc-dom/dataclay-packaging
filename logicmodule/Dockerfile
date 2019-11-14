@@ -14,7 +14,7 @@ WORKDIR /usr/src/dataclay/javaclay
 # If you change 1 of your application source files, only a few downloads are downloaded and the application is build. So you are NOT downloading the world.
 # If you change the pom.xml file, thus changing the dependencies, then all dependency downloads are done.
 RUN mvn verify clean --fail-never
-
+RUN mvn dependency:go-offline
 # Force mvn exec plugin to be downloaded
 RUN mvn exec:help
 RUN mvn exec:java -Dexec.skip=true

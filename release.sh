@@ -262,6 +262,7 @@ echo "                bscdataclay/logicmodule:${DATACLAY_RELEASE_VERSION}"
 echo "                bscdataclay/dsjava:${DATACLAY_RELEASE_VERSION}"
 echo "                bscdataclay/dspython:${DATACLAY_RELEASE_VERSION}"
 echo "                bscdataclay/client:${DATACLAY_RELEASE_VERSION}"
+echo "                bscdataclay/tool:${DATACLAY_RELEASE_VERSION}"
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
 	DATACLAY_DOCKER_TAG="$(get_container_version jdk$JAVA_VERSION)"
 	echo "                bscdataclay/logicmodule:${DATACLAY_DOCKER_TAG}"
@@ -356,28 +357,62 @@ DOCKER_IMAGES_PUSHED+=(bscdataclay/client:$CLIENT_TAG)
 echo "************* bscdataclay/client:$CLIENT_TAG DONE! *************"
 popd 
 
+pushd $SCRIPTDIR/client
+echo "************* Building image named bscdataclay/tool:$CLIENT_TAG *************"
+docker buildx build --build-arg DATACLAY_DSPYTHON_DOCKER_TAG=$PYCLAY_TAG \
+			 --build-arg DATACLAY_LOGICMODULE_DOCKER_TAG=$JAVACLAY_TAG \
+			 -t bscdataclay/tool:$CLIENT_TAG --platform $PLATFORMS --push .
+if [ $? -ne 0 ]; then printError "Push failed"; exit 1; fi
+DOCKER_IMAGES_PUSHED+=(bscdataclay/tool:$CLIENT_TAG) 
+echo "************* bscdataclay/tool:$CLIENT_TAG DONE! *************"
+popd 
+
 
 ## Tag default versions 
-docker tag bscdataclay/base:$DEFAULT_JDK_TAG bscdataclay/base:$DEFAULT_TAG
-docker tag bscdataclay/logicmodule:$DEFAULT_JDK_TAG bscdataclay/logicmodule:$DEFAULT_TAG
-docker tag bscdataclay/dsjava:$DEFAULT_JDK_TAG bscdataclay/dsjava:$DEFAULT_TAG
-docker tag bscdataclay/dspython:$DEFAULT_PY_TAG bscdataclay/dspython:$DEFAULT_TAG
 
-docker push bscdataclay/base:$DEFAULT_TAG
+docker buildx imagetools create --tag bscdataclay/base:$DEFAULT_TAG bscdataclay/base:$DEFAULT_JDK_TAG
 if [ $? -ne 0 ]; then printError "bscdataclay/base:$DEFAULT_TAG push failed"; exit 1; fi
 DOCKER_IMAGES_PUSHED+=(bscdataclay/base:$DEFAULT_TAG) 
 
-docker push bscdataclay/logicmodule:$DEFAULT_TAG
+docker buildx imagetools create --tag bscdataclay/logicmodule:$DEFAULT_TAG bscdataclay/logicmodule:$DEFAULT_JDK_TAG
 if [ $? -ne 0 ]; then printError "bscdataclay/logicmodule:$DEFAULT_TAG push failed"; exit 1; fi
 DOCKER_IMAGES_PUSHED+=(bscdataclay/logicmodule:$DEFAULT_TAG) 
 
-docker push bscdataclay/dsjava:$DEFAULT_TAG
+docker buildx imagetools create --tag bscdataclay/dsjava:$DEFAULT_TAG bscdataclay/dsjava:$DEFAULT_JDK_TAG
 if [ $? -ne 0 ]; then printError "bscdataclay/dsjava:$DEFAULT_TAG push failed"; exit 1; fi
 DOCKER_IMAGES_PUSHED+=(bscdataclay/dsjava:$DEFAULT_TAG) 
 
-docker push bscdataclay/dspython:$DEFAULT_TAG
+docker buildx imagetools create --tag bscdataclay/dspython:$DEFAULT_TAG bscdataclay/dspython:$DEFAULT_PY_TAG
 if [ $? -ne 0 ]; then printError "bscdataclay/dspython:$DEFAULT_TAG push failed"; exit 1; fi
 DOCKER_IMAGES_PUSHED+=(bscdataclay/dspython:$DEFAULT_TAG) 
+
+##### TAG LATEST #####
+
+docker buildx imagetools create --tag bscdataclay/base bscdataclay/base:$DEFAULT_TAG
+if [ $? -ne 0 ]; then printError "bscdataclay/base:$DEFAULT_TAG push failed"; exit 1; fi
+DOCKER_IMAGES_PUSHED+=(bscdataclay/base) 
+
+docker buildx imagetools create --tag bscdataclay/logicmodule bscdataclay/logicmodule:$DEFAULT_TAG
+if [ $? -ne 0 ]; then printError "bscdataclay/logicmodule:$DEFAULT_TAG push failed"; exit 1; fi
+DOCKER_IMAGES_PUSHED+=(bscdataclay/logicmodule) 
+
+docker buildx imagetools create --tag bscdataclay/dsjava bscdataclay/dsjava:$DEFAULT_TAG
+if [ $? -ne 0 ]; then printError "bscdataclay/dsjava:$DEFAULT_TAG push failed"; exit 1; fi
+DOCKER_IMAGES_PUSHED+=(bscdataclay/dsjava) 
+
+docker buildx imagetools create --tag bscdataclay/dspython bscdataclay/dspython:$DEFAULT_TAG
+if [ $? -ne 0 ]; then printError "bscdataclay/dspython:$DEFAULT_TAG push failed"; exit 1; fi
+DOCKER_IMAGES_PUSHED+=(bscdataclay/dspython) 
+
+docker buildx imagetools create --tag bscdataclay/client bscdataclay/client:$DEFAULT_TAG
+if [ $? -ne 0 ]; then printError "bscdataclay/dspython:client push failed"; exit 1; fi
+DOCKER_IMAGES_PUSHED+=(bscdataclay/client) 
+
+docker buildx imagetools create --tag bscdataclay/tool bscdataclay/tool:$DEFAULT_TAG
+if [ $? -ne 0 ]; then printError "bscdataclay/dspython:tool push failed"; exit 1; fi
+DOCKER_IMAGES_PUSHED+=(bscdataclay/tool) 
+
+
 
 printMsg " ===== Done! ====="
 printMsg " Push summary  "

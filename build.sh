@@ -133,6 +133,15 @@ docker tag bscdataclay/base:$DEFAULT_JDK_TAG bscdataclay/base:$DEFAULT_TAG
 docker tag bscdataclay/logicmodule:$DEFAULT_JDK_TAG bscdataclay/logicmodule:$DEFAULT_TAG
 docker tag bscdataclay/dsjava:$DEFAULT_JDK_TAG bscdataclay/dsjava:$DEFAULT_TAG
 docker tag bscdataclay/dspython:$DEFAULT_PY_TAG bscdataclay/dspython:$DEFAULT_TAG
+docker tag bscdataclay/client:$CLIENT_TAG bscdataclay/tool:$CLIENT_TAG
+
+# Tag latest
+docker tag bscdataclay/base:$DEFAULT_TAG bscdataclay/base
+docker tag bscdataclay/logicmodule:$DEFAULT_TAG bscdataclay/logicmodule
+docker tag bscdataclay/dsjava:$DEFAULT_TAG bscdataclay/dsjava
+docker tag bscdataclay/dspython:$DEFAULT_TAG bscdataclay/dspython
+docker tag bscdataclay/client:$DEFAULT_TAG bscdataclay/client
+docker tag bscdataclay/tool:$DEFAULT_TAG bscdataclay/tool
 
 # Check docker images 
 printMsg "Generated images:"

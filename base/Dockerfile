@@ -52,7 +52,7 @@ RUN mkdir -p ${EXTRAE_HOME}
 ENV EXTRAE_BUILD_FOLDER=/tmp/extrae_build/
 RUN mkdir -p ${EXTRAE_BUILD_FOLDER}
 RUN curl -SL https://github.com/bsc-performance-tools/extrae/archive/${EXTRAE_VERSION}.tar.gz | tar -xzC ${EXTRAE_BUILD_FOLDER} --strip-components=1
-# --with-java-aspectj-weaver=${ASPECTJ_WEAVER}
+
 RUN cd ${EXTRAE_BUILD_FOLDER} && \
 	./bootstrap && \
 	./configure --prefix=$EXTRAE_HOME \
@@ -64,6 +64,7 @@ RUN cd ${EXTRAE_BUILD_FOLDER} && \
 	--with-papi-libs=$(dirname $(find /usr/lib | grep libpapi | head -1)) \
 	--disable-openmp \
 	--disable-smpss \
+	--with-java-aspectj-weaver=/usr/share/java/aspectjweaver.jar \
 	--with-java-jdk=${JAVA8_HOME} && \
 	make && \
 	make install && \

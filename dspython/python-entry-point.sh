@@ -44,5 +44,5 @@ python $EXEC_ARGS
 
 if [ "$TRACING" = true ] ; then 
 	mkdir -p trace
-	mpi2prv -f TRACE.mpits -o ./trace/dctrace.prv
+	mpi2prv -f TRACE.mpits -no-syn -o ./trace/dctrace.prv
 fi
