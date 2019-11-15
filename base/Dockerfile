@@ -64,6 +64,7 @@ RUN cd ${EXTRAE_BUILD_FOLDER} && \
 	--with-papi-libs=$(dirname $(find /usr/lib | grep libpapi | head -1)) \
 	--disable-openmp \
 	--disable-smpss \
+	--disable-nanos \
 	--with-java-aspectj-weaver=/usr/share/java/aspectjweaver.jar \
 	--with-java-jdk=${JAVA8_HOME} && \
 	make && \

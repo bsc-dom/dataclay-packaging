@@ -20,7 +20,7 @@ RUN mvn exec:help
 RUN mvn exec:java -Dexec.skip=true
 
 # Copy source code
-COPY ./javaclay/	.
+COPY ./javaclay/ .
 
 # install it
 RUN mvn clean install -DskipTests=true

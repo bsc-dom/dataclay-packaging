@@ -150,6 +150,7 @@ docker images | grep "bscdataclay/logicmodule"
 docker images | grep "bscdataclay/dsjava"
 docker images | grep "bscdataclay/dspython"
 docker images | grep "bscdataclay/client"
+docker images | grep "bscdataclay/tool"
 
 echo "${grn}[dataClay build] Done! "
 echo ""
