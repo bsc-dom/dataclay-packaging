@@ -20,8 +20,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN python --version
 
 # Create source
-WORKDIR /usr/src/dataclay/pyclay/
-RUN mkdir -p /usr/src/dataclay/pyclay/deploy/source
+RUN mkdir -p ${DATACLAY_HOME}/deploy/source
 
 # =============== INSTALL DATACLAY REQUIREMENTS =================== #
 
@@ -30,10 +29,10 @@ RUN pip${PYTHON_PIP_VERSION} install -r requirements.txt
 
 # =================== EXTRAE ENVIRONMENT VARIABLES ======================== #
 
-ENV DATACLAY_EXTRAE_WRAPPER_LIB=/usr/src/dataclay/pyclay/pyextrae/dataclay_extrae_wrapper.so
-ENV PYEXTRAE_PATH=$EXTRAE_HOME/libexec:$EXTRAE_HOME/lib
-ENV EXTRAE_CONFIG_FILE=/usr/src/dataclay/extrae/extrae_python.xml
-ENV PYTHONPATH=$PYEXTRAE_PATH:$PYTHONPATH
+ENV DATACLAY_EXTRAE_WRAPPER_LIB=${DATACLAY_HOME}/pyextrae/dataclay_extrae_wrapper.so
+ENV PYEXTRAE_PATH=${EXTRAE_HOME}/libexec:${EXTRAE_HOME}/lib
+ENV EXTRAE_CONFIG_FILE=${DATACLAY_HOME}/extrae/extrae_python.xml
+ENV PYTHONPATH=${PYEXTRAE_PATH}:${PYTHONPATH}
 
 # =================== EXTRAE wrapper ======================== #
 
@@ -43,15 +42,19 @@ RUN cd pyextrae && gcc -L${EXTRAE_HOME}/lib -I${EXTRAE_HOME}/include extrae_wrap
 # check pyextrae is installed
 RUN python -c "import pyextrae.common.extrae as pyextrae_module; print('import ok')"
 RUN python -c "from pyextrae.common.extrae import Extrae as extrae_dict_obj; print('import ok')"
-RUN python -c "from ctypes import cdll; cdll.LoadLibrary(\"/usr/src/dataclay/pyclay/pyextrae/dataclay_extrae_wrapper.so\")"
+RUN python -c "from ctypes import cdll; cdll.LoadLibrary(\"${DATACLAY_HOME}/pyextrae/dataclay_extrae_wrapper.so\")"
 # =============== INSTALL DATACLAY =================== #
-ENV DEPLOY_PATH=/usr/src/dataclay/pyclay/deploy
-COPY ./pyclay/ /usr/src/dataclay/pyclay/
+ENV DEPLOY_PATH=${DATACLAY_HOME}/deploy
+COPY ./pyclay/ ${DATACLAY_HOME}
 RUN python setup.py install
 
-COPY ./health_check.sh /usr/src/dataclay/pyclay/health_check.sh
-COPY ./python-entry-point.sh /usr/src/dataclay/pyclay/python-entry-point.sh
+COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
+
+# Entrypoint
+COPY ./python-entry-point.sh ${DATACLAY_HOME}/entrypoints/dataclay-python-entry-point
+# Modify path for entrypoints
+ENV PATH=${DATACLAY_HOME}/entrypoints:${PATH}
 
 # Execute
 # Don't use CMD in order to keep compatibility with singularity container's generator
-ENTRYPOINT ["/usr/src/dataclay/pyclay/python-entry-point.sh","-m","dataclay.executionenv.server"]
+ENTRYPOINT ["dataclay-python-entry-point","-m","dataclay.executionenv.server"]

@@ -262,7 +262,7 @@ echo "                bscdataclay/logicmodule:${DATACLAY_RELEASE_VERSION}"
 echo "                bscdataclay/dsjava:${DATACLAY_RELEASE_VERSION}"
 echo "                bscdataclay/dspython:${DATACLAY_RELEASE_VERSION}"
 echo "                bscdataclay/client:${DATACLAY_RELEASE_VERSION}"
-echo "                bscdataclay/tool:${DATACLAY_RELEASE_VERSION}"
+echo "                bscdataclay/cmd:${DATACLAY_RELEASE_VERSION}"
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
 	DATACLAY_DOCKER_TAG="$(get_container_version jdk$JAVA_VERSION)"
 	echo "                bscdataclay/logicmodule:${DATACLAY_DOCKER_TAG}"
@@ -287,14 +287,12 @@ DEFAULT_PY_TAG="$(get_container_version py$DEFAULT_PYTHON)"
 
 # BASE IMAGES 
 pushd $SCRIPTDIR/base
-for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
-	BASE_VERSION_TAG="$(get_container_version jdk$JAVA_VERSION)"
-	echo "************* Pushing image named bscdataclay/base:$BASE_VERSION_TAG *************"
-	docker buildx build --build-arg JDK=$JAVA_VERSION -t bscdataclay/base:$BASE_VERSION_TAG --platform $PLATFORMS --push .
-	if [ $? -ne 0 ]; then printError "Push failed"; exit 1; fi
-	DOCKER_IMAGES_PUSHED+=(bscdataclay/base:$BASE_VERSION_TAG)
-	echo "************* bscdataclay/base:$BASE_VERSION_TAG IMAGE PUSHED! *************" 
-done
+BASE_VERSION_TAG="$(get_container_version)"
+echo "************* Pushing image named bscdataclay/base:$BASE_VERSION_TAG *************"
+docker buildx build -t bscdataclay/base:$BASE_VERSION_TAG --platform $PLATFORMS --push .
+if [ $? -ne 0 ]; then printError "Push failed"; exit 1; fi
+DOCKER_IMAGES_PUSHED+=(bscdataclay/base:$BASE_VERSION_TAG)
+echo "************* bscdataclay/base:$BASE_VERSION_TAG IMAGE PUSHED! *************" 
 popd
 
 # LOGICMODULE
@@ -302,7 +300,7 @@ pushd $SCRIPTDIR/logicmodule
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
 	VERSION="$(get_container_version jdk$JAVA_VERSION)"
 	echo "************* Pushing image named bscdataclay/logicmodule:$JAVACLAY_TAG *************"
-	docker buildx build --build-arg BASE_VERSION=$VERSION -t bscdataclay/logicmodule:$VERSION --platform $PLATFORMS --push .
+	docker buildx build --build-arg JDK=$JAVA_VERSION --build-arg BASE_VERSION=$BASE_VERSION_TAG -t bscdataclay/logicmodule:$VERSION --platform $PLATFORMS --push .
 	if [ $? -ne 0 ]; then printError "Push failed"; exit 1; fi
 	DOCKER_IMAGES_PUSHED+=(bscdataclay/logicmodule:$VERSION)
 	echo "************* bscdataclay/logicmodule:$JAVACLAY_TAG IMAGE PUSHED! *************"
@@ -324,7 +322,6 @@ popd
 # DSPYTHON
 pushd $SCRIPTDIR/dspython
 for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
-	BASE_VERSION="$(get_container_version jdk$DEFAULT_JAVA)"
 	VERSION="$(get_container_version py$PYTHON_VERSION)"
 	# Get python version without subversion to install it in some packages
 	PYTHON_PIP_VERSION=$PYTHON_VERSION
@@ -333,7 +330,7 @@ for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
 		PYTHON_PIP_VERSION=""
 	fi 
 	echo "************* Building image named bscdataclay/dspython:$PYCLAY_TAG python version $DEFAULT_PYTHON and pip version $PYTHON_PIP_VERSION *************"
-	docker buildx build --build-arg BASE_VERSION=$BASE_VERSION \
+	docker buildx build --build-arg BASE_VERSION=$BASE_VERSION_TAG \
 				 --build-arg DATACLAY_PYVER=$PYTHON_VERSION \
 				 --build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION -t bscdataclay/dspython:$VERSION --platform $PLATFORMS --push .
 	if [ $? -ne 0 ]; then printError "Push failed"; exit 1; fi
@@ -358,21 +355,17 @@ echo "************* bscdataclay/client:$CLIENT_TAG DONE! *************"
 popd 
 
 pushd $SCRIPTDIR/client
-echo "************* Building image named bscdataclay/tool:$CLIENT_TAG *************"
+echo "************* Building image named bscdataclay/cmd:$CLIENT_TAG *************"
 docker buildx build --build-arg DATACLAY_DSPYTHON_DOCKER_TAG=$PYCLAY_TAG \
 			 --build-arg DATACLAY_LOGICMODULE_DOCKER_TAG=$JAVACLAY_TAG \
-			 -t bscdataclay/tool:$CLIENT_TAG --platform $PLATFORMS --push .
+			 -t bscdataclay/cmd:$CLIENT_TAG --platform $PLATFORMS --push .
 if [ $? -ne 0 ]; then printError "Push failed"; exit 1; fi
-DOCKER_IMAGES_PUSHED+=(bscdataclay/tool:$CLIENT_TAG) 
-echo "************* bscdataclay/tool:$CLIENT_TAG DONE! *************"
+DOCKER_IMAGES_PUSHED+=(bscdataclay/cmd:$CLIENT_TAG) 
+echo "************* bscdataclay/cmd:$CLIENT_TAG DONE! *************"
 popd 
 
 
 ## Tag default versions 
-
-docker buildx imagetools create --tag bscdataclay/base:$DEFAULT_TAG bscdataclay/base:$DEFAULT_JDK_TAG
-if [ $? -ne 0 ]; then printError "bscdataclay/base:$DEFAULT_TAG push failed"; exit 1; fi
-DOCKER_IMAGES_PUSHED+=(bscdataclay/base:$DEFAULT_TAG) 
 
 docker buildx imagetools create --tag bscdataclay/logicmodule:$DEFAULT_TAG bscdataclay/logicmodule:$DEFAULT_JDK_TAG
 if [ $? -ne 0 ]; then printError "bscdataclay/logicmodule:$DEFAULT_TAG push failed"; exit 1; fi
@@ -408,9 +401,9 @@ docker buildx imagetools create --tag bscdataclay/client bscdataclay/client:$DEF
 if [ $? -ne 0 ]; then printError "bscdataclay/dspython:client push failed"; exit 1; fi
 DOCKER_IMAGES_PUSHED+=(bscdataclay/client) 
 
-docker buildx imagetools create --tag bscdataclay/tool bscdataclay/tool:$DEFAULT_TAG
-if [ $? -ne 0 ]; then printError "bscdataclay/dspython:tool push failed"; exit 1; fi
-DOCKER_IMAGES_PUSHED+=(bscdataclay/tool) 
+docker buildx imagetools create --tag bscdataclay/cmd bscdataclay/cmd:$DEFAULT_TAG
+if [ $? -ne 0 ]; then printError "bscdataclay/dspython:cmd push failed"; exit 1; fi
+DOCKER_IMAGES_PUSHED+=(bscdataclay/cmd) 
 
 
 

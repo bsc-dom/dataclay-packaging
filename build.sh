@@ -67,12 +67,10 @@ DEFAULT_PY_TAG="$(get_container_version py$DEFAULT_PYTHON)"
 
 # BASE IMAGES 
 pushd $SCRIPTDIR/base
-for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
-	BASE_VERSION_TAG="$(get_container_version jdk$JAVA_VERSION)"
-	printMsg "Building image named bscdataclay/base:$BASE_VERSION_TAG"
-	docker build --build-arg JDK=$JAVA_VERSION -t bscdataclay/base:$BASE_VERSION_TAG .
-	printMsg "bscdataclay/base:$BASE_VERSION_TAG IMAGE DONE!" 
-done
+BASE_VERSION_TAG="$(get_container_version)"
+printMsg "Building image named bscdataclay/base:$BASE_VERSION_TAG"
+docker build -t bscdataclay/base:$BASE_VERSION_TAG .
+printMsg "bscdataclay/base:$BASE_VERSION_TAG IMAGE DONE!" 
 popd
 
 # LOGICMODULE
@@ -80,7 +78,7 @@ pushd $SCRIPTDIR/logicmodule
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
 	VERSION="$(get_container_version jdk$JAVA_VERSION)"
 	printMsg "Building image named bscdataclay/logicmodule:$VERSION"
-	docker build --build-arg BASE_VERSION=$VERSION -t bscdataclay/logicmodule:$VERSION .
+	docker build --build-arg BASE_VERSION=$BASE_VERSION_TAG --build-arg JDK=$JAVA_VERSION -t bscdataclay/logicmodule:$VERSION .
 	printMsg "bscdataclay/logicmodule:$VERSION IMAGE DONE!"
 done
 popd 
@@ -98,7 +96,6 @@ popd
 # DSPYTHON
 pushd $SCRIPTDIR/dspython
 for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
-	BASE_VERSION="$(get_container_version jdk$DEFAULT_JAVA)"
 	VERSION="$(get_container_version py$PYTHON_VERSION)"
 	# Get python version without subversion to install it in some packages
 	PYTHON_PIP_VERSION=$PYTHON_VERSION
@@ -107,7 +104,7 @@ for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
 		PYTHON_PIP_VERSION=""
 	fi 
 	printMsg "Building image named bscdataclay/dspython:$VERSION python version $DEFAULT_PYTHON and pip version $PYTHON_PIP_VERSION"
-	docker build --build-arg BASE_VERSION=$BASE_VERSION \
+	docker build --build-arg BASE_VERSION=$BASE_VERSION_TAG \
 				 --build-arg DATACLAY_PYVER=$PYTHON_VERSION \
 				 --build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION -t bscdataclay/dspython:$VERSION .
 	printMsg "bscdataclay/dspython:$VERSION DONE!"
@@ -129,11 +126,10 @@ popd
 
 
 ## Tag default versions 
-docker tag bscdataclay/base:$DEFAULT_JDK_TAG bscdataclay/base:$DEFAULT_TAG
 docker tag bscdataclay/logicmodule:$DEFAULT_JDK_TAG bscdataclay/logicmodule:$DEFAULT_TAG
 docker tag bscdataclay/dsjava:$DEFAULT_JDK_TAG bscdataclay/dsjava:$DEFAULT_TAG
 docker tag bscdataclay/dspython:$DEFAULT_PY_TAG bscdataclay/dspython:$DEFAULT_TAG
-docker tag bscdataclay/client:$CLIENT_TAG bscdataclay/tool:$CLIENT_TAG
+docker tag bscdataclay/client:$CLIENT_TAG bscdataclay/cmd:$CLIENT_TAG
 
 # Tag latest
 docker tag bscdataclay/base:$DEFAULT_TAG bscdataclay/base
@@ -141,7 +137,7 @@ docker tag bscdataclay/logicmodule:$DEFAULT_TAG bscdataclay/logicmodule
 docker tag bscdataclay/dsjava:$DEFAULT_TAG bscdataclay/dsjava
 docker tag bscdataclay/dspython:$DEFAULT_TAG bscdataclay/dspython
 docker tag bscdataclay/client:$DEFAULT_TAG bscdataclay/client
-docker tag bscdataclay/tool:$DEFAULT_TAG bscdataclay/tool
+docker tag bscdataclay/cmd:$DEFAULT_TAG bscdataclay/cmd
 
 # Check docker images 
 printMsg "Generated images:"
@@ -150,7 +146,7 @@ docker images | grep "bscdataclay/logicmodule"
 docker images | grep "bscdataclay/dsjava"
 docker images | grep "bscdataclay/dspython"
 docker images | grep "bscdataclay/client"
-docker images | grep "bscdataclay/tool"
+docker images | grep "bscdataclay/cmd"
 
 echo "${grn}[dataClay build] Done! "
 echo ""

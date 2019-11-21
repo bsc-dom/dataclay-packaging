@@ -38,6 +38,15 @@ EOF
 exit 0
 }
 
+pushd () {
+    command pushd "$@" > /dev/null
+}
+
+popd () {
+    command popd "$@" > /dev/null
+}
+
+
 blu=$'\e[1;34m'
 red=$'\e[1;91m'
 end=$'\e[0m'
@@ -59,9 +68,13 @@ echo " ${blu} **  ᴅᴀᴛᴀCʟᴀʏ command tool ** ${end} "
 
 # Base ops commands
 # Go to client pom.xml location
-pushd /usr/src/dataclay/client 
-JAVA_OPSBASE="/usr/src/dataclay/javaclay/mvn-entry-point.sh"
-PY_OPSBASE="/usr/src/dataclay/pyclay/python-entry-point.sh -m dataclay.tool"
+if [[ -z "${DATACLAY_HOME}" ]]; then
+	echo "ERROR: DATACLAY_HOME environemnt variable not defined."
+	exit -1
+fi
+pushd ${DATACLAY_HOME}
+JAVA_OPSBASE="dataclay-mvn-entry-point"
+PY_OPSBASE="dataclay-python-entry-point -m dataclay.tool"
 
 # Check if aspects must be applied to Java 
 
@@ -169,7 +182,6 @@ case $OPERATION in
 		LANG=`$GET_NAMESPACE_LANG $2 $3 $4 | tail -1`
 		case $LANG in
 			'LANG_JAVA')
-				echo $ACCESS_NS_MODEL $2 $3 $4
 				$ACCESS_NS_MODEL $2 $3 $4
 				if [ $? -ge 0 ]; then
 					$JAVA_GETSTUBS $2 $3 $4 $5

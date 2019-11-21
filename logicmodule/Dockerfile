@@ -3,11 +3,7 @@ FROM bscdataclay/base:${BASE_VERSION}
 LABEL maintainer dataClay team <support-dataclay@bsc.es>
 
 # First get the pom 
-RUN mkdir -p javaclay
-COPY ./javaclay/pom.xml /usr/src/dataclay/javaclay/pom.xml
-
-# change working dir
-WORKDIR /usr/src/dataclay/javaclay
+COPY ./javaclay/pom.xml ${DATACLAY_HOME}/pom.xml
 
 # The first time you build this (docker build .) the dependencies are downloaded and as step 2 the application jar is build.
 # When you rebuild immediately the dependencies (pom.xml) and the application sources were not changed. So, the image layers don't need to be changed. The build is ready in no time.
@@ -19,20 +15,42 @@ RUN mvn dependency:go-offline
 RUN mvn exec:help
 RUN mvn exec:java -Dexec.skip=true
 
+
+ARG JDK=11
+# Install javaclay packages:
+RUN apt-get update \
+        && apt-get install --no-install-recommends -y --allow-unauthenticated openjdk-${JDK}-jdk \
+        && rm -rf /var/lib/apt/lists/*
+        
+# Set Java home. We create a symbolic link to be arch-independant 
+RUN ln -s /usr/lib/jvm/java-${JDK}-openjdk* /usr/lib/jvm/java-${JDK}
+ENV JAVA_HOME=/usr/lib/jvm/java-${JDK}
+RUN update-alternatives --install "/usr/bin/java" "java" ${JAVA_HOME}/bin/java 99999 && \
+	update-alternatives --install "/usr/bin/javac" "javac" ${JAVA_HOME}/bin/javac 99999 && \
+	update-alternatives --set java ${JAVA_HOME}/bin/java && \
+	update-alternatives --set javac ${JAVA_HOME}/bin/javac
+
+
 # Copy source code
 COPY ./javaclay/ .
 
 # install it
 RUN mvn clean install -DskipTests=true
 
+# Configure default logging
+ENV DATACLAY_LOG_CONFIG=${DATACLAY_HOME}/logging/log4j2.xml
+
 # Copy entrypoint
-COPY ./mvn-entry-point.sh /usr/src/dataclay/javaclay/mvn-entry-point.sh
+COPY ./dataclay-mvn-entry-point.sh ${DATACLAY_HOME}/entrypoints/dataclay-mvn-entry-point
+
+# Modify path for entrypoints
+ENV PATH=${DATACLAY_HOME}/entrypoints:${PATH}
 
 # Copy healthcheck
-COPY ./health_check.sh /usr/src/dataclay/javaclay/health_check.sh
+COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
 
 # Copy configurations and dynamic files (more likely to be changed)
-COPY ./javaclay/dataclay-common/cfglog/log4j2.xml ${LOG4J_CLASSPATH}
+COPY ./javaclay/dataclay-common/cfglog/log4j2.xml ${DATACLAY_LOG_CONFIG}
 
 # ================= SERVICE ==================== #
-ENTRYPOINT ["/usr/src/dataclay/javaclay/mvn-entry-point.sh", "-Dexec.mainClass=es.bsc.dataclay.logic.server.LogicModuleSrv"] 
+ENTRYPOINT ["dataclay-mvn-entry-point", "-Dexec.mainClass=es.bsc.dataclay.logic.server.LogicModuleSrv"] 

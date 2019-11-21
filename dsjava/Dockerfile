@@ -3,7 +3,7 @@ FROM bscdataclay/logicmodule:${LOGICMODULE_VERSION}
 LABEL maintainer dataClay team <support-dataclay@bsc.es>
 
 # Healthcheck
-COPY ./health_check.sh /usr/src/dataclay/health_check.sh
+COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
 
 # ================= SERVICE ==================== #
-ENTRYPOINT ["/usr/src/dataclay/javaclay/mvn-entry-point.sh", "-Dexec.mainClass=es.bsc.dataclay.dataservice.server.DataServiceSrv"] 
+ENTRYPOINT ["dataclay-mvn-entry-point", "-Dexec.mainClass=es.bsc.dataclay.dataservice.server.DataServiceSrv"] 
