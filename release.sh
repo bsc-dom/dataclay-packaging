@@ -326,11 +326,29 @@ if [ $? -ne 0 ]; then printError "bscdataclay/dspython:client push failed"; exit
 DOCKER_IMAGES_PUSHED+=(bscdataclay/client) 
 
 printMsg " ==== Pushing dataclay to Pypi ===== "
+
+# Upload pyclay
 pushd $SCRIPTDIR/dspython/pyclay
+VIRTUAL_ENV=/tmp/venv_pyclay
+echo " Creating virtual environment /tmp/venv_pyclay " 
+virtualenv --python=/usr/bin/python${DEFAULT_PYTHON} $VIRTUAL_ENV
+echo " Calling python installation in virtual environment $VIRTUAL_ENV " 
+source $VIRTUAL_ENV/bin/activate
+python3 -m pip install --upgrade setuptools wheel twine
+echo " * IMPORTANT: please make sure to remove build, dist and src/dataClay.egg if permission denied * " 
+echo " * IMPORTANT: please make sure libyaml-dev libpython2.7-dev python-dev python3-dev python3-pip packages are installed * " 
+python3 -m pip install -r requirements.txt
+python3 -m pip freeze
 rm -rf dist
-python setup.py sdist bdist_wheel
+python3 setup.py -q clean --all install sdist bdist_wheel
+if [ $? -ne 0 ]; then
+	echo "ERROR: error installing pyclay"
+	exit -1
+fi 	
 twine upload dist/*
+deactivate
 popd
+
 printMsg " ==== Pushing dataclay to Maven central repository ===== "
 
 printMsg " ===== Done! ====="
