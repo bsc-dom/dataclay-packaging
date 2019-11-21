@@ -15,6 +15,11 @@ RUN mvn dependency:go-offline
 RUN mvn exec:help
 RUN mvn exec:java -Dexec.skip=true
 
+# Copy source code
+COPY ./javaclay/ .
+
+# install it
+RUN mvn clean install -DskipTests=true
 
 ARG JDK=11
 # Install javaclay packages:
@@ -30,12 +35,6 @@ RUN update-alternatives --install "/usr/bin/java" "java" ${JAVA_HOME}/bin/java 9
 	update-alternatives --set java ${JAVA_HOME}/bin/java && \
 	update-alternatives --set javac ${JAVA_HOME}/bin/javac
 
-
-# Copy source code
-COPY ./javaclay/ .
-
-# install it
-RUN mvn clean install -DskipTests=true
 
 # Configure default logging
 ENV DATACLAY_LOG_CONFIG=${DATACLAY_HOME}/logging/log4j2.xml

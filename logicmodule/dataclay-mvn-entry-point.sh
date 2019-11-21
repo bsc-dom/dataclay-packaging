@@ -50,7 +50,7 @@ fi
 
 ### ========================== ENTRYPOINT ============================= ##
 if [ "$EXEC_ARGS_PROVIDED" = true ] ; then
-	cmd="mvn exec:java -q $ARGS -Dexec.cleanupDaemonThreads=false -Dexec.args=\"$EXEC_ARGS\" -Dcom.google.inject.internal.cglib.$experimental_asm7=true"
+	cmd="mvn exec:java $ARGS -Dexec.cleanupDaemonThreads=false -Dexec.args=\"$EXEC_ARGS\" -Dcom.google.inject.internal.cglib.$experimental_asm7=true"
 else
 	cmd="mvn exec:java $ARGS -Dexec.cleanupDaemonThreads=false -Dcom.google.inject.internal.cglib.$experimental_asm7=true"
 fi

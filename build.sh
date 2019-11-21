@@ -13,7 +13,6 @@ function printError {
 
 SUPPORTED_JAVA_VERSIONS=(8 11)
 SUPPORTED_PYTHON_VERSIONS=(3.6)
-INSTALLED_REQUIREMENTS=("mvn" "java" "javac" "python" "docker")
 DEFAULT_JAVA=11
 DEFAULT_PYTHON=3.6
 
@@ -129,7 +128,6 @@ popd
 docker tag bscdataclay/logicmodule:$DEFAULT_JDK_TAG bscdataclay/logicmodule:$DEFAULT_TAG
 docker tag bscdataclay/dsjava:$DEFAULT_JDK_TAG bscdataclay/dsjava:$DEFAULT_TAG
 docker tag bscdataclay/dspython:$DEFAULT_PY_TAG bscdataclay/dspython:$DEFAULT_TAG
-docker tag bscdataclay/client:$CLIENT_TAG bscdataclay/cmd:$CLIENT_TAG
 
 # Tag latest
 docker tag bscdataclay/base:$DEFAULT_TAG bscdataclay/base
@@ -137,7 +135,6 @@ docker tag bscdataclay/logicmodule:$DEFAULT_TAG bscdataclay/logicmodule
 docker tag bscdataclay/dsjava:$DEFAULT_TAG bscdataclay/dsjava
 docker tag bscdataclay/dspython:$DEFAULT_TAG bscdataclay/dspython
 docker tag bscdataclay/client:$DEFAULT_TAG bscdataclay/client
-docker tag bscdataclay/cmd:$DEFAULT_TAG bscdataclay/cmd
 
 # Check docker images 
 printMsg "Generated images:"
@@ -146,7 +143,6 @@ docker images | grep "bscdataclay/logicmodule"
 docker images | grep "bscdataclay/dsjava"
 docker images | grep "bscdataclay/dspython"
 docker images | grep "bscdataclay/client"
-docker images | grep "bscdataclay/cmd"
 
 echo "${grn}[dataClay build] Done! "
 echo ""
