@@ -12,8 +12,9 @@ RUN apt-get update \
        && apt-get install --no-install-recommends -y --allow-unauthenticated python${DATACLAY_PYVER} python${DATACLAY_PYVER}-dev python${PYTHON_PIP_VERSION}-pip \
        && rm -rf /var/lib/apt/lists/*
 
+#beginENVruntime
 # Set virtual environment since we could inherit some other python installations
-ENV VIRTUAL_ENV=/opt/venv
+ENV VIRTUAL_ENV=${HOME}/dataclay_venv
 RUN pip${PYTHON_PIP_VERSION} install virtualenv
 RUN python${DATACLAY_PYVER} -m virtualenv --python=/usr/bin/python${DATACLAY_PYVER} ${VIRTUAL_ENV}
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
@@ -44,7 +45,6 @@ RUN python -c "import pyextrae.common.extrae as pyextrae_module; print('import o
 RUN python -c "from pyextrae.common.extrae import Extrae as extrae_dict_obj; print('import ok')"
 RUN python -c "from ctypes import cdll; cdll.LoadLibrary(\"${DATACLAY_HOME}/pyextrae/dataclay_extrae_wrapper.so\")"
 # =============== INSTALL DATACLAY =================== #
-ENV DEPLOY_PATH=${DATACLAY_HOME}/deploy
 COPY ./pyclay/ ${DATACLAY_HOME}
 RUN python setup.py install
 
@@ -54,6 +54,9 @@ COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
 COPY ./python-entry-point.sh ${DATACLAY_HOME}/entrypoints/dataclay-python-entry-point
 # Modify path for entrypoints
 ENV PATH=${DATACLAY_HOME}/entrypoints:${PATH}
+#endENVruntime
+
+ENV DEPLOY_PATH=${DATACLAY_HOME}/deploy
 
 # Execute
 # Don't use CMD in order to keep compatibility with singularity container's generator

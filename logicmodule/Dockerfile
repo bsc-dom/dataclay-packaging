@@ -27,14 +27,14 @@ RUN apt-get update \
         && apt-get install --no-install-recommends -y --allow-unauthenticated openjdk-${JDK}-jdk \
         && rm -rf /var/lib/apt/lists/*
         
+#beginENVruntime
 # Set Java home. We create a symbolic link to be arch-independant 
-RUN ln -s /usr/lib/jvm/java-${JDK}-openjdk* /usr/lib/jvm/java-${JDK}
-ENV JAVA_HOME=/usr/lib/jvm/java-${JDK}
+RUN ln -s /usr/lib/jvm/java-${JDK}-openjdk* /usr/lib/jvm/java-default
+ENV JAVA_HOME=/usr/lib/jvm/java-default
 RUN update-alternatives --install "/usr/bin/java" "java" ${JAVA_HOME}/bin/java 99999 && \
 	update-alternatives --install "/usr/bin/javac" "javac" ${JAVA_HOME}/bin/javac 99999 && \
 	update-alternatives --set java ${JAVA_HOME}/bin/java && \
 	update-alternatives --set javac ${JAVA_HOME}/bin/javac
-
 
 # Configure default logging
 ENV DATACLAY_LOG_CONFIG=${DATACLAY_HOME}/logging/log4j2.xml
@@ -44,6 +44,7 @@ COPY ./dataclay-mvn-entry-point.sh ${DATACLAY_HOME}/entrypoints/dataclay-mvn-ent
 
 # Modify path for entrypoints
 ENV PATH=${DATACLAY_HOME}/entrypoints:${PATH}
+#endENVruntime
 
 # Copy healthcheck
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh

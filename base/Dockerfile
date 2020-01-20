@@ -6,6 +6,7 @@ LABEL maintainer dataClay team <support-dataclay@bsc.es>
 ### Extend from ubuntu instead of openjdk specialized image to allow multiple architectures
 
 # ============ PRE-INSTALLATION ================== #
+USER dataclayusr
 
 # Install packages:
 RUN apt-get update \
@@ -15,6 +16,8 @@ RUN apt-get update \
 
 # Set Java 8 home for extrae
 RUN ln -s /usr/lib/jvm/java-8-openjdk* /usr/lib/jvm/java-8
+
+#beginENVruntime
 ENV JAVA8_HOME=/usr/lib/jvm/java-8
 
 # LC_CTYPE instanciated for singularity WARNING: do we need to force time zone?
@@ -22,12 +25,12 @@ ENV LC_CTYPE=en_US.UTF-8
 # Set the locale
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     locale-gen
-ENV LANG en_US.UTF-8  
-ENV LANGUAGE en_US:en  
-ENV LC_ALL en_US.UTF-8  
+ENV LANG=en_US.UTF-8 
+ENV LANGUAGE=en_US:en 
+ENV LC_ALL=en_US.UTF-8
 
 # Working dir 
-ENV DATACLAY_HOME=/dataclay
+ENV DATACLAY_HOME=${HOME}/dataclay
 WORKDIR ${DATACLAY_HOME}
 
 # =================== EXTRAE ENVIRONMENT VARIABLES ======================== #
@@ -36,6 +39,7 @@ ENV EXTRAE_VERSION=3.6.1
 ENV EXTRAE_SKIP_AUTO_LIBRARY_INITIALIZE=1
 ENV EXTRAE_JAR_PATH=${EXTRAE_HOME}/lib/javatrace.jar
 ENV EXTRAE_CONFIG_FILE=${DATACLAY_HOME}/extrae/extrae_basic.xml
+#endENVruntime
 
 # =================== EXTRAE INSTALLATION ======================== #
 RUN mkdir -p ${EXTRAE_HOME}
@@ -66,10 +70,12 @@ RUN cd ${EXTRAE_BUILD_FOLDER} && \
 # Copy extrae configuration files
 COPY ./extrae extrae 
 
+#beginENVruntime
 # LD preload and other environment configurations 
 ENV LD_PRELOAD=${EXTRAE_HOME}/lib/libpttrace.so:${LD_PRELOAD}
 ENV PATH=${EXTRAE_HOME}/bin:${PATH}
 ENV LD_LIBRARY_PATH=${EXTRAE_HOME}/lib:${LD_LIBRARY_PATH}
+#endENVruntime
 
 # ================= SERVICE ==================== #
 

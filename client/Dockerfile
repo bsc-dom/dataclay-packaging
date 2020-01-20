@@ -1,7 +1,7 @@
 ARG DATACLAY_DSPYTHON_DOCKER_TAG
 ARG DATACLAY_LOGICMODULE_DOCKER_TAG
 FROM bscdataclay/dspython:${DATACLAY_DSPYTHON_DOCKER_TAG}
-
+#beginENVruntime
 FROM bscdataclay/logicmodule:${DATACLAY_LOGICMODULE_DOCKER_TAG}
 LABEL maintainer dataClay team <support-dataclay@bsc.es>
 
@@ -34,3 +34,4 @@ COPY dataclaycmd.sh ${DATACLAYCMD}
 
 # The command can contain additional options
 ENTRYPOINT ["dataclaycmd"]
+#endENVruntime
