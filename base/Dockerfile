@@ -6,7 +6,6 @@ LABEL maintainer dataClay team <support-dataclay@bsc.es>
 ### Extend from ubuntu instead of openjdk specialized image to allow multiple architectures
 
 # ============ PRE-INSTALLATION ================== #
-USER dataclayusr
 
 # Install packages:
 RUN apt-get update \
@@ -30,11 +29,12 @@ ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 
 # Working dir 
-ENV DATACLAY_HOME=${HOME}/dataclay
+ENV DATACLAY_HOME=/home/dataclayusr/dataclay
+RUN mkdir -p ${DATACLAY_HOME}
 WORKDIR ${DATACLAY_HOME}
 
 # =================== EXTRAE ENVIRONMENT VARIABLES ======================== #
-ENV EXTRAE_HOME=${HOME}/.extrae
+ENV EXTRAE_HOME=/home/dataclayusr/.extrae
 ENV EXTRAE_VERSION=3.6.1
 ENV EXTRAE_SKIP_AUTO_LIBRARY_INITIALIZE=1
 ENV EXTRAE_JAR_PATH=${EXTRAE_HOME}/lib/javatrace.jar
@@ -75,6 +75,10 @@ COPY ./extrae extrae
 ENV LD_PRELOAD=${EXTRAE_HOME}/lib/libpttrace.so:${LD_PRELOAD}
 ENV PATH=${EXTRAE_HOME}/bin:${PATH}
 ENV LD_LIBRARY_PATH=${EXTRAE_HOME}/lib:${LD_LIBRARY_PATH}
+
+# Virtual environment to be inherited from multi-stage docker in client
+ENV VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
+
 #endENVruntime
 
 # ================= SERVICE ==================== #

@@ -21,11 +21,9 @@ ENV PYTHONPATH=${PYEXTRAE_PATH}:${PYTHONPATH}
 ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
 
 # check pyextrae is installed
+RUN echo ${VIRTUAL_ENV}
 RUN python -c "import pyextrae.common.extrae as pyextrae_module; print('import ok')"
 RUN python -c "from pyextrae.common.extrae import Extrae as extrae_dict_obj; print('import ok')"
-
-# Move to javaclay since dataclay client tool is there
-#COPY ./pom.xml ${DATACLAY_HOME}/client
 
 # WARNING: Note that this script must be located among with dataclay pom.xml (see workdir)
 ENV DATACLAYCMD=${DATACLAY_HOME}/entrypoints/dataclaycmd
