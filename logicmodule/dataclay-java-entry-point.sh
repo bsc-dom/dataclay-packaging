@@ -4,6 +4,8 @@ set -e
 TRACING=false
 DEBUG=false
 ARGS=""
+DEFINED_CLASSPATH_SET=false
+DEFINED_CLASSPATH=""
 ################################## OPTIONS #############################################
 while [[ $# -gt 0 ]]; do
     key="$1"
@@ -16,6 +18,18 @@ while [[ $# -gt 0 ]]; do
 		DEBUG=true
 		shift
         ;;
+    --classpath)
+    	shift
+    	DEFINED_CLASSPATH_SET=true
+		DEFINED_CLASSPATH=$1
+		shift
+        ;;
+    -cp)
+        shift
+    	DEFINED_CLASSPATH_SET=true
+		DEFINED_CLASSPATH=$1
+		shift
+        ;;
     *)
     	ARGS="$ARGS $key"
  		shift
@@ -25,9 +39,7 @@ done
 
 ### ========================== EXTRAE ============================= ##
 if [ "$TRACING" = true ] ; then
-	# find aspectj version
-	ASPECTJ_VERSION=`ls $HOME/.m2/repository/org/aspectj/aspectjweaver/`
-	ARGS="-javaagent:${HOME}/.m2/repository/org/aspectj/aspectjweaver/${ASPECTJ_VERSION}/aspectjweaver-${ASPECTJ_VERSION}.jar -Dorg.aspectj.weaver.showWeaveInfo=true $ARGS"
+	ARGS="-javaagent:/usr/share/java/aspectjweaver.jar -Dorg.aspectj.weaver.showWeaveInfo=true $ARGS"
 fi
 
 ### ========================== LOGGING ============================= ##
@@ -37,8 +49,15 @@ else
 	ARGS="-Dorg.apache.logging.log4j.simplelog.StatusLogger.level=OFF $ARGS"	
 fi
 
+### ========================== CLASSPATH ============================= ##
+if [ "$DEFINED_CLASSPATH_SET" = true ] ; then
+	ARGS="-cp $DEFINED_CLASSPATH $ARGS"
+else 
+	ARGS="-cp $DATACLAY_JAR $ARGS"	
+fi
+
 ### ========================== ENTRYPOINT ============================= ##
-cmd="java -cp $DATACLAY_JAR -Dcom.google.inject.internal.cglib.$experimental_asm7=true $ARGS"
+cmd="java -Dcom.google.inject.internal.cglib.$experimental_asm7=true $ARGS"
 export JDK_JAVA_OPTIONS="--add-opens java.base/java.lang=ALL-UNNAMED"
 if [ "$DEBUG" = true ] ; then
 	echo $cmd

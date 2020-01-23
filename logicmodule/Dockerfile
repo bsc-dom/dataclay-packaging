@@ -7,7 +7,7 @@ ARG JDK=11
 RUN apt-get update \
         && apt-get install --no-install-recommends -y --allow-unauthenticated openjdk-${JDK}-jdk \
         && rm -rf /var/lib/apt/lists/*
-        
+       
 #beginENVruntime
 # Set Java home. We create a symbolic link to be arch-independant 
 RUN ln -s /usr/lib/jvm/java-${JDK}-openjdk* /usr/lib/jvm/java-default
@@ -26,6 +26,7 @@ COPY ./dataclay.jar ${DATACLAY_JAR}
 
 # Copy entrypoint
 COPY ./dataclay-java-entry-point.sh ${DATACLAY_HOME}/entrypoints/dataclay-java-entry-point
+COPY ./dataclay-mvn-entry-point.sh ${DATACLAY_HOME}/entrypoints/dataclay-mvn-entry-point
 
 # Modify path for entrypoints
 ENV PATH=${DATACLAY_HOME}/entrypoints:${PATH}
