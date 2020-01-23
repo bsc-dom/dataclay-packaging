@@ -14,7 +14,6 @@ RUN apt-get update \
 
 #beginENVruntime
 # Set virtual environment since we could inherit some other python installations
-ENV VIRTUAL_ENV=${HOME}/dataclay_venv
 RUN pip${PYTHON_PIP_VERSION} install virtualenv
 RUN python${DATACLAY_PYVER} -m virtualenv --python=/usr/bin/python${DATACLAY_PYVER} ${VIRTUAL_ENV}
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
@@ -51,7 +50,7 @@ RUN python setup.py install
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
 
 # Entrypoint
-COPY ./python-entry-point.sh ${DATACLAY_HOME}/entrypoints/dataclay-python-entry-point
+COPY ./dataclay-python-entry-point.sh ${DATACLAY_HOME}/entrypoints/dataclay-python-entry-point
 # Modify path for entrypoints
 ENV PATH=${DATACLAY_HOME}/entrypoints:${PATH}
 #endENVruntime

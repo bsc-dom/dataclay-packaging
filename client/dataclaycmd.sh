@@ -67,41 +67,40 @@ echo " ${blu} **  ᴅᴀᴛᴀCʟᴀʏ command tool ** ${end} "
 # WARNING: Note that this script must be located among with pom.xml
 
 # Base ops commands
-# Go to client pom.xml location
-if [[ -z "${DATACLAY_HOME}" ]]; then
-	echo "ERROR: DATACLAY_HOME environemnt variable not defined."
+if [[ -z "${DATACLAY_JAR}" ]]; then
+	echo "ERROR: DATACLAY_JAR environemnt variable not defined."
 	exit -1
 fi
-pushd ${DATACLAY_HOME}
-JAVA_OPSBASE="dataclay-mvn-entry-point"
+
+JAVA_OPSBASE="dataclay-java-entry-point"
 PY_OPSBASE="dataclay-python-entry-point -m dataclay.tool"
 
 # Check if aspects must be applied to Java 
 
 # Basic operations
-NEW_ACCOUNT="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.NewAccount"
-GET_BACKENDS="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.GetBackends"
-ACCESS_NS_MODEL="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.AccessNamespace"
-GET_NAMESPACE_LANG="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.GetNamespaceLang"
-GET_NAMESPACES="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.GetNamespaces"
-NEW_DATACONTRACT="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.NewDataContract"
-GET_DATASETS="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.GetDatasets"
-NEW_DATASET="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.NewDataset"
+NEW_ACCOUNT="$JAVA_OPSBASE es.bsc.dataclay.tool.NewAccount"
+GET_BACKENDS="$JAVA_OPSBASE es.bsc.dataclay.tool.GetBackends"
+ACCESS_NS_MODEL="$JAVA_OPSBASE es.bsc.dataclay.tool.AccessNamespace"
+GET_NAMESPACE_LANG="$JAVA_OPSBASE es.bsc.dataclay.tool.GetNamespaceLang"
+GET_NAMESPACES="$JAVA_OPSBASE es.bsc.dataclay.tool.GetNamespaces"
+NEW_DATACONTRACT="$JAVA_OPSBASE es.bsc.dataclay.tool.NewDataContract"
+GET_DATASETS="$JAVA_OPSBASE es.bsc.dataclay.tool.GetDatasets"
+NEW_DATASET="$JAVA_OPSBASE es.bsc.dataclay.tool.NewDataset"
 
 # NewModel operations
-NEW_NAMESPACE="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.NewNamespace"
-JAVA_NEW_MODEL="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.NewModel"
+NEW_NAMESPACE="$JAVA_OPSBASE es.bsc.dataclay.tool.NewNamespace"
+JAVA_NEW_MODEL="$JAVA_OPSBASE es.bsc.dataclay.tool.NewModel"
 PY_NEW_MODEL="$PY_OPSBASE register_model"
 
 # Get stubs operations
-JAVA_GETSTUBS="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.GetStubs"
+JAVA_GETSTUBS="$JAVA_OPSBASE es.bsc.dataclay.tool.GetStubs"
 PY_GETSTUBS="$PY_OPSBASE get_stubs"
 
 # Federation
-GET_DATACLAYID="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.GetCurrentDataClayID"
-GET_EXT_DATACLAYID="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.GetExternalDataClayID"
-REG_EXT_DATACLAY="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.NewDataClayInstance"
-WAIT_DATACLAY_ALIVE="$JAVA_OPSBASE -Dexec.mainClass=es.bsc.dataclay.tool.WaitForDataClayToBeAlive"
+GET_DATACLAYID="$JAVA_OPSBASE es.bsc.dataclay.tool.GetCurrentDataClayID"
+GET_EXT_DATACLAYID="$JAVA_OPSBASE es.bsc.dataclay.tool.GetExternalDataClayID"
+REG_EXT_DATACLAY="$JAVA_OPSBASE es.bsc.dataclay.tool.NewDataClayInstance"
+WAIT_DATACLAY_ALIVE="$JAVA_OPSBASE es.bsc.dataclay.tool.WaitForDataClayToBeAlive"
 
 if [ -z $1 ]; then
 	usage

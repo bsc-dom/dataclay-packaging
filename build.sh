@@ -17,7 +17,7 @@ DEFAULT_JAVA=11
 DEFAULT_PYTHON=3.6
 
 # Update versions here
-DATACLAY_RELEASE_VERSION=2.0
+DATACLAY_RELEASE_VERSION=2.1
 DATACLAY_DEVELOPMENT_VERSION=-1
 
 ################################## VERSIONS #############################################
@@ -63,6 +63,12 @@ printMsg " Requirements accomplished! "
 DEFAULT_TAG="$(get_container_version)"
 DEFAULT_JDK_TAG="$(get_container_version jdk$DEFAULT_JAVA)"
 DEFAULT_PY_TAG="$(get_container_version py$DEFAULT_PYTHON)"
+
+# CREATE DATACLAY JAR
+pushd $SCRIPTDIR/logicmodule/javaclay
+mvn package -DskipTests=true
+mv $SCRIPTDIR/logicmodule/javaclay/target/dataclay-${DATACLAY_RELEASE_VERSION}-jar-with-dependencies.jar $SCRIPTDIR/logicmodule/dataclay.jar
+popd
 
 # BASE IMAGES 
 pushd $SCRIPTDIR/base
@@ -143,6 +149,9 @@ docker images | grep "bscdataclay/logicmodule"
 docker images | grep "bscdataclay/dsjava"
 docker images | grep "bscdataclay/dspython"
 docker images | grep "bscdataclay/client"
+
+# Clean 
+rm -f $SCRIPTDIR/logicmodule/dataclay.jar
 
 echo "${grn}[dataClay build] Done! "
 echo ""
