@@ -37,8 +37,7 @@ done
 ### ========================== EXTRAE ============================= ##
 if [ "$TRACING" = true ] ; then
 	# find aspectj version
-	ASPECTJ_VERSION=`ls $HOME/.m2/repository/org/aspectj/aspectjweaver/`
-	export MAVEN_OPTS="-javaagent:${HOME}/.m2/repository/org/aspectj/aspectjweaver/${ASPECTJ_VERSION}/aspectjweaver-${ASPECTJ_VERSION}.jar -Dorg.aspectj.weaver.showWeaveInfo=true"
+	export MAVEN_OPTS="-javaagent:/usr/share/java/aspectjweaver.jar -Dorg.aspectj.weaver.showWeaveInfo=true"
 fi
 
 ### ========================== LOGGING ============================= ##
