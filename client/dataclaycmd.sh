@@ -178,7 +178,7 @@ case $OPERATION in
 		if [ ! -d $FOLDER ]; then
 			errorMsg "Stubs path $FOLDER is not a valid directory."
 		fi
-		LANG=`$GET_NAMESPACE_LANG $2 $3 $4 | tail -1`
+		LANG=`$GET_NAMESPACE_LANG $2 $3 $4 | grep ^LANG`
 		case $LANG in
 			'LANG_JAVA')
 				$ACCESS_NS_MODEL $2 $3 $4
@@ -191,6 +191,9 @@ case $OPERATION in
 				if [ $? -ge 0 ] && [ ! -z $CONTRACTID ]; then
 					$PY_GETSTUBS $2 $3 $CONTRACTID $5
 				fi
+				;;
+			*)
+				errorMsg "Missing or unsupported language: '$6'. Must be one of the supported languages: $SUPPORTEDLANGS."
 				;;
 		esac
 		;;
