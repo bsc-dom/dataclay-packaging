@@ -49,9 +49,9 @@ fi
 
 ### ========================== ENTRYPOINT ============================= ##
 if [ "$EXEC_ARGS_PROVIDED" = true ] ; then
-	cmd="mvn exec:java $ARGS -Dexec.cleanupDaemonThreads=false -Dexec.args=\"$EXEC_ARGS\" -Dcom.google.inject.internal.cglib.$experimental_asm7=true"
+	cmd="exec mvn exec:java $ARGS -Dexec.cleanupDaemonThreads=false -Dexec.args=\"$EXEC_ARGS\" -Dcom.google.inject.internal.cglib.$experimental_asm7=true"
 else
-	cmd="mvn exec:java $ARGS -Dexec.cleanupDaemonThreads=false -Dcom.google.inject.internal.cglib.$experimental_asm7=true"
+	cmd="exec mvn exec:java $ARGS -Dexec.cleanupDaemonThreads=false -Dcom.google.inject.internal.cglib.$experimental_asm7=true"
 fi
 
 export JDK_JAVA_OPTIONS="--add-opens java.base/java.lang=ALL-UNNAMED"
@@ -59,6 +59,7 @@ if [ "$DEBUG" = true ] ; then
 	echo $cmd
 fi
 eval $cmd
+wait $!
 
 if [ "$TRACING" = true ] ; then 
 	mkdir -p trace

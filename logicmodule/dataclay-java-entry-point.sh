@@ -57,13 +57,13 @@ else
 fi
 
 ### ========================== ENTRYPOINT ============================= ##
-cmd="java -Dcom.google.inject.internal.cglib.$experimental_asm7=true $ARGS"
+cmd="exec java -Dcom.google.inject.internal.cglib.$experimental_asm7=true $ARGS"
 export JDK_JAVA_OPTIONS="--add-opens java.base/java.lang=ALL-UNNAMED"
 if [ "$DEBUG" = true ] ; then
 	echo $cmd
 fi
-echo $cmd
-eval $cmd
+eval $cmd 
+wait $!
 
 if [ "$TRACING" = true ] ; then 
 	mkdir -p trace
