@@ -40,7 +40,7 @@ cmd="python $EXEC_ARGS"
 if [ "$DEBUG" = true ] ; then
 	echo $cmd
 fi
-python $EXEC_ARGS
+exec python $EXEC_ARGS
 
 if [ "$TRACING" = true ] ; then 
 	mkdir -p trace
