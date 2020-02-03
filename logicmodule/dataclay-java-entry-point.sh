@@ -62,7 +62,6 @@ export JDK_JAVA_OPTIONS="--add-opens java.base/java.lang=ALL-UNNAMED"
 if [ "$DEBUG" = true ] ; then
 	echo $cmd
 fi
-echo $cmd 
 eval $cmd 
 wait $!
 
