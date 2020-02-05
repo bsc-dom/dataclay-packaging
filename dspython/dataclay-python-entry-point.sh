@@ -6,6 +6,20 @@ EXEC_ARGS_PROVIDED=false
 EXEC_ARGS=""
 DEBUG=false
 
+################################## SIGNALING #############################################
+_term() { 
+	echo "Caught SIGTERM signal!" 
+	kill -TERM "$service"
+	wait "$service"
+  	if [ "$TRACING" = true ] ; then 
+		mkdir -p trace
+		mpi2prv -f TRACE.mpits -o ./trace/dctrace.prv
+ 	fi
+	echo "ENTRYPOINT SHUTDOWN FINISHED"
+}
+
+trap _term SIGTERM
+
 ################################## OPTIONS #############################################
 while [[ $# -gt 0 ]]; do
     key="$1"
@@ -36,13 +50,12 @@ if [ "$DEBUG" = true ] ; then
 fi
 
 ### ========================== ENTRYPOINT ============================= ##
-cmd="python $EXEC_ARGS"
-if [ "$DEBUG" = true ] ; then
-	echo $cmd
-fi
-exec python $EXEC_ARGS
+
+python $EXEC_ARGS &
+service=$! 
+wait "$service"
 
 if [ "$TRACING" = true ] ; then 
 	mkdir -p trace
-	mpi2prv -f TRACE.mpits -no-syn -o ./trace/dctrace.prv
+	mpi2prv -f TRACE.mpits -o ./trace/dctrace.prv
 fi

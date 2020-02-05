@@ -1,11 +1,25 @@
 #!/bin/bash
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-set -e
 TRACING=false
 DEBUG=false
 ARGS=""
 DEFINED_CLASSPATH_SET=false
 DEFINED_CLASSPATH=""
+
+################################## SIGNALING #############################################
+_term() { 
+	echo "Caught SIGTERM signal!" 
+	kill -TERM "$service"
+	wait "$service"
+  	if [ "$TRACING" = true ] ; then 
+		mkdir -p trace
+		mpi2prv -f TRACE.mpits -o ./trace/dctrace.prv
+ 	fi
+	echo "ENTRYPOINT SHUTDOWN FINISHED"
+}
+
+trap _term SIGTERM
+
 ################################## OPTIONS #############################################
 while [[ $# -gt 0 ]]; do
     key="$1"
@@ -39,7 +53,7 @@ done
 
 ### ========================== EXTRAE ============================= ##
 if [ "$TRACING" = true ] ; then
-	ARGS="-javaagent:/usr/share/java/aspectjweaver.jar -Dorg.aspectj.weaver.showWeaveInfo=true $ARGS"
+	ARGS="-javaagent:/usr/share/java/aspectjweaver.jar -Dorg.aspectj.weaver.showWeaveInfo=false $ARGS"
 fi
 
 ### ========================== LOGGING ============================= ##
@@ -57,13 +71,11 @@ else
 fi
 
 ### ========================== ENTRYPOINT ============================= ##
-cmd="exec java -Dcom.google.inject.internal.cglib.$experimental_asm7=true $ARGS"
 export JDK_JAVA_OPTIONS="--add-opens java.base/java.lang=ALL-UNNAMED"
-if [ "$DEBUG" = true ] ; then
-	echo $cmd
-fi
-eval $cmd 
-wait $!
+
+java -Dcom.google.inject.internal.cglib.$experimental_asm7=true $ARGS &
+service=$! 
+wait "$service"
 
 if [ "$TRACING" = true ] ; then 
 	mkdir -p trace

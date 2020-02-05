@@ -14,7 +14,7 @@ COPY --from=0 ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 # Extrae env variables
 ENV DATACLAY_EXTRAE_WRAPPER_LIB=${DATACLAY_HOME}/pyextrae/dataclay_extrae_wrapper.so
 ENV PYEXTRAE_PATH=${EXTRAE_HOME}/libexec:${EXTRAE_HOME}/lib
-ENV EXTRAE_CONFIG_FILE=${DATACLAY_HOME}/extrae/extrae_python.xml
+ENV EXTRAE_CONFIG_FILE=${DATACLAY_HOME}/extrae/extrae_basic.xml
 ENV PYTHONPATH=${PYEXTRAE_PATH}:${PYTHONPATH}
 
 # Make sure we use the virtualenv:

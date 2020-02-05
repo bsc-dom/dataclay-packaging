@@ -1,11 +1,26 @@
 #!/bin/bash
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-set -e
 TRACING=false
 EXEC_ARGS_PROVIDED=false
 DEBUG=false
 EXEC_ARGS=""
 ARGS=""
+
+################################## SIGNALING #############################################
+_term() { 
+	echo "Caught SIGTERM signal!" 
+	kill -TERM "$service"
+	wait "$service"
+	if [ "$TRACING" = true ] ; then 
+		mkdir -p trace
+		mpi2prv -f TRACE.mpits -o ./trace/dctrace.prv
+  	fi
+	echo "ENTRYPOINT SHUTDOWN FINISHED"
+}
+
+trap _term SIGTERM
+
+
 ################################## OPTIONS #############################################
 while [[ $# -gt 0 ]]; do
     key="$1"
@@ -37,7 +52,7 @@ done
 ### ========================== EXTRAE ============================= ##
 if [ "$TRACING" = true ] ; then
 	# find aspectj version
-	export MAVEN_OPTS="-javaagent:/usr/share/java/aspectjweaver.jar -Dorg.aspectj.weaver.showWeaveInfo=true"
+	export MAVEN_OPTS="-javaagent:/usr/share/java/aspectjweaver.jar -Dorg.aspectj.weaver.showWeaveInfo=false"
 fi
 
 ### ========================== LOGGING ============================= ##
@@ -48,19 +63,17 @@ else
 fi
 
 ### ========================== ENTRYPOINT ============================= ##
-if [ "$EXEC_ARGS_PROVIDED" = true ] ; then
-	cmd="exec mvn exec:java $ARGS -Dexec.cleanupDaemonThreads=false -Dexec.args=\"$EXEC_ARGS\" -Dcom.google.inject.internal.cglib.$experimental_asm7=true"
-else
-	cmd="exec mvn exec:java $ARGS -Dexec.cleanupDaemonThreads=false -Dcom.google.inject.internal.cglib.$experimental_asm7=true"
-fi
+
 
 export JDK_JAVA_OPTIONS="--add-opens java.base/java.lang=ALL-UNNAMED"
-if [ "$DEBUG" = true ] ; then
-	echo $cmd
+if [ "$EXEC_ARGS_PROVIDED" = true ] ; then
+	mvn exec:java $ARGS -Dexec.cleanupDaemonThreads=false -Dexec.args="$EXEC_ARGS" -Dcom.google.inject.internal.cglib.$experimental_asm7=true &
+else
+	mvn exec:java $ARGS -Dexec.cleanupDaemonThreads=false -Dcom.google.inject.internal.cglib.$experimental_asm7=true &
 fi
-eval $cmd
-wait $!
 
+service=$! 
+wait "$service"
 if [ "$TRACING" = true ] ; then 
 	mkdir -p trace
 	mpi2prv -f TRACE.mpits -o ./trace/dctrace.prv
