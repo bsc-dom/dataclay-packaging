@@ -2,7 +2,7 @@ ARG BASE_VERSION
 FROM bscdataclay/base:${BASE_VERSION}
 LABEL maintainer dataClay team <support-dataclay@bsc.es>
 
-ARG DATACLAY_PYVER=3.6
+ARG DATACLAY_PYVER=3.7
 ARG PYTHON_PIP_VERSION=3
 
 # ============ REQUIREMENTS ================== #
@@ -15,7 +15,7 @@ RUN apt-get update \
 #beginENVruntime
 # Set virtual environment since we could inherit some other python installations
 RUN pip${PYTHON_PIP_VERSION} install virtualenv
-RUN python${DATACLAY_PYVER} -m virtualenv --python=/usr/bin/python${DATACLAY_PYVER} ${VIRTUAL_ENV}
+RUN python${PYTHON_PIP_VERSION} -m virtualenv --python=/usr/bin/python${DATACLAY_PYVER} ${VIRTUAL_ENV}
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN python --version
 

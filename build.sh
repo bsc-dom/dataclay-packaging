@@ -12,9 +12,9 @@ function printError {
 }
 
 SUPPORTED_JAVA_VERSIONS=(8 11)
-SUPPORTED_PYTHON_VERSIONS=(3.6)
+SUPPORTED_PYTHON_VERSIONS=(3.6 3.7)
 DEFAULT_JAVA=11
-DEFAULT_PYTHON=3.6
+DEFAULT_PYTHON=3.7
 
 # Update versions here
 DATACLAY_RELEASE_VERSION=2.1
@@ -108,7 +108,7 @@ for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
 	if [ $PYTHON_PIP_VERSION -eq "2" ]; then 
 		PYTHON_PIP_VERSION=""
 	fi 
-	printMsg "Building image named bscdataclay/dspython:$VERSION python version $DEFAULT_PYTHON and pip version $PYTHON_PIP_VERSION"
+	printMsg "Building image named bscdataclay/dspython:$VERSION python version $PYTHON_VERSION and pip version $PYTHON_PIP_VERSION"
 	docker build --build-arg BASE_VERSION=$BASE_VERSION_TAG \
 				 --build-arg DATACLAY_PYVER=$PYTHON_VERSION \
 				 --build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION -t bscdataclay/dspython:$VERSION .
@@ -125,6 +125,7 @@ CLIENT_TAG="$(get_container_version)"
 printMsg "Building image named bscdataclay/client:$CLIENT_TAG"
 docker build --build-arg DATACLAY_DSPYTHON_DOCKER_TAG=$PYCLAY_TAG \
 			 --build-arg DATACLAY_LOGICMODULE_DOCKER_TAG=$JAVACLAY_TAG \
+			 --build-arg DATACLAY_PYVER=$DEFAULT_PYTHON \
 			 -t bscdataclay/client:$CLIENT_TAG .
 printMsg "bscdataclay/client:$CLIENT_TAG DONE!"
 popd 

@@ -11,16 +11,16 @@ function printError {
   echo "${red}======== $1 ========${end}"
 }
 
-DATACLAY_RELEASE_VERSION=2.0
+DATACLAY_RELEASE_VERSION=2.1
 DATACLAY_DEVELOPMENT_VERSION="-1"
 DATACLAY_SNAPSHOT_VERSION="-1"
 
 SUPPORTED_JAVA_VERSIONS=(8 11)
-SUPPORTED_PYTHON_VERSIONS=(3.6)
+SUPPORTED_PYTHON_VERSIONS=(3.6 3.7)
 PLATFORMS=linux/amd64,linux/arm/v7
 
 DEFAULT_JAVA=11
-DEFAULT_PYTHON=3.6
+DEFAULT_PYTHON=3.7
 
 #URL_DATACLAY_MAVEN_REPO="https://github.com/bsc-ssrg/dataclay-maven.git"
 
@@ -219,6 +219,12 @@ DEFAULT_TAG="$(get_container_version)"
 DEFAULT_JDK_TAG="$(get_container_version jdk$DEFAULT_JAVA)"
 DEFAULT_PY_TAG="$(get_container_version py$DEFAULT_PYTHON)"
 
+# CREATE DATACLAY JAR : IF IT EXISTS WHAT TO DO?
+pushd $SCRIPTDIR/logicmodule/javaclay
+mvn package -DskipTests=true
+mv $SCRIPTDIR/logicmodule/javaclay/target/dataclay-${DATACLAY_RELEASE_VERSION}-jar-with-dependencies.jar $SCRIPTDIR/logicmodule/dataclay.jar
+popd
+
 # BASE IMAGES 
 pushd $SCRIPTDIR/base
 BASE_VERSION_TAG="$(get_container_version)"
@@ -263,7 +269,7 @@ for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
 	if [ $PYTHON_PIP_VERSION -eq "2" ]; then 
 		PYTHON_PIP_VERSION=""
 	fi 
-	echo "************* Building image named bscdataclay/dspython:$VERSION python version $DEFAULT_PYTHON and pip version $PYTHON_PIP_VERSION *************"
+	echo "************* Building image named bscdataclay/dspython:$VERSION python version $PYTHON_VERSION and pip version $PYTHON_PIP_VERSION *************"
 	docker buildx build --build-arg BASE_VERSION=$BASE_VERSION_TAG \
 				 --build-arg DATACLAY_PYVER=$PYTHON_VERSION \
 				 --build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION -t bscdataclay/dspython:$VERSION --platform $PLATFORMS --push .
@@ -282,6 +288,7 @@ CLIENT_TAG="$(get_container_version)"
 echo "************* Building image named bscdataclay/client:$CLIENT_TAG *************"
 docker buildx build --build-arg DATACLAY_DSPYTHON_DOCKER_TAG=$PYCLAY_TAG \
 			 --build-arg DATACLAY_LOGICMODULE_DOCKER_TAG=$JAVACLAY_TAG \
+			 --build-arg DATACLAY_PYVER=$DEFAULT_PYTHON \
 			 -t bscdataclay/client:$CLIENT_TAG --platform $PLATFORMS --push .
 if [ $? -ne 0 ]; then printError "Push failed"; exit 1; fi
 DOCKER_IMAGES_PUSHED+=(bscdataclay/client:$CLIENT_TAG) 
@@ -345,7 +352,7 @@ if [ $? -ne 0 ]; then
 	echo "ERROR: error installing pyclay"
 	exit -1
 fi 	
-twine upload dist/*
+#twine upload dist/*
 deactivate
 popd
 
@@ -360,4 +367,8 @@ for DOCKER_IMAGE in ${DOCKER_IMAGES_PUSHED[@]}; do
 	echo "$DOCKER_IMAGE platforms"	
 	docker buildx imagetools inspect $DOCKER_IMAGE | grep Platform
 done
+
+# Clean 
+rm -f $SCRIPTDIR/logicmodule/dataclay.jar
+
 
