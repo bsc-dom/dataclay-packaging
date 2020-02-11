@@ -22,7 +22,7 @@ ENV DATACLAY_LOG_CONFIG=${DATACLAY_HOME}/logging/log4j2.xml
 ENV DATACLAY_JAR=${DATACLAY_HOME}/dataclay.jar
 
 # Get dataClay JAR 
-COPY ./dataclay.jar ${DATACLAY_JAR}
+COPY ./javaclay/target/dataclay-2.1-jar-with-dependencies.jar ${DATACLAY_JAR}
 
 # Copy entrypoint
 COPY ./dataclay-java-entry-point.sh ${DATACLAY_HOME}/entrypoints/dataclay-java-entry-point
