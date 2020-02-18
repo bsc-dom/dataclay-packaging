@@ -5,24 +5,21 @@ blu=$'\e[1;34m'
 red=$'\e[1;91m'
 end=$'\e[0m'
 function printMsg { 
-  echo "${blu}[dataClay build] $1 ${end}"
+  echo "${blu}[dataClay release] $1 ${end}"
 }
 function printError { 
   echo "${red}======== $1 ========${end}"
 }
-
-DATACLAY_RELEASE_VERSION=2.0
+################################## VERSIONING #############################################
+DATACLAY_RELEASE_VERSION=2.1
 DATACLAY_DEVELOPMENT_VERSION="-1"
-DATACLAY_SNAPSHOT_VERSION="-1"
 
 SUPPORTED_JAVA_VERSIONS=(8 11)
-SUPPORTED_PYTHON_VERSIONS=(3.6)
+SUPPORTED_PYTHON_VERSIONS=(3.6 3.7)
 PLATFORMS=linux/amd64,linux/arm/v7
 
 DEFAULT_JAVA=11
-DEFAULT_PYTHON=3.6
-
-#URL_DATACLAY_MAVEN_REPO="https://github.com/bsc-ssrg/dataclay-maven.git"
+DEFAULT_PYTHON=3.7
 
 ################################## FUNCTIONS #############################################
 function check_docker_buildx_version { 
@@ -80,15 +77,6 @@ function get_maven_version {
 		DATACLAY_MAVEN_VERSION="$DATACLAY_RELEASE_VERSION"
 	fi 
 	echo $DATACLAY_MAVEN_VERSION
-}
-
-function get_pypi_version { 
-	if [ "$DATACLAY_DEVELOPMENT_VERSION" != "-1" ] ; then
-		DATACLAY_CONTAINER_VERSION="${DATACLAY_RELEASE_VERSION}.dev${DATACLAY_DEVELOPMENT_VERSION}"
-	else 
-		DATACLAY_CONTAINER_VERSION="$DATACLAY_RELEASE_VERSION"
-	fi 
-	echo ${DATACLAY_CONTAINER_VERSION}
 }
 
 function get_container_version { 
@@ -170,33 +158,32 @@ while true; do
 	esac
 done
 
+while true; do
+	echo "Default Java version will be: $DEFAULT_JAVA $version $end" 
+	read -p "Are you sure is correct (yes/no)? " yn
+	case $yn in
+		[Yy]* ) break;;
+		[Nn]* ) echo "Modify it and try again."; exit;;
+		* ) echo "$red Please answer yes or no. $end";;
+	esac
+done 
 
-#
-#echo "In a continuous integration environment, version plays a vital role in keeping the integration build 
-#up-to-date while minimizing the amount of rebuilding that is required for each integration step. 
-#
-#In maven this means that we will push dataclay version $(get_maven_version)-SNAPSHOT
-#In pypi this means that we will push dataclay library into testPypi repository with version: $(get_pypi_version)
-#In dockers this means that we will push dataclay versions like $(get_container_version jdk$JAVA_VERSION)-SNAPSHOT
-# 
-#"
-#read -p "Do you wish to use it as a ?" yn
-#case $yn in
-#	[Yy]* ) make install; break;;
-#	[Nn]* ) exit;;
-#	* ) echo "Please answer yes or no.";;
-#esac
-#
+while true; do
+	echo "Default Python version will be: $DEFAULT_PYTHON $version $end" 
+	read -p "Are you sure is correct (yes/no)? " yn
+	case $yn in
+		[Yy]* ) break;;
+		[Nn]* ) echo "Modify it and try again."; exit;;
+		* ) echo "$red Please answer yes or no. $end";;
+	esac
+done 
 
-declare -a MAVEN_LIBS_PUSHED
-declare -a PYPI_LIBS_PUSHED
+
 declare -a DOCKER_IMAGES_PUSHED
    
 ################################## PREPARE #############################################
 
 
-echo " -- I'm going to push following jar into maven using repository $MAVEN_REPOSITORY: dataclay-$(get_maven_version).jar "
-echo " -- I'm going to push python libraries into pypi: dataclay==$(get_pypi_version) "
 echo " -- I'm going to push into DockerHub docker images: "
 echo "                bscdataclay/base:${DATACLAY_RELEASE_VERSION}"
 echo "                bscdataclay/logicmodule:${DATACLAY_RELEASE_VERSION}"
@@ -218,6 +205,11 @@ done
 DEFAULT_TAG="$(get_container_version)"
 DEFAULT_JDK_TAG="$(get_container_version jdk$DEFAULT_JAVA)"
 DEFAULT_PY_TAG="$(get_container_version py$DEFAULT_PYTHON)"
+
+# CREATE DATACLAY JAR : IF IT EXISTS WHAT TO DO?
+pushd $SCRIPTDIR/logicmodule/javaclay
+mvn package -DskipTests=true
+popd
 
 # BASE IMAGES 
 pushd $SCRIPTDIR/base
@@ -263,7 +255,7 @@ for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
 	if [ $PYTHON_PIP_VERSION -eq "2" ]; then 
 		PYTHON_PIP_VERSION=""
 	fi 
-	echo "************* Building image named bscdataclay/dspython:$VERSION python version $DEFAULT_PYTHON and pip version $PYTHON_PIP_VERSION *************"
+	echo "************* Building image named bscdataclay/dspython:$VERSION python version $PYTHON_VERSION and pip version $PYTHON_PIP_VERSION *************"
 	docker buildx build --build-arg BASE_VERSION=$BASE_VERSION_TAG \
 				 --build-arg DATACLAY_PYVER=$PYTHON_VERSION \
 				 --build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION -t bscdataclay/dspython:$VERSION --platform $PLATFORMS --push .
@@ -282,6 +274,7 @@ CLIENT_TAG="$(get_container_version)"
 echo "************* Building image named bscdataclay/client:$CLIENT_TAG *************"
 docker buildx build --build-arg DATACLAY_DSPYTHON_DOCKER_TAG=$PYCLAY_TAG \
 			 --build-arg DATACLAY_LOGICMODULE_DOCKER_TAG=$JAVACLAY_TAG \
+			 --build-arg DATACLAY_PYVER=$DEFAULT_PYTHON \
 			 -t bscdataclay/client:$CLIENT_TAG --platform $PLATFORMS --push .
 if [ $? -ne 0 ]; then printError "Push failed"; exit 1; fi
 DOCKER_IMAGES_PUSHED+=(bscdataclay/client:$CLIENT_TAG) 
@@ -325,39 +318,12 @@ docker buildx imagetools create --tag bscdataclay/client bscdataclay/client:$DEF
 if [ $? -ne 0 ]; then printError "bscdataclay/dspython:client push failed"; exit 1; fi
 DOCKER_IMAGES_PUSHED+=(bscdataclay/client) 
 
-printMsg " ==== Pushing dataclay to Pypi ===== "
-
-# Upload pyclay
-pushd $SCRIPTDIR/dspython/pyclay
-VIRTUAL_ENV=/tmp/venv_pyclay
-echo " Creating virtual environment /tmp/venv_pyclay " 
-virtualenv --python=/usr/bin/python${DEFAULT_PYTHON} $VIRTUAL_ENV
-echo " Calling python installation in virtual environment $VIRTUAL_ENV " 
-source $VIRTUAL_ENV/bin/activate
-python3 -m pip install --upgrade setuptools wheel twine
-echo " * IMPORTANT: please make sure to remove build, dist and src/dataClay.egg if permission denied * " 
-echo " * IMPORTANT: please make sure libyaml-dev libpython2.7-dev python-dev python3-dev python3-pip packages are installed * " 
-python3 -m pip install -r requirements.txt
-python3 -m pip freeze
-rm -rf dist
-python3 setup.py -q clean --all install sdist bdist_wheel
-if [ $? -ne 0 ]; then
-	echo "ERROR: error installing pyclay"
-	exit -1
-fi 	
-twine upload dist/*
-deactivate
-popd
-
-printMsg " ==== Pushing dataclay to Maven central repository ===== "
-
 printMsg " ===== Done! ====="
 printMsg " Push summary  "
-echo "MAVEN libraries PUSHED: ${MAVEN_LIBS_PUSHED[@]}"
-echo "PYPI libraries PUSHED: ${PYPI_LIBS_PUSHED[@]}"
 echo "DOCKER images PUSHED: " 
 for DOCKER_IMAGE in ${DOCKER_IMAGES_PUSHED[@]}; do
 	echo "$DOCKER_IMAGE platforms"	
 	docker buildx imagetools inspect $DOCKER_IMAGE | grep Platform
 done
+
 
