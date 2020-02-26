@@ -35,11 +35,14 @@ ENV_FROM=""
 for IMAGE in base logicmodule dsjava dspython client
 do
 	RECIPE="$SINGULARITY_FOLDER/$IMAGE.recipe"
-	echo -e "Bootstrap: docker\nFrom: pierlauro/$IMAGE:2.1\n\n%environment" > $RECIPE
+	echo -e "Bootstrap: docker\nFrom: bscdataclay/$IMAGE:2.1\n\n%environment" > $RECIPE
 	ENV_FROM="$ENV_FROM $IMAGE"
 	for DOCKERFILE_PATH in $ENV_FROM
 	do
 		extract_env $DOCKERFILE_PATH/Dockerfile >> $RECIPE
 	done
-	singularity build "$SINGULARITY_FOLDER/$IMAGE.img" $RECIPE
+	echo "%startscript" >> $RECIPE
+	ENTRYPOINT=`grep ^ENTRYPOINT $IMAGE/Dockerfile | cut -d' ' -f 2- | tr -d '"\|\[\|\]' | tr -s ',' ' '`
+	echo -e "\texec $ENTRYPOINT" >> $RECIPE
+	singularity build "$SINGULARITY_FOLDER/$IMAGE.sif" $RECIPE
 done
