@@ -9,7 +9,7 @@ ARG PYTHON_PIP_VERSION=3
 
 # Install extrae requirements
 RUN apt-get update \
-       && apt-get install --no-install-recommends -y --allow-unauthenticated python${DATACLAY_PYVER} python${DATACLAY_PYVER}-dev python${PYTHON_PIP_VERSION}-pip \
+       && apt-get install --no-install-recommends -y --allow-unauthenticated python${DATACLAY_PYVER} python${DATACLAY_PYVER}-dev python${PYTHON_PIP_VERSION}-pip python3-setuptools \
        && rm -rf /var/lib/apt/lists/*
 
 #beginENVruntime
