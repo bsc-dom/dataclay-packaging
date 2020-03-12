@@ -123,7 +123,9 @@ DEFAULT_JDK_TAG="$(get_container_version jdk$DEFAULT_JAVA)"
 DEFAULT_PY_TAG="$(get_container_version py$DEFAULT_PYTHON)"
 BASE_VERSION_TAG="$(get_container_version)"
 CLIENT_TAG="$(get_container_version)"
-
+# get version from pom.xml 
+JAR_VERSION=$(grep version $SCRIPTDIR/logicmodule/javaclay/pom.xml | grep -v -e '<?xml|~'| head -n 1 | sed 's/[[:space:]]//g' | sed -E 's/<.{0,1}version>//g' | awk '{print $1}')
+JAR_NAME=dataclay-${JAR_VERSION}-jar-with-dependencies.jar
 ################################## MAIN #############################################
 
 
@@ -255,7 +257,7 @@ pushd $SCRIPTDIR/logicmodule
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
 	VERSION="$(get_container_version jdk$JAVA_VERSION)"
 	echo "************* Pushing image named bscdataclay/logicmodule:$VERSION *************"
-	docker buildx build --build-arg JDK=$JAVA_VERSION --build-arg BASE_VERSION=$BASE_VERSION_TAG -t bscdataclay/logicmodule:$VERSION --platform $PLATFORMS --push .
+	docker buildx build --build-arg JDK=$JAVA_VERSION --build-arg BASE_VERSION=$BASE_VERSION_TAG --build-arg LOCAL_JAR=$JAR_NAME -t bscdataclay/logicmodule:$VERSION --platform $PLATFORMS --push .
 	DOCKER_IMAGES_PUSHED+=(bscdataclay/logicmodule:$VERSION)
 	echo "************* bscdataclay/logicmodule:$VERSION IMAGE PUSHED! *************"
 done
