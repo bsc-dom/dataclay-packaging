@@ -59,7 +59,7 @@ DEFAULT_JAVA=11
 DEFAULT_PYTHON=3.7
 ################################## VERSIONING #############################################
 DATACLAY_RELEASE_VERSION=$(cat VERSION.txt)
-GIT_BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+GIT_BRANCH=$(git name-rev --name-only HEAD)
 DEFAULT_TAG="$(get_container_version)"
 DEFAULT_JDK_TAG="$(get_container_version jdk$DEFAULT_JAVA)"
 DEFAULT_PY_TAG="$(get_container_version py$DEFAULT_PYTHON)"
