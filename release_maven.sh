@@ -32,7 +32,7 @@ do
 done
 
 ################################## VERSIONING #############################################
-DEFAULT_PYTHON=3.7
+
 
 ################################## FUNCTIONS #############################################
 
@@ -53,20 +53,20 @@ printMsg "'"'
      | |     | |       / ____| |            
    __| | __ _| |_ __ _| |    | | __ _ _   _ 
   / _` |/ _` | __/ _` | |    | |/ _` | | | |
- | (_| | (_| | || (_| | |____| | (_| | |_| |  pypi release script
+ | (_| | (_| | || (_| | |____| | (_| | |_| |  maven release script
   \__,_|\__,_|\__\__,_|\_____|_|\__,_|\__, |
                                        __/ |
                                       |___/ 
 '"'"
-printMsg " Welcome to dataClay Pypi release script!"
+printMsg " Welcome to dataClay Maven release script!"
 
 ################################## VERSIONS #############################################
 
 if [ "$DEV" = false ] ; then
 	while true; do
-		version=`grep -m 1 "version" $SCRIPTDIR/dspython/pyclay/setup.py`
-		echo "Current defined version in setup.py: $grn $version $end" 
-		read -p "Are you sure setup.py version is correct (yes/no)? " yn
+		version=`grep -m 1 "version" $SCRIPTDIR/logicmodule/javaclay/pom.xml`
+		echo "Current defined version in pom.xml: $grn $version $end" 
+		read -p "Are you sure pom.xml version is correct (yes/no)? " yn
 		case $yn in
 			[Yy]* ) break;;
 			[Nn]* ) echo "Modify it and try again."; exit;;
@@ -76,32 +76,25 @@ if [ "$DEV" = false ] ; then
 fi
 ################################## PUSH #############################################
 
-printMsg " ==== Pushing dataclay to Pypi ===== "
-# Upload pyclay
-pushd $SCRIPTDIR/dspython/pyclay
-VIRTUAL_ENV=/tmp/venv_pyclay
-rm -rf $VIRTUAL_ENV
-echo " Creating virtual environment /tmp/venv_pyclay " 
-virtualenv --python=/usr/bin/python${DEFAULT_PYTHON} $VIRTUAL_ENV
-echo " Calling python installation in virtual environment $VIRTUAL_ENV " 
-source $VIRTUAL_ENV/bin/activate
-python3 -m pip install --upgrade setuptools wheel twine
-echo " * IMPORTANT: please make sure to remove build, dist and src/dataClay.egg if permission denied * " 
-echo " * IMPORTANT: please make sure libyaml-dev libpython2.7-dev python-dev python3-dev python3-pip packages are installed * " 
-python3 -m pip install -r requirements.txt
-rm -rf dist
-if [ "$DEV" = true ] ; then
-	python3 setup.py egg_info --tag-date -q clean --all install sdist bdist_wheel
-else 
-	python3 setup.py -q clean --all install sdist bdist_wheel
-fi
+printMsg " ==== Pushing dataclay to maven ===== "
 
+pushd $SCRIPTDIR/logicmodule/javaclay
+
+if [ ! -f "settings.xml" ]; then
+	echo "ERROR: settings.xml file does not exist. Please create settings.xml file:
+	More information at https://github.com/bsc-dom/javaclay/blob/master/PUBLISH.md 
+	" 
+	exit -1
+fi
+if [ "$DEV" = true ] ; then
+	mvn -P publish deploy -s settings.xml
+else 
+	mvn -P publish release:clean release:prepare release:perform -s settings.xml
+fi
 if [ $? -ne 0 ]; then
-	echo "ERROR: error installing pyclay"
+	echo "ERROR: error pushing dataclay to maven "
 	exit -1
 fi 	
-twine upload dist/*
-deactivate
 popd
 
 printMsg " ===== Done! ====="
