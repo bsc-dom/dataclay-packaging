@@ -108,6 +108,14 @@ do
     shift
 done
 
+if [ "$DEV" = false ] ; then
+	GIT_BRANCH=$(git name-rev --name-only HEAD)
+	if [[ "$GIT_BRANCH" != "master" ]]; then
+	  echo 'Aborting deployment, only master branch can deploy a release';
+	  exit 1;
+	fi
+fi
+
 ################################## PLATFORMS #############################################
 SUPPORTED_JAVA_VERSIONS=(8 11)
 SUPPORTED_PYTHON_VERSIONS=(3.6 3.7)
