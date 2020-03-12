@@ -174,6 +174,7 @@ if [ "$DEV" = true ] ; then
 	docker push bscdataclay/dsjava:${DEFAULT_TAG}
 	docker push bscdataclay/dspython:${DEFAULT_TAG}
 	docker push bscdataclay/client:${CLIENT_TAG}
+	exit 0
 fi
 ###############################################################################
 
