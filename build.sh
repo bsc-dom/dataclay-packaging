@@ -13,13 +13,13 @@ function get_container_version {
 		EE_VERSION=$1 # i.e. can be python py3.6 or jdk8
 		DATACLAY_EE_VERSION="${EE_VERSION//./}"
 		if [ "$DEV" = true ] ; then
-			DATACLAY_CONTAINER_VERSION="${DATACLAY_RELEASE_VERSION}.${DATACLAY_EE_VERSION}.${GIT_BRANCH}"
+			DATACLAY_CONTAINER_VERSION="${DATACLAY_RELEASE_VERSION}.${DATACLAY_EE_VERSION}.dev"
 		else 
 			DATACLAY_CONTAINER_VERSION="$DATACLAY_RELEASE_VERSION.${DATACLAY_EE_VERSION}"
 		fi 
 	else 
 		if [ "$DEV" = true ] ; then
-			DATACLAY_CONTAINER_VERSION="${DATACLAY_RELEASE_VERSION}.${GIT_BRANCH}"
+			DATACLAY_CONTAINER_VERSION="${DATACLAY_RELEASE_VERSION}.dev"
 		else 
 			DATACLAY_CONTAINER_VERSION="$DATACLAY_RELEASE_VERSION"
 	fi 
@@ -59,7 +59,6 @@ DEFAULT_JAVA=11
 DEFAULT_PYTHON=3.7
 ################################## VERSIONING #############################################
 DATACLAY_RELEASE_VERSION=$(cat VERSION.txt)
-GIT_BRANCH=$(git name-rev --name-only HEAD)
 DEFAULT_TAG="$(get_container_version)"
 DEFAULT_JDK_TAG="$(get_container_version jdk$DEFAULT_JAVA)"
 DEFAULT_PY_TAG="$(get_container_version py$DEFAULT_PYTHON)"
