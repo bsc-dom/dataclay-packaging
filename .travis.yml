@@ -1,9 +1,8 @@
 language: generic
 services:
 - docker
-before_script:
-- .travis/check_branch.sh
 before_install:
+- .travis/check_branch.sh
 - .travis/set_ssh.sh
 - git remote set-url origin git@github.com:bsc-dom/dataclay-packaging.git
 env:
