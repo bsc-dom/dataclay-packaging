@@ -2,6 +2,7 @@ ARG BASE_VERSION
 FROM bscdataclay/base:${BASE_VERSION}
 LABEL maintainer dataClay team <support-dataclay@bsc.es>
 
+ARG LOCAL_JAR="*-jar-with-dependencies.jar"
 ARG JDK=11
 # Install javaclay packages:
 RUN apt-get update \
@@ -22,7 +23,7 @@ ENV DATACLAY_LOG_CONFIG=${DATACLAY_HOME}/logging/log4j2.xml
 ENV DATACLAY_JAR=${DATACLAY_HOME}/dataclay.jar
 
 # Get dataClay JAR 
-COPY ./javaclay/target/dataclay-2.1-jar-with-dependencies.jar ${DATACLAY_JAR}
+COPY ./javaclay/target/${LOCAL_JAR} ${DATACLAY_JAR}
 
 # Copy entrypoint
 COPY ./dataclay-java-entry-point.sh ${DATACLAY_HOME}/entrypoints/dataclay-java-entry-point

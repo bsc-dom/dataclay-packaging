@@ -1,0 +1,38 @@
+language: generic
+services:
+- docker
+before_install:
+- |
+  declare -r SSH_FILE="$(mktemp -u $HOME/.ssh/XXXXX)"
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # Decrypt the file containing the private key
+
+  openssl aes-256-cbc \
+    -K $encrypted_8ebb1ef83f64_key \
+    -iv $encrypted_8ebb1ef83f64_iv \
+    -in ".travis/github_deploy_key.enc" \
+    -out "$SSH_FILE" -d
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  # Enable SSH authentication
+
+  chmod 600 "$SSH_FILE" \
+    && printf "%s\n" \
+         "Host github.com" \
+         "  IdentityFile $SSH_FILE" \
+         "  LogLevel ERROR" >> ~/.ssh/config
+- git remote set-url origin git@github.com:bsc-dom/dataclay-packaging.git
+env:
+  global:
+  - secure: dP4dHpULJGNSnFd1r66xgZow7+KMY48HeRcBYklQpjlfziqzjouIkdJ0jCT3NQdWgikDwiD0jqGwC1ROtzeypKrLmAF9nq/kIQEp6v0UwDE3TmGyuODP1rjcgkxrMFxFqNOVCmkhnmR1N0etAXYcdDruu5FKAxbhxxiD/W0p5Qo8OqS4oo7u7UZgb8fdqmZDQexOLx3DbHaWR/AK5TIiNCTa9sIq67xRVM5q5PoBpdn3S80UWfYprs4UwL8E6tmFH0Ki3oH1rJ/79AGP4k3ltexltXeE37dtTSXkddb/89f/rjUGDBgFS7vn++X3yLbcAq5FiMhw2nHLQzFyXzjxq0fXroutFqsSOup7bDDwSrFUKlFnTKfauxDWz3RUpDVnSMvvAAot6pbM29xL7TMejYDBdazjVS7jNOORwCp2+X0Ha7PJhzMNRmoU56Kob9I5+WRCNE4pXXOfBQ9s0YsMDr9vo5YvdGx51rB90bIzNzNA52Apkj4Tn9kMdv40qyYuajt5azaTfqjoZVEzBwhCBJF/wTFAJkR5M2O8SMfYOBcD2PLW8AMV3HC12l1YWPIWpyx08S+73FR5PQy17VXRlVkE4bMQ1xG0b4s7io3O2FHFca2f2i+tSmBvL/5MyekcZpjmruMX7BImM5tVt7gARnAWCNA9SgdZ7cMKrkhlHhI=
+  - secure: ogoAVlLlTx63mBzyNObdUtVqIX42KySaR+TipHvZmYIg1nyqQu/84wQy1bNk1oAEgi8qd6BS2FBOl/y8W98NJjGPa0Opn7xMiV7fuXCBMlwCDxADUFwk5l/ZSZGZoEp8pPtiqaiKWG7Kjm91VtWLjTUHYGBJSly2bKRAUlWsZoesMPZ6frnqdPp2ryOCdX0ulqMdgk+BaJGU3G7ix2z+I+Plwm5qLXDdx+1zGrP194d+l+anEIweNKV3vsD69vvXj7f1aVpMe1lm9OQ24BVMue2xYPkRdLxkTJ1cVe/R0x2ErlQruLC3Qxq9OLSyy1vJ3enXzU+xp1HmsaAbGlikzAGBvpxzdAwtJT4RgarMatYMm5XeFUsF5CfXuwWOAifOhYm3k+TkSX+nK/TnIB28iWnM/u86zdG80NN18A8v6DP9feEk3CMi3rB9qSt+hUP5neXfpz93xG4Ku9JboDh4ZUUO+bNTx+XEt3af75rlYP4lhoCcKlCyKfgVGfOC2WZPSDhOm40KH8NB4zlQKX/vD2K3qTKZmj7pQyCJud+sRbeUvRJdx7CwD75MtDKn7gvThbvK/HEw12VoHL9AvE4lFC7KE/osdYkfG6s9sHZLn5LYwomI2paLVdiTlzq+mxYGQlMOVhMDuv9MvP8AgSFngRSq3YxcniyIBNRnO20PZ0g=
+
+deploy:
+  provider: script
+  script: 
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - ./deploy_dockers.sh --dev 
+  on:
+    branch: develop

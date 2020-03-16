@@ -1,3 +1,8 @@
 /.project
 /.pydevproject
 singularity_build
+*.swp
+#Travis files
+\#*
+input.txt
+travis.log
