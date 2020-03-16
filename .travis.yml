@@ -1,39 +1,10 @@
 language: generic
 services:
 - docker
-script:
-- |
-    if [ "$TRAVIS_PULL_REQUEST" == "true" ]; then
-        valid_branch_regex="^(feature|bugfix|improvement|library|prerelease|release|hotfix)\/[a-z0-9._-]+$"
-        if [[ ! $TRAVIS_PULL_REQUEST_BRANCH =~ $valid_branch_regex ]]; then
-             echo "ERROR: There is something wrong with your branch name. Branch names in this project must adhere to this contract: $valid_branch_regex. Your PR will be rejected. You should rename your branch to a valid name and try again."
-             exit 1
-        else 
-            echo "OK: Branch name accomplishes branch naming conventions"
-        fi
-    fi
+before_script:
+- .travis/check_branch.sh
 before_install:
-- |
-  declare -r SSH_FILE="$(mktemp -u $HOME/.ssh/XXXXX)"
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # Decrypt the file containing the private key
-
-  openssl aes-256-cbc \
-    -K $encrypted_8ebb1ef83f64_key \
-    -iv $encrypted_8ebb1ef83f64_iv \
-    -in ".travis/github_deploy_key.enc" \
-    -out "$SSH_FILE" -d
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  # Enable SSH authentication
-
-  chmod 600 "$SSH_FILE" \
-    && printf "%s\n" \
-         "Host github.com" \
-         "  IdentityFile $SSH_FILE" \
-         "  LogLevel ERROR" >> ~/.ssh/config
+- .travis/set_ssh.sh
 - git remote set-url origin git@github.com:bsc-dom/dataclay-packaging.git
 env:
   global:
