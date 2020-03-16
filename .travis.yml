@@ -32,7 +32,6 @@ env:
 deploy:
   provider: script
   script: 
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - ./deploy_dockers.sh --dev 
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin && ./deploy_dockers.sh --dev 
   on:
     branch: develop
