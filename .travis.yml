@@ -13,6 +13,6 @@ env:
 deploy:
   provider: script
   script: 
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin && ./deploy_dockers.sh --dev 
+    - .travis/deploy_dev_dockers.sh
   on:
     branch: develop
