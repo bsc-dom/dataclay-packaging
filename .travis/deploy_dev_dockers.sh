@@ -15,8 +15,8 @@ popd
 git add logicmodule/javaclay/
 git add dspython/pyclay
 
-git commit "Updating sub-modules from TravisCI build $TRAVIS_BUILD_NUMBER"
-git push
+git commit -m "Updating sub-modules from TravisCI build $TRAVIS_BUILD_NUMBER"
+git push origin develop
 
 # Login in Dockerhub
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
