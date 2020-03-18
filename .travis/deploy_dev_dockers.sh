@@ -2,10 +2,12 @@
 
 # Update submodules
 pushd logicmodule/javaclay/
+git checkout develop
 git pull
 popd
 
 pushd dspython/pyclay
+git checkout develop
 git pull
 popd 
 
