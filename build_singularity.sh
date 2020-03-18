@@ -41,8 +41,10 @@ do
 	do
 		extract_env $DOCKERFILE_PATH/Dockerfile >> $RECIPE
 	done
+	# docker entripoint is in /.singularity.d/runscript
+	# singularity entripoint is in /.singularity.d/startscript
+	# following, we couple docker and singularity entrypoints
 	echo "%startscript" >> $RECIPE
-	ENTRYPOINT=`grep ^ENTRYPOINT $IMAGE/Dockerfile | cut -d' ' -f 2- | tr -d '"\|\[\|\]' | tr -s ',' ' '`
-	echo -e "\texec $ENTRYPOINT" >> $RECIPE
+	echo -e "\t"'exec /.singularity.d/runscript $@' >> $RECIPE
 	singularity build "$SINGULARITY_FOLDER/$IMAGE.sif" $RECIPE
 done
