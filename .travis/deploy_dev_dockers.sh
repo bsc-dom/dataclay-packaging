@@ -1,8 +1,25 @@
 #!/bin/bash
-if [[ $TRAVIS_EVENT_TYPE == 'cron' ]]; then 
-    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    ./deploy_dockers.sh --dev 
-else 
-    echo "Skipping. Only deploying dev dockers on cron job" 
-fi
+
+# Update submodules
+pushd logicmodule/javaclay/
+git pull
+popd
+
+pushd dspython/pyclay
+git pull
+popd 
+
+# Add submodule changes
+git add logicmodule/javaclay/
+git add dspython/pyclay
+
+git commit "Updating sub-modules from TravisCI build $TRAVIS_BUILD_NUMBER"
+git push
+
+# Login in Dockerhub
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+# Deploy dockers
+./deploy_dockers.sh --dev 
+
 
