@@ -16,7 +16,6 @@ RUN apt-get update \
 # Set Java 8 home for extrae
 RUN ln -s /usr/lib/jvm/java-8-openjdk* /usr/lib/jvm/java-8
 
-#beginENVruntime
 ENV JAVA8_HOME=/usr/lib/jvm/java-8
 
 # LC_CTYPE instanciated for singularity WARNING: do we need to force time zone?
@@ -39,7 +38,6 @@ ENV EXTRAE_VERSION=3.6.1
 ENV EXTRAE_SKIP_AUTO_LIBRARY_INITIALIZE=1
 ENV EXTRAE_JAR_PATH=${EXTRAE_HOME}/lib/javatrace.jar
 ENV EXTRAE_CONFIG_FILE=${DATACLAY_HOME}/extrae/extrae_basic.xml
-#endENVruntime
 
 # =================== EXTRAE INSTALLATION ======================== #
 RUN mkdir -p ${EXTRAE_HOME}
@@ -70,7 +68,6 @@ RUN cd ${EXTRAE_BUILD_FOLDER} && \
 # Copy extrae configuration files
 COPY ./extrae extrae 
 
-#beginENVruntime
 # LD preload and other environment configurations 
 ENV LD_PRELOAD=${EXTRAE_HOME}/lib/libpttrace.so:${LD_PRELOAD}
 ENV PATH=${EXTRAE_HOME}/bin:${PATH}
@@ -78,8 +75,6 @@ ENV LD_LIBRARY_PATH=${EXTRAE_HOME}/lib:${LD_LIBRARY_PATH}
 
 # Virtual environment to be inherited from multi-stage docker in client
 ENV VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
-
-#endENVruntime
 
 # ================= SERVICE ==================== #
 

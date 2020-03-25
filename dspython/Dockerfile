@@ -12,7 +12,6 @@ RUN apt-get update \
        && apt-get install --no-install-recommends -y --allow-unauthenticated python${DATACLAY_PYVER} python${DATACLAY_PYVER}-dev python${PYTHON_PIP_VERSION}-pip python3-setuptools \
        && rm -rf /var/lib/apt/lists/*
 
-#beginENVruntime
 # Set virtual environment since we could inherit some other python installations
 RUN pip${PYTHON_PIP_VERSION} install virtualenv
 RUN python${PYTHON_PIP_VERSION} -m virtualenv --python=/usr/bin/python${DATACLAY_PYVER} ${VIRTUAL_ENV}
@@ -53,7 +52,6 @@ COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
 COPY ./dataclay-python-entry-point.sh ${DATACLAY_HOME}/entrypoints/dataclay-python-entry-point
 # Modify path for entrypoints
 ENV PATH=${DATACLAY_HOME}/entrypoints:${PATH}
-#endENVruntime
 
 ENV DEPLOY_PATH=${DATACLAY_HOME}/deploy
 

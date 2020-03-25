@@ -15,7 +15,6 @@ RUN apt-get update \
        && apt-get install --no-install-recommends -y --allow-unauthenticated python${DATACLAY_PYVER} \
        && rm -rf /var/lib/apt/lists/*
 
-#beginENVruntime
 # Extrae env variables
 ENV DATACLAY_EXTRAE_WRAPPER_LIB=${DATACLAY_HOME}/pyextrae/dataclay_extrae_wrapper.so
 ENV PYEXTRAE_PATH=${EXTRAE_HOME}/libexec:${EXTRAE_HOME}/lib
@@ -37,4 +36,3 @@ COPY dataclaycmd.sh ${DATACLAYCMD}
 
 # The command can contain additional options
 ENTRYPOINT ["dataclaycmd"]
-#endENVruntime
