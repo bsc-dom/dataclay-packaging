@@ -1,0 +1,8 @@
+Bootstrap: docker
+From: bscdataclay/dspython:latest
+
+%labels
+	Maintainer <support-dataclay@bsc.es> 
+
+%startscript
+	exec /.singularity.d/runscript $@
