@@ -1,6 +1,4 @@
-language: go
-go:
-- 1.13
+language: generic
 stages:
 - test
 - name: deploy_dev
@@ -14,6 +12,7 @@ before_install:
 ######## SINGULARITY INSTALLATION ########
 - .travis/install_singularity.sh  
 - singularity version 
+- openssl aes-256-cbc -K $encrypted_0680b2354a01_key -iv $encrypted_0680b2354a01_iv -in singularity_cloud_token.enc -out .travis/singularity_cloud_token -d
 #############################################
 - .travis/check_branch.sh
 - .travis/set_ssh.sh
