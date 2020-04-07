@@ -6,3 +6,6 @@
 	path = dspython/pyclay
 	url = https://github.com/bsc-dom/pyclay
 	update = merge
+[submodule "orchestration"]
+	path = orchestration
+	url = https://github.com/bsc-dom/dataclay-orchestration.git
