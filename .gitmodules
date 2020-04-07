@@ -2,14 +2,7 @@
 	path = logicmodule/javaclay
 	url = https://github.com/bsc-dom/javaclay
 	update = merge
-
 [submodule "dspython/pyclay"]
 	path = dspython/pyclay
 	url = https://github.com/bsc-dom/pyclay
 	update = merge
-[submodule "dataclay-orchestration"]
-	path = dataclay-orchestration
-	url = git@github.com:bsc-dom/dataclay-orchestration.git
-[submodule "orchestration"]
-	path = orchestration
-	url = git@github.com:bsc-dom/dataclay-orchestration.git
