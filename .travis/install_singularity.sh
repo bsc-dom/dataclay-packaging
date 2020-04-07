@@ -25,6 +25,7 @@ wget https://github.com/sylabs/singularity/releases/download/v${VERSION}/singula
 tar -xzf singularity-${VERSION}.tar.gz 
 pushd singularity
 
+export PATH=/usr/local/go/bin:$PATH
 go version
 which go
 ls /usr/local/go/bin 
