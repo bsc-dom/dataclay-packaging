@@ -11,26 +11,25 @@ sudo apt-get update && sudo apt-get install -y \
     git \
     cryptsetup
 
-#sudo rm -rf /usr/local/go   
-#export VERSION=1.13 OS=linux ARCH=amd64
-#wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz 
-#sudo tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar.gz
-#rm go$VERSION.$OS-$ARCH.tar.gz
-
-#echo 'export PATH=/usr/local/go/bin:$PATH' >> ~/.bashrc 
-#source ~/.bashrc
+# Install go
 eval "$(gimme $TRAVIS_GO_VERSION)"
 
 export VERSION=3.5.2
-wget https://github.com/sylabs/singularity/releases/download/v${VERSION}/singularity-${VERSION}.tar.gz
+wget --quiet https://github.com/sylabs/singularity/releases/download/v${VERSION}/singularity-${VERSION}.tar.gz
 tar -xzf singularity-${VERSION}.tar.gz 
-pushd singularity
 
-#export PATH=/usr/local/go/bin:$PATH
-go version
-    
+pushd singularity
 ./mconfig && \
     make -C builddir && \
     sudo make -C builddir install
 
 popd
+
+openssl aes-256-cbc \
+	-K $encrypted_0680b2354a01_key \
+	-iv $encrypted_0680b2354a01_iv \
+	-in .travis/singularity_cloud_token.enc \
+	-out .travis/singularity_cloud_token -d
+	
+singularity remote login < .travis/singularity_cloud_token
+
