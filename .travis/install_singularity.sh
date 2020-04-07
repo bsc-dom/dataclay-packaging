@@ -16,7 +16,10 @@ export VERSION=1.13 OS=linux ARCH=amd64 && \
    sudo tar -C /usr/local -xzvf go$VERSION.$OS-$ARCH.tar.gz && \
    rm go$VERSION.$OS-$ARCH.tar.gz
 
-echo 'export PATH=/usr/local/go/bin:$PATH' >> ~/.bashrc && source ~/.bashrc
+echo 'export PATH=/usr/local/go/bin:$PATH' >> ~/.bashrc 
+source ~/.bashrc
+
+cat ~/.bashrc
 
 export VERSION=3.5.2 && \
     wget https://github.com/sylabs/singularity/releases/download/v${VERSION}/singularity-${VERSION}.tar.gz && \
