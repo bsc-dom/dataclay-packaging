@@ -6,6 +6,39 @@ stages:
 services:
 - docker
 before_install:
+######## DOCKER UPDATE ########
+- curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+- sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+- sudo apt-get update
+- sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+- docker --version
+######## SINGULARITY INSTALLATION ########
+- sudo apt-get update && sudo apt-get install -y \
+    build-essential \
+    libssl-dev \
+    uuid-dev \
+    libgpgme11-dev \
+    squashfs-tools \
+    libseccomp-dev \
+    wget \
+    pkg-config \
+    git \
+    cryptsetup
+- export VERSION=1.13 OS=linux ARCH=amd64 && \
+  wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz && \
+  sudo tar -C /usr/local -xzvf go$VERSION.$OS-$ARCH.tar.gz && \
+  rm go$VERSION.$OS-$ARCH.tar.gz
+- echo 'export PATH=/usr/local/go/bin:$PATH' >> ~/.bashrc && \
+  source ~/.bashrc
+- export VERSION=3.5.2 && \
+    wget https://github.com/sylabs/singularity/releases/download/v${VERSION}/singularity-${VERSION}.tar.gz && \
+    tar -xzf singularity-${VERSION}.tar.gz && \
+    cd singularity
+- ./mconfig && \
+    make -C builddir && \
+    sudo make -C builddir install
+- singularity version 
+#############################################
 - .travis/check_branch.sh
 - .travis/set_ssh.sh
 - git remote set-url origin git@github.com:bsc-dom/dataclay-packaging.git

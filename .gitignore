@@ -6,3 +6,4 @@ singularity_build
 \#*
 input.txt
 travis.log
+*.sif
