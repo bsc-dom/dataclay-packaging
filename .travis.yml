@@ -5,21 +5,15 @@ stages:
   if: type = cron
 - name: deploy_test
   if: branch = feature/singularity_deployment
+- name: deploy_singularity
+  if: branch = feature/singularity_deployment
 services:
 - docker
 before_install:
-######## DOCKER UPDATE ########
-- .travis/update_docker.sh 
-- docker --version
-######## SINGULARITY INSTALLATION ########
-- .travis/install_singularity.sh  
-- .travis/login_singularity.sh
-- singularity version 
-- .travis/set_marenostrum_ssh.sh
-#############################################
 - .travis/check_branch.sh
 - .travis/set_github_ssh.sh
 - git remote set-url origin git@github.com:bsc-dom/dataclay-packaging.git
+- .travis/update_submodules.sh
 env:
   global:
   - TRAVIS_GO_VERSION=1.13.1
@@ -31,14 +25,26 @@ jobs:
       script: echo "Running functional tests..."
     - stage: deploy_dev
       deploy:
-      provider: script
-      script: .travis/deploy.sh --dev
+         provider: script
+         script: .travis/deploy_docker.sh --dev
       on:
         branch: develop
     - stage: deploy_test
+      before_install:
+         - .travis/update_docker.sh 
+         - docker --version
       deploy:
-      provider: script
-      script: .travis/deploy.sh --dev
+         provider: script
+         script: .travis/deploy_docker.sh --dev
+    - stage: deploy_singularity
+      before_install:
+         - .travis/install_singularity.sh  
+         - .travis/login_singularity.sh
+         - singularity version 
+         - .travis/set_marenostrum_ssh.sh
+      deploy:
+         provider: script
+         script: .travis/deploy_singularity.sh --dev
 cache:
   directories:
   - $HOME/.m2

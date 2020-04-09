@@ -140,8 +140,8 @@ source $SCRIPTDIR/config.sh
 
 DOCKERX_CACHE=$SCRIPTDIR/.dockerbuildx
 EXTRA_ARGS=""
-if [ -d $DOCKERX_CACHE ]; then 
-	echo " -- Found docker cache at $DOCKERX_CACHE"
+if [ -f $DOCKERX_CACHE/index.json ]; then 
+	echo " -- Found index cache at $DOCKERX_CACHE"
 	EXTRA_ARGS="--cache-from=type=local,src=$DOCKERX_CACHE" 
 fi
 

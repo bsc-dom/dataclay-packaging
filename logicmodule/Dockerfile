@@ -6,7 +6,7 @@ ARG LOCAL_JAR="*-jar-with-dependencies.jar"
 ARG JDK=11
 # Install javaclay packages:
 RUN apt-get update \
-        && apt-get install --no-install-recommends -y --allow-unauthenticated openjdk-${JDK}-jdk \
+        && apt-get install --no-install-recommends -y --allow-unauthenticated openjdk-${JDK}-jdk >/dev/null\
         && rm -rf /var/lib/apt/lists/*
        
 # Set Java home. We create a symbolic link to be arch-independant 

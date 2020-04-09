@@ -10,7 +10,7 @@ LABEL maintainer dataClay team <support-dataclay@bsc.es>
 # Install packages:
 RUN apt-get update \
         && apt-get install --no-install-recommends -y --allow-unauthenticated openjdk-8-jdk sqlite3 libsqlite3-0 \
-        build-essential libiberty-dev gfortran libbfd-dev libxml2-dev papi-tools libpapi-dev curl dh-autoreconf locales aspectj maven \
+        build-essential libiberty-dev gfortran libbfd-dev libxml2-dev papi-tools libpapi-dev curl dh-autoreconf locales aspectj maven >/dev/null \
         && rm -rf /var/lib/apt/lists/*
 
 # Set Java 8 home for extrae
