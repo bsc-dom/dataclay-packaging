@@ -164,7 +164,7 @@ set -e #Exit if some command fails
 
 # CREATE DATACLAY JAR : IF IT EXISTS WHAT TO DO?
 pushd $SCRIPTDIR/logicmodule/javaclay
-mvn package -DskipTests=true
+mvn package -DskipTests=true >/dev/null
 popd
 
 # BASE IMAGES 
