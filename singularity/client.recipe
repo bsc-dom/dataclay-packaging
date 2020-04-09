@@ -1,8 +1,0 @@
-Bootstrap: docker
-From: bscdataclay/client:latest
-
-%labels
-	Maintainer <support-dataclay@bsc.es> 
-
-%startscript
-	exec /.singularity.d/runscript $@

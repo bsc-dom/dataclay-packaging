@@ -3,6 +3,8 @@ stages:
 - test
 - name: deploy_dev
   if: type = cron
+- name: deploy_test
+  if: branch = feature/singularity_deployment
 services:
 - docker
 before_install:
@@ -11,10 +13,12 @@ before_install:
 - docker --version
 ######## SINGULARITY INSTALLATION ########
 - .travis/install_singularity.sh  
+- .travis/login_singularity.sh
 - singularity version 
+- .travis/set_marenostrum_ssh.sh
 #############################################
 - .travis/check_branch.sh
-- .travis/set_ssh.sh
+- .travis/set_github_ssh.sh
 - git remote set-url origin git@github.com:bsc-dom/dataclay-packaging.git
 env:
   global:
@@ -28,6 +32,15 @@ jobs:
     - stage: deploy_dev
       deploy:
       provider: script
-      script: .travis/deploy_dev_dockers.sh
+      script: .travis/deploy.sh --dev
       on:
         branch: develop
+    - stage: deploy_test
+      deploy:
+      provider: script
+      script: .travis/deploy.sh --dev
+cache:
+  directories:
+  - $HOME/.m2
+  - .dockerbuildx
+  - $HOME/.singularity/

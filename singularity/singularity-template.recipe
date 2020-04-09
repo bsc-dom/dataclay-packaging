@@ -1,5 +1,5 @@
 Bootstrap: docker
-From: bscdataclay/base:2.1
+From: DOCKER_IMAGE
 
 %labels
 	Maintainer <support-dataclay@bsc.es> 
