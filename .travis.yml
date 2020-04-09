@@ -22,15 +22,15 @@ jobs:
     - stage: update_submodules 
       script: .travis/update_submodules.sh --dev
       on:
-        branch: feature/singularity_deployment
+        branch: develop
     - stage: test 
       script: echo "Running functional tests..."
     - stage: deploy_dev
       deploy:
          provider: script
          script: .travis/deploy_docker.sh --dev
-      on:
-        branch: develop
+         on:
+           branch: develop
     - stage: deploy_test
       before_install:
          - .travis/update_docker.sh 
@@ -38,6 +38,8 @@ jobs:
       deploy:
          provider: script
          script: .travis/deploy_docker.sh --dev
+         on:
+           branch: feature/singularity_deployment
     - stage: deploy_singularity
       before_install:
          - .travis/install_singularity.sh  
@@ -47,6 +49,8 @@ jobs:
       deploy:
          provider: script
          script: .travis/deploy_singularity.sh --dev
+         on:
+           branch: feature/singularity_deployment
 cache:
   directories:
   - $HOME/.m2
