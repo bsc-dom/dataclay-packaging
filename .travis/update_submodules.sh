@@ -27,6 +27,9 @@ do
 done
 ################################## MAIN #############################################
 
+.travis/set_github_ssh.sh
+git remote set-url origin git@github.com:bsc-dom/dataclay-packaging.git
+
 # Update submodules
 pushd logicmodule/javaclay/
 git checkout $BRANCH

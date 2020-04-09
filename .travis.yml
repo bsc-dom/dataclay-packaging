@@ -1,6 +1,7 @@
 language: generic
 stages:
-- test
+- name: update_submodules
+- name: test
 - name: deploy_dev
   if: type = cron
 - name: deploy_test
@@ -11,9 +12,6 @@ services:
 - docker
 before_install:
 - .travis/check_branch.sh
-- .travis/set_github_ssh.sh
-- git remote set-url origin git@github.com:bsc-dom/dataclay-packaging.git
-- .travis/update_submodules.sh
 env:
   global:
   - TRAVIS_GO_VERSION=1.13.1
@@ -21,6 +19,10 @@ env:
   - secure: ogoAVlLlTx63mBzyNObdUtVqIX42KySaR+TipHvZmYIg1nyqQu/84wQy1bNk1oAEgi8qd6BS2FBOl/y8W98NJjGPa0Opn7xMiV7fuXCBMlwCDxADUFwk5l/ZSZGZoEp8pPtiqaiKWG7Kjm91VtWLjTUHYGBJSly2bKRAUlWsZoesMPZ6frnqdPp2ryOCdX0ulqMdgk+BaJGU3G7ix2z+I+Plwm5qLXDdx+1zGrP194d+l+anEIweNKV3vsD69vvXj7f1aVpMe1lm9OQ24BVMue2xYPkRdLxkTJ1cVe/R0x2ErlQruLC3Qxq9OLSyy1vJ3enXzU+xp1HmsaAbGlikzAGBvpxzdAwtJT4RgarMatYMm5XeFUsF5CfXuwWOAifOhYm3k+TkSX+nK/TnIB28iWnM/u86zdG80NN18A8v6DP9feEk3CMi3rB9qSt+hUP5neXfpz93xG4Ku9JboDh4ZUUO+bNTx+XEt3af75rlYP4lhoCcKlCyKfgVGfOC2WZPSDhOm40KH8NB4zlQKX/vD2K3qTKZmj7pQyCJud+sRbeUvRJdx7CwD75MtDKn7gvThbvK/HEw12VoHL9AvE4lFC7KE/osdYkfG6s9sHZLn5LYwomI2paLVdiTlzq+mxYGQlMOVhMDuv9MvP8AgSFngRSq3YxcniyIBNRnO20PZ0g=
 jobs:
   include:
+    - stage: update_submodules 
+      script: .travis/update_submodules.sh --dev
+      on:
+        branch: feature/singularity_deployment
     - stage: test 
       script: echo "Running functional tests..."
     - stage: deploy_dev
