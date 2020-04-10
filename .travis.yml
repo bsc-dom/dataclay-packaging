@@ -90,4 +90,3 @@ cache:
   - ./docker/dsjava/.dockerbuildx_jdk8
   - ./docker/dspython/.dockerbuildx_py37
   - ./docker/client/.dockerbuildx
-  - $HOME/.singularity/
