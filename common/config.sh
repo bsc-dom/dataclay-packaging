@@ -51,15 +51,8 @@ function check_requirements {
 		exit 1
 	fi
 	printf "OK\n"
-
-	printf "Checking if docker version >= $REQUIRED_DOCKER_VERSION..."
-	version=$(docker version --format '{{.Server.Version}}')
-	if [[ "$version" < "$REQUIRED_DOCKER_VERSION" ]]; then       
-	    echo "ERROR: Docker version is less than $REQUIRED_DOCKER_VERSION"
-		exit 1
-	fi
-	printf "OK\n"
 	echo "Requirements accomplished! "
+	
 }
 
 #=== FUNCTION ================================================================

@@ -18,6 +18,14 @@
 PREPAREDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 source $PREPAREDIR/PLATFORMS.txt
 
+printf "Checking if docker version >= $REQUIRED_DOCKER_VERSION..."
+version=$(docker version --format '{{.Server.Version}}')
+if [[ "$version" < "$REQUIRED_DOCKER_VERSION" ]]; then       
+    echo "ERROR: Docker version is less than $REQUIRED_DOCKER_VERSION"
+	exit 1
+fi
+printf "OK\n"
+
 # prepare architectures
 docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 

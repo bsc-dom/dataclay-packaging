@@ -30,4 +30,7 @@ singularity pull $LOCAL_REPOSITORY/client.sif library://support-dataclay/default
 
 # Deploy singularity and orchestration scripts to Marenostrum
 scp -r ./orchestration dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG
-scp -r $LOCAL_REPOSITORY/ dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/images/
+scp -r $LOCAL_REPOSITORY/ dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/singularity/images/
+ssh dataclay@mn1.bsc.es "echo $DEFAULT_TAG > /apps/MN4/DATACLAY/$DEFAULT_TAG/VERSION.txt"
+ssh dataclay@mn1.bsc.es "/apps/MN4/DATACLAY/$DEFAULT_TAG/install_client_dependencies.sh"
+#--prolog \"module load gcc/7.2.0 EXTRAE/3.6.1\""
