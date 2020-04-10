@@ -13,7 +13,7 @@ source $BUILDDIR/../misc/_push.sh
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_PY_TAG ]; then
 	## Tag default versions 
 	yes | singularity delete --arch=amd64 $REPOSITORY/dspython:$DEFAULT_PY_TAG || true
-	singularity push -U $LOCAL_REPOSITORY/dspython.${DEFAULT_PY_TAG}.sif $REPOSITORY/dspython:$DEFAULT_PY_TAG
+	singularity push -U $LOCAL_REPOSITORY/dspython.${DEFAULT_PY_TAG}.sif $REPOSITORY/dspython:$DEFAULT_TAG
 	
 	# Tag latest
 	if [ "$DEV" = false ] ; then
