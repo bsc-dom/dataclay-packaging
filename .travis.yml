@@ -48,73 +48,67 @@ jobs:
     - stage: test 
       if: branch = develop
       script: echo "Running functional tests..."
-############### DEV. DOCKER DEPLOYMENT ###############
+############### DOCKER DEPLOYMENT ###############
     - stage: docker_deploy_base
       if: branch = feature/singularity_deployment
-      before_install:
-         - .travis/docker/setup.sh 
+      before_install: .travis/docker/setup.sh 
       script: ./docker/base/deploy.sh -y --branch $TRAVIS_BRANCH
 # -------------------------------------------------------
     - stage: docker_deploy_logicmodule
       if: branch = feature/singularity_deployment
-      before_install:
-         - .travis/docker/setup.sh 
+      before_install: .travis/docker/setup.sh 
       script: ./docker/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8
     - # stage name not required, will continue
+      before_install: .travis/docker/setup.sh 
       script: ./docker/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11  
 # -------------------------------------------------------
     - stage: docker_deploy_dsjava
       if: branch = feature/singularity_deployment
-      before_install:
-         - .travis/docker/setup.sh 
+      before_install: .travis/docker/setup.sh 
       script: ./docker/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8
     - # stage name not required, will continue
+      before_install: .travis/docker/setup.sh 
       script: ./docker/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11
 # -------------------------------------------------------
     - stage: docker_deploy_dspython
       if: branch = feature/singularity_deployment
-      before_install:
-         - .travis/docker/setup.sh 
+      before_install: .travis/docker/setup.sh 
       script: ./docker/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.7 
 # -------------------------------------------------------
     - stage: docker_deploy_client
       if: branch = feature/singularity_deployment
-      before_install:
-         - .travis/docker/setup.sh 
+      before_install: .travis/docker/setup.sh 
       script: ./docker/client/deploy.sh -y --branch $TRAVIS_BRANCH
-############### DEV. SINGULARITY DEPLOYMENT ###############
+############### SINGULARITY DEPLOYMENT ###############
     - stage: singularity_deploy_logicmodule
       if: branch = feature/singularity_deployment
-      before_install:
-         - .travis/singularity/setup.sh 
+      before_install: .travis/singularity/setup.sh 
       script: ./singularity/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8
     - # stage name not required, will continue
+      before_install: .travis/singularity/setup.sh 
       script: ./singularity/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11
 # -------------------------------------------------------
     - stage: singularity_deploy_dsjava
       if: branch = feature/singularity_deployment
-      before_install:
-         - .travis/singularity/setup.sh 
+      before_install: .travis/singularity/setup.sh 
       script: ./singularity/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8
     - # stage name not required, will continue
+      before_install: .travis/singularity/setup.sh 
       script: ./singularity/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11
 # -------------------------------------------------------
     - stage: singularity_deploy_dspython
       if: branch = feature/singularity_deployment
-      before_install:
-         - .travis/singularity/setup.sh 
+      before_install: .travis/singularity/setup.sh 
       script: ./singularity/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.7
 # -------------------------------------------------------
     - stage: singularity_deploy_client
       if: branch = feature/singularity_deployment
-      before_install:
-         - .travis/singularity/setup.sh 
+      before_install: .travis/singularity/setup.sh 
       script: ./singularity/client/deploy.sh -y --branch $TRAVIS_BRANCH
 ############### MARENOSTRUM DEPLOYMENT ###############
     - stage: marenostrum_deploy
       if: branch = feature/singularity_deployment
-      before_install:
-         - .travis/singularity/setup.sh 
+      before_install: .travis/singularity/setup.sh 
       script: ./.travis/marenostrum/deploy.sh -y --branch $TRAVIS_BRANCH
 cache:
   directories:

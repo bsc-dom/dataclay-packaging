@@ -16,7 +16,6 @@ docker buildx build -t $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG \
 		--build-arg DATACLAY_PYVER=$PYTHON_VERSION \
 		--build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION \
 		--platform $PLATFORMS \
-		--progress plain \
 		--cache-to=type=local,dest=${DOCKERX_CACHE},mode=max $EXTRA_ARGS \
 		--push .
 echo "************* $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG DONE! *************"
