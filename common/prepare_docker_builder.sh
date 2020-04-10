@@ -62,7 +62,7 @@ do
 done
 	
 ### docker buildx 
-DOCKERX_CACHE=$BUILDDIR/.dockerbuildx_$EXECUTION_ENVIRONMENT
+DOCKERX_CACHE=$BUILDDIR/.dockerbuildx$EXECUTION_ENVIRONMENT
 EXTRA_ARGS=""
 if [ -f $DOCKERX_CACHE/index.json ]; then 
 	echo " -- Found index cache at $DOCKERX_CACHE"

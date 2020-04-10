@@ -21,72 +21,101 @@ jobs:
 ############### DOCKER DEPLOYMENT ###############
     - stage: docker_deploy_base
       if: branch = feature/singularity_deployment
+      env:
+         - CACHE_NAME=docker_base
       before_install: .travis/docker/setup.sh 
       script: ./docker/base/deploy.sh -y --branch $TRAVIS_BRANCH
 # -------------------------------------------------------
     - stage: docker_deploy_logicmodule
       if: branch = feature/singularity_deployment
+      env:
+         - CACHE_NAME=docker_logicmodule_jdk8
       before_install: .travis/docker/setup.sh 
       script: ./docker/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8
     - # stage name not required, will continue
+      env:
+         - CACHE_NAME=docker_logicmodule_jdk11
       before_install: .travis/docker/setup.sh 
       script: ./docker/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11  
 # -------------------------------------------------------
     - stage: docker_deploy_dsjava
       if: branch = feature/singularity_deployment
+      env:
+         - CACHE_NAME=docker_dsjava_jdk8
       before_install: .travis/docker/setup.sh 
       script: ./docker/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8
     - # stage name not required, will continue
+      env:
+         - CACHE_NAME=docker_dsjava_jdk11
       before_install: .travis/docker/setup.sh 
       script: ./docker/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11
 # -------------------------------------------------------
     - stage: docker_deploy_dspython
       if: branch = feature/singularity_deployment
+      env:
+         - CACHE_NAME=docker_dspython_py37
       before_install: .travis/docker/setup.sh 
       script: ./docker/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.7 
 # -------------------------------------------------------
     - stage: docker_deploy_client
       if: branch = feature/singularity_deployment
+      env:
+         - CACHE_NAME=docker_client
       before_install: .travis/docker/setup.sh 
       script: ./docker/client/deploy.sh -y --branch $TRAVIS_BRANCH
 ############### SINGULARITY DEPLOYMENT ###############
     - stage: singularity_deploy_logicmodule
       if: branch = feature/singularity_deployment
+      env:
+         - CACHE_NAME=singularity_logicmodule_jdk8
       before_install: .travis/singularity/setup.sh 
       script: ./singularity/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8
     - # stage name not required, will continue
+      env:
+         - CACHE_NAME=singularity_logicmodule_jdk11
       before_install: .travis/singularity/setup.sh 
       script: ./singularity/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11
 # -------------------------------------------------------
     - stage: singularity_deploy_dsjava
       if: branch = feature/singularity_deployment
+      env:
+         - CACHE_NAME=singularity_dsjava_jdk8
       before_install: .travis/singularity/setup.sh 
       script: ./singularity/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8
     - # stage name not required, will continue
+      env:
+         - CACHE_NAME=singularity_dsjava_jdk11
       before_install: .travis/singularity/setup.sh 
       script: ./singularity/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11
 # -------------------------------------------------------
     - stage: singularity_deploy_dspython
       if: branch = feature/singularity_deployment
+      env:
+         - CACHE_NAME=singularity_dspython_py37
       before_install: .travis/singularity/setup.sh 
       script: ./singularity/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.7
 # -------------------------------------------------------
     - stage: singularity_deploy_client
       if: branch = feature/singularity_deployment
+      env:
+         - CACHE_NAME=singularity_client
       before_install: .travis/singularity/setup.sh 
       script: ./singularity/client/deploy.sh -y --branch $TRAVIS_BRANCH
 ############### MARENOSTRUM DEPLOYMENT ###############
     - stage: marenostrum_deploy
       if: branch = feature/singularity_deployment
+      env:
+         - CACHE_NAME=marenostrum
       before_install: .travis/singularity/setup.sh 
       script: ./.travis/marenostrum/deploy.sh -y --branch $TRAVIS_BRANCH
 cache:
   directories:
   - $HOME/.m2
+  - $HOME/.singularity
   - ./docker/base/.dockerbuildx
-  - ./docker/logicmodule/.dockerbuildx_jdk11
-  - ./docker/logicmodule/.dockerbuildx_jdk8
-  - ./docker/dsjava/.dockerbuildx_jdk11
-  - ./docker/dsjava/.dockerbuildx_jdk8
-  - ./docker/dspython/.dockerbuildx_py37
+  - ./docker/logicmodule/.dockerbuildxjdk11
+  - ./docker/logicmodule/.dockerbuildxjdk8
+  - ./docker/dsjava/.dockerbuildxjdk11
+  - ./docker/dsjava/.dockerbuildxjdk8
+  - ./docker/dspython/.dockerbuildxpy37
   - ./docker/client/.dockerbuildx
