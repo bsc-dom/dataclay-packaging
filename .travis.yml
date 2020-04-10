@@ -1,13 +1,34 @@
 language: generic
 stages:
-- name: update_submodules
+############### GITHUB SUBMODULES ###############
+- name: update_submodules_develop
+  if: branch = develop
+############### TESTING ###############
 - name: test
-- name: deploy_dev
-  if: type = cron
-- name: deploy_test
+#  if: type = cron
+############### DEV. DOCKER DEPLOYMENT ###############
+- name: docker_deploy_base
   if: branch = feature/singularity_deployment
-- name: deploy_singularity
-  if: branch = feature/singularity_deployment
+- name: docker_deploy_logicmodule
+  if: branch = feature/singularity_deployment  
+- name: docker_deploy_dsjava
+  if: branch = feature/singularity_deployment 
+- name: docker_deploy_dspython
+  if: branch = feature/singularity_deployment 
+- name: docker_deploy_client
+  if: branch = feature/singularity_deployment 
+############### DEV. SINGULARITY DEPLOYMENT ###############
+- name: singularity_deploy_logicmodule
+  if: branch = feature/singularity_deployment  
+- name: singularity_deploy_dsjava
+  if: branch = feature/singularity_deployment 
+- name: singularity_deploy_dspython
+  if: branch = feature/singularity_deployment 
+- name: singularity_deploy_client
+  if: branch = feature/singularity_deployment 
+############### MARENOSTRUM DEPLOYMENT ###############
+- name: dev_marenostrum_deploy
+  if: branch = feature/singularity_deployment 
 services:
 - docker
 before_install:
@@ -19,40 +40,75 @@ env:
   - secure: ogoAVlLlTx63mBzyNObdUtVqIX42KySaR+TipHvZmYIg1nyqQu/84wQy1bNk1oAEgi8qd6BS2FBOl/y8W98NJjGPa0Opn7xMiV7fuXCBMlwCDxADUFwk5l/ZSZGZoEp8pPtiqaiKWG7Kjm91VtWLjTUHYGBJSly2bKRAUlWsZoesMPZ6frnqdPp2ryOCdX0ulqMdgk+BaJGU3G7ix2z+I+Plwm5qLXDdx+1zGrP194d+l+anEIweNKV3vsD69vvXj7f1aVpMe1lm9OQ24BVMue2xYPkRdLxkTJ1cVe/R0x2ErlQruLC3Qxq9OLSyy1vJ3enXzU+xp1HmsaAbGlikzAGBvpxzdAwtJT4RgarMatYMm5XeFUsF5CfXuwWOAifOhYm3k+TkSX+nK/TnIB28iWnM/u86zdG80NN18A8v6DP9feEk3CMi3rB9qSt+hUP5neXfpz93xG4Ku9JboDh4ZUUO+bNTx+XEt3af75rlYP4lhoCcKlCyKfgVGfOC2WZPSDhOm40KH8NB4zlQKX/vD2K3qTKZmj7pQyCJud+sRbeUvRJdx7CwD75MtDKn7gvThbvK/HEw12VoHL9AvE4lFC7KE/osdYkfG6s9sHZLn5LYwomI2paLVdiTlzq+mxYGQlMOVhMDuv9MvP8AgSFngRSq3YxcniyIBNRnO20PZ0g=
 jobs:
   include:
-    - stage: update_submodules 
-      script: .travis/update_submodules.sh --dev
+############### GITHUB SUBMODULES ###############
+    - stage: update_submodules_develop 
+      script: .travis/github/update_submodules.sh --dev
       on:
         branch: develop
+############### TESTING ###############
     - stage: test 
+      if: branch = develop
       script: echo "Running functional tests..."
-    - stage: deploy_dev
-      deploy:
-         provider: script
-         script: .travis/deploy_docker.sh --dev
-         on:
-           branch: develop
-    - stage: deploy_test
+############### DEV. DOCKER DEPLOYMENT ###############
+    - stage: docker_deploy_base
       before_install:
-         - .travis/update_docker.sh 
-         - docker --version
-      deploy:
-         provider: script
-         script: .travis/deploy_docker.sh --dev
-         on:
-           branch: feature/singularity_deployment
-    - stage: deploy_singularity
+         - .travis/docker/setup.sh 
+      script: ./docker/base/deploy.sh -y --branch $TRAVIS_BRANCH
+# -------------------------------------------------------
+    - stage: docker_deploy_logicmodule
       before_install:
-         - .travis/install_singularity.sh  
-         - .travis/login_singularity.sh
-         - singularity version 
-         - .travis/set_marenostrum_ssh.sh
-      deploy:
-         provider: script
-         script: .travis/deploy_singularity.sh --dev
-         on:
-           branch: feature/singularity_deployment
+         - .travis/docker/setup.sh 
+      script: ./docker/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8
+      script: ./docker/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11  
+# -------------------------------------------------------
+    - stage: docker_deploy_dsjava
+      before_install:
+         - .travis/docker/setup.sh 
+      script: ./docker/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8
+      script: ./docker/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11
+# -------------------------------------------------------
+    - stage: docker_deploy_dspython
+      before_install:
+         - .travis/docker/setup.sh 
+      script: ./docker/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.7 
+# -------------------------------------------------------
+    - stage: docker_deploy_client
+      before_install:
+         - .travis/docker/setup.sh 
+      script: ./docker/client/deploy.sh -y --branch $TRAVIS_BRANCH
+############### DEV. SINGULARITY DEPLOYMENT ###############
+    - stage: singularity_deploy_logicmodule
+      before_install:
+         - .travis/singularity/setup.sh 
+      script: ./singularity/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8
+      script: ./singularity/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11
+# -------------------------------------------------------
+    - stage: singularity_deploy_dsjava
+      before_install:
+         - .travis/singularity/setup.sh 
+      script: ./singularity/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8
+      script: ./singularity/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11
+# -------------------------------------------------------
+    - stage: singularity_deploy_dspython
+      before_install:
+         - .travis/singularity/setup.sh 
+      script: ./singularity/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.7
+# -------------------------------------------------------
+    - stage: singularity_deploy_client
+      before_install:
+         - .travis/singularity/setup.sh 
+      script: ./singularity/client/deploy.sh -y --branch $TRAVIS_BRANCH
+############### MARENOSTRUM DEPLOYMENT ###############
+    - stage: marenostrum_deploy
+      before_install:
+         - .travis/singularity/setup.sh 
+      script: ./.travis/marenostrum/deploy.sh -y --branch $TRAVIS_BRANCH
 cache:
   directories:
   - $HOME/.m2
-  - .dockerbuildx
+  - ./docker/base/.dockerbuildx
+  - ./docker/logicmodule/.dockerbuildx
+  - ./docker/dsjava/.dockerbuildx
+  - ./docker/dspython/.dockerbuildx
+  - ./docker/client/.dockerbuildx
   - $HOME/.singularity/

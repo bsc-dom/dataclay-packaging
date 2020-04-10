@@ -9,10 +9,14 @@ ARG PYTHON_PIP_VERSION=3
 
 # Install extrae requirements
 RUN apt-get update \
-       && apt-get install --no-install-recommends -y --allow-unauthenticated python${DATACLAY_PYVER} python${DATACLAY_PYVER}-dev python${PYTHON_PIP_VERSION}-pip python3-setuptools >/dev/null \
+       && apt-get install --no-install-recommends -y --allow-unauthenticated python${DATACLAY_PYVER} \
+       python${DATACLAY_PYVER}-dev python${PYTHON_PIP_VERSION}-pip \
+       python${PYTHON_PIP_VERSION}-setuptools \
+       libatlas3-base libgfortran5 >/dev/null \
        && rm -rf /var/lib/apt/lists/*
 
 # Set virtual environment since we could inherit some other python installations
+RUN pip${PYTHON_PIP_VERSION} install wheel 
 RUN pip${PYTHON_PIP_VERSION} install virtualenv
 RUN python${PYTHON_PIP_VERSION} -m virtualenv --python=/usr/bin/python${DATACLAY_PYVER} ${VIRTUAL_ENV}
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
@@ -24,8 +28,7 @@ RUN mkdir -p ${DATACLAY_HOME}/deploy/source
 # =============== INSTALL DATACLAY REQUIREMENTS =================== #
 
 COPY ./pyclay/requirements.txt requirements.txt
-RUN pip${PYTHON_PIP_VERSION} install -r requirements.txt
-
+RUN pip${PYTHON_PIP_VERSION} install -r requirements.txt --extra-index-url=https://www.piwheels.org/simple  --extra-index-url=https://www.piwheels.hostedpi.com/simple
 # =================== EXTRAE ENVIRONMENT VARIABLES ======================== #
 
 ENV DATACLAY_EXTRAE_WRAPPER_LIB=${DATACLAY_HOME}/pyextrae/dataclay_extrae_wrapper.so

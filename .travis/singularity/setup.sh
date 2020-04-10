@@ -25,3 +25,12 @@ pushd singularity
 
 popd
 
+# Login singularity
+openssl aes-256-cbc \
+	-K $encrypted_0680b2354a01_key \
+	-iv $encrypted_0680b2354a01_iv \
+	-in .travis/singularity/singularity_cloud_token.enc \
+	-out .travis/singularity/singularity_cloud_token -d
+	
+singularity remote login < .travis/singularity/singularity_cloud_token
+
