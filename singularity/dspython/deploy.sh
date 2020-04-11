@@ -12,7 +12,7 @@ source $BUILDDIR/../misc/_push.sh
 ######################################## default tags ###########################################
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_PY_TAG ]; then
 	## Tag default versions 
-	yes | singularity delete --arch=amd64 $REPOSITORY/dspython:$DEFAULT_PY_TAG || true
+	yes | singularity delete --arch=amd64 $REPOSITORY/dspython:$DEFAULT_TAG || true
 	singularity push -U $LOCAL_REPOSITORY/dspython.${DEFAULT_PY_TAG}.sif $REPOSITORY/dspython:$DEFAULT_TAG
 	
 	# Tag latest
