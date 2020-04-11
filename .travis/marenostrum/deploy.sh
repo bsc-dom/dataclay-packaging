@@ -29,8 +29,12 @@ singularity pull $LOCAL_REPOSITORY/dspython.sif library://support-dataclay/defau
 singularity pull $LOCAL_REPOSITORY/client.sif library://support-dataclay/default/client:$DEFAULT_TAG
 
 # Deploy singularity and orchestration scripts to Marenostrum
-scp -r ./orchestration dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG
-scp -r $LOCAL_REPOSITORY/ dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/singularity/images/
-ssh dataclay@mn1.bsc.es "echo $DEFAULT_TAG > /apps/MN4/DATACLAY/$DEFAULT_TAG/VERSION.txt"
-ssh dataclay@mn1.bsc.es "/apps/MN4/DATACLAY/$DEFAULT_TAG/install_client_dependencies.sh"
+scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+	-r ./orchestration dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG
+scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+	-r $LOCAL_REPOSITORY/ dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/singularity/images/
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+	dataclay@mn1.bsc.es "echo $DEFAULT_TAG > /apps/MN4/DATACLAY/$DEFAULT_TAG/VERSION.txt"
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+	dataclay@mn1.bsc.es "/apps/MN4/DATACLAY/$DEFAULT_TAG/install_client_dependencies.sh"
 #--prolog \"module load gcc/7.2.0 EXTRAE/3.6.1\""
