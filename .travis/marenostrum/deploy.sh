@@ -6,8 +6,7 @@ declare -r SSH_FILE="$(mktemp -u $HOME/.ssh/XXXXX)"
 # Decrypt the file containing the private key
 
 openssl aes-256-cbc \
-	-K $encrypted_12a78a482e9b_key \
-	-iv $encrypted_12a78a482e9b_iv \
+	-K $encrypted_12a78a482e9b_key -iv $encrypted_12a78a482e9b_iv \
 	-in .travis/marenostrum/marenostrum_deploy_key.enc \
 	-out "$SSH_FILE" -d
 
@@ -37,6 +36,6 @@ chmod 600 "$SSH_FILE" \
 # Deploy singularity and orchestration scripts to Marenostrum
 scp -r ./orchestration dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG
 scp -r $LOCAL_REPOSITORY/ dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/images/
-ssh dataclay@mn1.bsc.es "echo $DEFAULT_TAG > /apps/MN4/DATACLAY/$DEFAULT_TAG/VERSION.txt"
-ssh dataclay@mn1.bsc.es "/apps/MN4/DATACLAY/$DEFAULT_TAG/install_client_dependencies.sh"
+ssh dataclay@mn1.bsc.es "echo $DEFAULT_TAG > /apps/DATACLAY/$DEFAULT_TAG/VERSION.txt"
+ssh dataclay@mn1.bsc.es "/apps/DATACLAY/$DEFAULT_TAG/install_client_dependencies.sh"
 #--prolog \"module load gcc/7.2.0 EXTRAE/3.6.1\""
