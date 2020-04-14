@@ -24,6 +24,10 @@ chmod 600 "$SSH_FILE" \
          "  LogLevel ERROR" >> ~/.ssh/config
 
 source ./common/config.sh "$@"
+if [ -z $DEFAULT_TAG ]; then 
+	echo "CRITICAL: DEFAULT_TAG not set. Aborting." 
+	exit 1 
+fi
 
 LOCAL_REPOSITORY=$(mktemp -d -t marenostrum-XXXXXXXXXX)
 singularity pull $LOCAL_REPOSITORY/logicmodule.sif library://support-dataclay/default/logicmodule:$DEFAULT_TAG
@@ -38,9 +42,8 @@ chmod 600 "$SSH_FILE" \
          "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
 
 # Deploy singularity and orchestration scripts to Marenostrum
-ssh dataclay@mn1.bsc.es "rm -rf /apps/DATACLAY/$DEFAULT_TAG/" #sanity check
+ssh dataclay@mn1.bsc.es "rm -rf /apps/DATACLAY/$DEFAULT_TAG/ && mkidr -p /apps/MN4/DATACLAY/$DEFAULT_TAG/singularity/images/" #sanity check
 scp -r ./orchestration dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG
-scp $LOCAL_REPOSITORY/* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/images/
-#ssh dataclay@mn1.bsc.es "echo $DEFAULT_TAG > /apps/DATACLAY/$DEFAULT_TAG/VERSION.txt"
+scp $LOCAL_REPOSITORY/* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/singularity/images/
 ssh dataclay@mn1.bsc.es "/apps/DATACLAY/$DEFAULT_TAG/client/install_client_dependencies.sh"
 #--prolog \"module load gcc/7.2.0 EXTRAE/3.6.1\""
