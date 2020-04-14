@@ -17,6 +17,10 @@ chmod 600 "$SSH_FILE" \
     && printf "%s\n" \
          "Host dt01.bsc.es" \
          "  IdentityFile $SSH_FILE" \
+         "  LogLevel ERROR" >> ~/.ssh/config \
+    && printf "%s\n" \
+         "Host mn1.bsc.es" \
+         "  IdentityFile $SSH_FILE" \
          "  LogLevel ERROR" >> ~/.ssh/config
 
 source ./common/config.sh "$@"
