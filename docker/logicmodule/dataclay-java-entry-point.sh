@@ -53,7 +53,7 @@ done
 
 ### ========================== EXTRAE ============================= ##
 if [ "$TRACING" = true ] ; then
-	ARGS="-javaagent:/usr/share/java/aspectjweaver.jar -Dorg.aspectj.weaver.showWeaveInfo=false $ARGS"
+	ARGS="-javaagent:/usr/share/java/aspectjweaver.jar -Daj.weaving.verbose=true -Dorg.aspectj.weaver.showWeaveInfo=true $ARGS"
 fi
 
 ### ========================== LOGGING ============================= ##

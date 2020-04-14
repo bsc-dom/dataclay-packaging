@@ -7,4 +7,4 @@ TAG=$CLIENT_TAG
 source $BUILDDIR/../misc/_build.sh
 
 rm -f $REPOSITORY/client.sif 
-ln -s client.${CLIENT_TAG}.sif $REPOSITORY/client.sif
+ln -s $REPOSITORY/client.${CLIENT_TAG}.sif $REPOSITORY/client.sif

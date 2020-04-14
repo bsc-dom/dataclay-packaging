@@ -9,5 +9,5 @@ source $BUILDDIR/../misc/_build.sh
 
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	rm -f $REPOSITORY/dsjava.sif
-	ln -s dsjava.${DEFAULT_JDK_TAG}.sif $REPOSITORY/dsjava.sif
+	ln -s $REPOSITORY/dsjava.${DEFAULT_JDK_TAG}.sif $REPOSITORY/dsjava.sif
 fi 

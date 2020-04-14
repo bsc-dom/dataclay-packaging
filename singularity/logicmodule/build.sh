@@ -9,5 +9,5 @@ source $BUILDDIR/../misc/_build.sh
  
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	rm -f $REPOSITORY/logicmodule.sif
-	ln -s logicmodule.${DEFAULT_JDK_TAG}.sif $REPOSITORY/logicmodule.sif
+	ln -s $REPOSITORY/logicmodule.${DEFAULT_JDK_TAG}.sif $REPOSITORY/logicmodule.sif
 fi

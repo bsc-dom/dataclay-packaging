@@ -26,9 +26,9 @@ $SCRIPTDIR/client/build.sh "$@"
 
 # Check docker images 
 echo "Generated images:"
-ls -la images | grep "logicmodule"
-ls -la images | grep "dsjava"
-ls -la images | grep "dspython"
-ls -la images | grep "client"
+ls -la ../orchestration/singularity/images | grep "logicmodule"
+ls -la ../orchestration/singularity/images | grep "dsjava"
+ls -la ../orchestration/singularity/images | grep "dspython"
+ls -la ../orchestration/singularity/images | grep "client"
 
 echo "[dataClay singularity build] FINISHED! "
