@@ -42,7 +42,7 @@ chmod 600 "$SSH_FILE" \
          "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
 
 # Deploy singularity and orchestration scripts to Marenostrum
-ssh dataclay@mn1.bsc.es "rm -rf /apps/DATACLAY/$DEFAULT_TAG/ && mkidr -p /apps/MN4/DATACLAY/$DEFAULT_TAG/singularity/images/" #sanity check
+ssh dataclay@mn1.bsc.es "rm -rf /apps/DATACLAY/$DEFAULT_TAG/ && mkdir -p /apps/MN4/DATACLAY/$DEFAULT_TAG/singularity/images/" #sanity check
 scp -r ./orchestration dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG
 scp $LOCAL_REPOSITORY/* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/singularity/images/
 ssh dataclay@mn1.bsc.es "/apps/DATACLAY/$DEFAULT_TAG/client/install_client_dependencies.sh"
