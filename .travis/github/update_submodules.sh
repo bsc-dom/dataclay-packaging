@@ -50,19 +50,25 @@ chmod 600 "$SSH_FILE" \
 git remote set-url origin git@github.com:bsc-dom/dataclay-packaging.git
 
 # Update submodules
-pushd logicmodule/javaclay/
+pushd docker/logicmodule/javaclay/
 git checkout $BRANCH
 git pull
 popd
 
-pushd dspython/pyclay
+pushd docker/dspython/pyclay
+git checkout $BRANCH
+git pull
+popd 
+
+pushd orchestration
 git checkout $BRANCH
 git pull
 popd 
 
 # Add submodule changes
-git add logicmodule/javaclay/
-git add dspython/pyclay
+git add docker/logicmodule/javaclay/
+git add docker/dspython/pyclay
+git add orchestration
 
 git commit -m "Updating sub-modules from TravisCI build $TRAVIS_BUILD_NUMBER"
 git push origin HEAD:$BRANCH

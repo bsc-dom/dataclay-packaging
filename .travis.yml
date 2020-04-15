@@ -16,7 +16,7 @@ jobs:
       script: .travis/github/update_submodules.sh --dev
 ############### TESTING ###############
     - stage: test 
-      if: branch = develop
+      if: branch = develop AND type = cron
       script: echo "Running functional tests..."
 ############### DOCKER DEPLOYMENT ###############
     - stage: docker_deploy_base
@@ -107,7 +107,7 @@ jobs:
       script: ./singularity/client/deploy.sh -y --branch $TRAVIS_BRANCH
 ############### MARENOSTRUM DEPLOYMENT ###############
     - stage: marenostrum_deploy
-      if: branch = feature/singularity_deployment
+      if: (branch = develop OR branch = master) AND type = cron
       env:
          - CACHE_NAME=marenostrum
       before_install: .travis/singularity/setup.sh 
