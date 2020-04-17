@@ -1,0 +1,9 @@
+[submodule "orchestration"]
+	path = orchestration
+	url = https://github.com/bsc-dom/dataclay-orchestration.git
+[submodule "docker/logicmodule/javaclay"]
+	path = docker/logicmodule/javaclay
+	url = https://github.com/bsc-dom/javaclay.git
+[submodule "docker/dspython/pyclay"]
+	path = docker/dspython/pyclay
+	url = https://github.com/bsc-dom/pyclay.git
