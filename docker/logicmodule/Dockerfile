@@ -23,6 +23,7 @@ ENV DATACLAY_JAR=${DATACLAY_HOME}/dataclay.jar
 
 # Get dataClay JAR 
 COPY ./javaclay/target/${LOCAL_JAR} ${DATACLAY_JAR}
+ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
 
 # Copy entrypoint
 COPY ./dataclay-java-entry-point.sh ${DATACLAY_HOME}/entrypoints/dataclay-java-entry-point
@@ -38,4 +39,4 @@ COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
 COPY ./javaclay/dataclay-common/cfglog/log4j2.xml ${DATACLAY_LOG_CONFIG}
 
 # ================= SERVICE ==================== #
-ENTRYPOINT ["dataclay-java-entry-point", "es.bsc.dataclay.logic.server.LogicModuleSrv"] 
+ENTRYPOINT ["dataclay-java-entry-point", "es.bsc.dataclay.logic.server.LogicModuleSrv","--service"] 

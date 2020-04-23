@@ -7,7 +7,9 @@ source $BUILDDIR/../../common/prepare_docker_builder.sh
 
 # CREATE DATACLAY JAR
 pushd $BUILDDIR/javaclay
-mvn package -DskipTests=true >/dev/null
+echo "Packaging dataclay.jar"
+mvn package -q -DskipTests=true >/dev/null
+echo "dataclay.jar created!"
 popd
 
 # LOGICMODULE

@@ -5,13 +5,13 @@ TRACING=false
 EXEC_ARGS_PROVIDED=false
 EXEC_ARGS=""
 DEBUG=false
-
+SERVICE=false
 ################################## SIGNALING #############################################
 _term() { 
 	echo "Caught SIGTERM signal!" 
-	kill -TERM "$service"
-	wait "$service"
-  	if [ "$TRACING" = true ] ; then 
+	kill -TERM "$service_pid"
+	wait "$service_pid"
+	if [ $TRACING == true ] && [ $SERVICE == false ] ; then 
 		mkdir -p trace
 		mpi2prv -f TRACE.mpits -o ./trace/dctrace.prv
  	fi
@@ -32,6 +32,10 @@ while [[ $# -gt 0 ]]; do
 		DEBUG=true
 		shift
         ;;
+    --service)
+    	SERVICE=true
+    	shift
+    	;;
     *)
     	if [ "$EXEC_ARGS_PROVIDED" = false ] ; then
 			EXEC_ARGS_PROVIDED=true
@@ -45,17 +49,15 @@ while [[ $# -gt 0 ]]; do
 done
 
 ### ========================== LOGGING ============================= ##
-if [ "$DEBUG" = true ] ; then
+if [ $DEBUG == true ] ; then
 	export DEBUG=True
 fi
 
 ### ========================== ENTRYPOINT ============================= ##
-
 python $EXEC_ARGS &
-service=$! 
-wait "$service"
-
-if [ "$TRACING" = true ] ; then 
+service_pid=$! 
+wait "$service_pid"
+if [ $TRACING == true ] && [ $SERVICE == false ] ; then 
 	mkdir -p trace
-	mpi2prv -f TRACE.mpits -o ./trace/dctrace.prv
+	mpi2prv -syn -f TRACE.mpits -o ./trace/dctrace.prv
 fi

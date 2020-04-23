@@ -42,11 +42,11 @@ echo "WARNING: Images will be created in dataclay-packaging/orchestration/singul
 echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 SINGULARITY_TEMPLATE=$BUILDDIR/../misc/singularity-template.recipe
 SINGULARITY_IMAGE_NAME=${IMAGE_NAME}.${TAG}.sif
-SINGULARITY_LOCAL_REGISTRY="${LOCAL_REGISTRY}\/${IMAGE_NAME}:latest"
+SINGULARITY_LOCAL_REGISTRY="${LOCAL_REGISTRY}\/${IMAGE_NAME}:${TAG}"
 printMsg "Creating image $REPOSITORY/${SINGULARITY_IMAGE_NAME} from $SINGULARITY_LOCAL_REGISTRY"
 tmpfile=$(mktemp /tmp/singularity-templateXXXXXX.recipe)
-docker tag $DOCKER_REPOSITORY/${IMAGE_NAME}:${TAG} ${FROM_DOCKER}:latest
-docker push ${FROM_DOCKER}:latest
+docker tag $DOCKER_REPOSITORY/${IMAGE_NAME}:${TAG} ${FROM_DOCKER}:${TAG}
+docker push ${FROM_DOCKER}:${TAG}
 sed "s/DOCKER_IMAGE/${SINGULARITY_LOCAL_REGISTRY}/g" $SINGULARITY_TEMPLATE >> $tmpfile
 export SINGULARITY_NOHTTPS=1
 singularity build --force --fakeroot $REPOSITORY/${SINGULARITY_IMAGE_NAME} $tmpfile
