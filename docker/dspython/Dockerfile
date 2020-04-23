@@ -34,11 +34,11 @@ RUN pip${PYTHON_PIP_VERSION} install -r requirements.txt --extra-index-url=https
 ENV DATACLAY_EXTRAE_WRAPPER_LIB=${DATACLAY_HOME}/pyextrae/dataclay_extrae_wrapper.so
 ENV PYEXTRAE_PATH=${EXTRAE_HOME}/libexec:${EXTRAE_HOME}/lib
 ENV EXTRAE_CONFIG_FILE=${DATACLAY_HOME}/extrae/extrae_python.xml
-ENV PYTHONPATH=${PYEXTRAE_PATH}:${PYTHONPATH}
+ENV PYTHONPATH=${PYEXTRAE_PATH}:${VIRTUAL_ENV}/lib/python${DATACLAY_PYVER}/site-packages:${PYTHONPATH}
 
 # =================== EXTRAE wrapper ======================== #
 
-# Compile wrapper lib 
+# Get wrapper lib 
 COPY ./pyextrae pyextrae
 RUN cd pyextrae && gcc -L${EXTRAE_HOME}/lib -I${EXTRAE_HOME}/include extrae_wrapper.c -lpttrace --shared -o ${DATACLAY_EXTRAE_WRAPPER_LIB}
 # check pyextrae is installed
@@ -60,4 +60,4 @@ ENV DEPLOY_PATH=${DATACLAY_HOME}/deploy
 
 # Execute
 # Don't use CMD in order to keep compatibility with singularity container's generator
-ENTRYPOINT ["dataclay-python-entry-point","-m","dataclay.executionenv.server"]
+ENTRYPOINT ["dataclay-python-entry-point","-m","dataclay.executionenv.server","--service"]

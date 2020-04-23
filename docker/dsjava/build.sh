@@ -6,7 +6,9 @@ if [ -z $EXECUTION_ENVIRONMENT_TAG ]; then echo "ERROR: EXECUTION_ENVIRONMENT_TA
 
 # CREATE DATACLAY JAR
 pushd $BUILDDIR/../logicmodule/javaclay
-mvn package -DskipTests=true
+printMsg "Packaging dataclay.jar"
+mvn package -q -DskipTests=true >/dev/null
+printMsg "dataclay.jar created!"
 popd
 
 # DSJAVA
