@@ -16,7 +16,6 @@ jobs:
       script: .travis/github/update_submodules.sh --dev
 ############### TESTING ###############
     - stage: test 
-      if: branch = develop AND type = cron
       script: echo "Running functional tests..."
 ############### DOCKER DEPLOYMENT ###############
     - stage: docker_deploy_base
@@ -123,3 +122,14 @@ cache:
   - ./docker/dsjava/.dockerbuildxjdk8
   - ./docker/dspython/.dockerbuildxpy37
   - ./docker/client/.dockerbuildx
+notifications:
+  email:
+    - commiter:
+      on_success: change
+      on_failure: always
+    - cron:
+      if: type = cron
+      recipients:
+        - support-dataclay@bsc.es
+      on_success: change
+      on_failure: always
