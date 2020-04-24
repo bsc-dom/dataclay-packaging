@@ -22,8 +22,6 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	## Tag default versions 
 	docker tag $REPOSITORY/logicmodule:$DEFAULT_JDK_TAG $REPOSITORY/logicmodule:$DEFAULT_TAG
 	# Tag latest
-	if [ "$DEV" = false ] ; then
-		docker tag $REPOSITORY/logicmodule:$DEFAULT_TAG $REPOSITORY/logicmodule
-	fi 
+	docker tag $REPOSITORY/logicmodule:$DEFAULT_TAG $REPOSITORY/logicmodule 
 fi
 
