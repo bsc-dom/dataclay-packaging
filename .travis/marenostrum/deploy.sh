@@ -40,7 +40,7 @@ singularity pull $LOCAL_REPOSITORY/dspython.sif library://support-dataclay/defau
 singularity pull $LOCAL_REPOSITORY/client.sif library://support-dataclay/default/client:$DEFAULT_TAG
 
 # Prepare module definition 
-sed 's/SET_VERSION_HERE/${DEFAULT_TAG}/g' ./.travis/marenostrum/module.lua > /tmp/${DEFAULT_TAG}.lua
+sed "s/SET_VERSION_HERE/${DEFAULT_TAG}/g" ./.travis/marenostrum/module.lua > /tmp/${DEFAULT_TAG}.lua
 
 # Deploy singularity and orchestration scripts to Marenostrum
 ssh dataclay@mn1.bsc.es "rm -rf /apps/DATACLAY/$DEFAULT_TAG/ && mkdir -p /apps/DATACLAY/$DEFAULT_TAG/singularity/images/" #sanity check
