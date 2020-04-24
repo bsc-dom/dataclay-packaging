@@ -11,6 +11,4 @@ printMsg "$REPOSITORY/base:$BASE_VERSION_TAG IMAGE DONE!"
 popd 
 
 # Tag latest
-if [ "$DEV" = false ] ; then
-	docker tag $REPOSITORY/base:$DEFAULT_TAG $REPOSITORY/base
-fi 
+docker tag $REPOSITORY/base:$DEFAULT_TAG $REPOSITORY/base 

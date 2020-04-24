@@ -23,8 +23,6 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	## Tag default versions 
 	docker tag $REPOSITORY/dsjava:$DEFAULT_JDK_TAG $REPOSITORY/dsjava:$DEFAULT_TAG
 	# Tag latest
-	if [ "$DEV" = false ] ; then
-		docker tag $REPOSITORY/dsjava:$DEFAULT_TAG $REPOSITORY/dsjava
-	fi 
+	docker tag $REPOSITORY/dsjava:$DEFAULT_TAG $REPOSITORY/dsjava 
 fi
 

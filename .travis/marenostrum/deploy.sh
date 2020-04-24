@@ -48,7 +48,7 @@ scp -r ./orchestration/* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_T
 scp $LOCAL_REPOSITORY/* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/singularity/images/
 
 # Module definition
-scp /tmp/${DEFAULT_TAG}.lua dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/modules/${DEFAULT_TAG}.lua
+scp /tmp/${DEFAULT_TAG}.lua dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/modules/
 MODULE_LINK="develop"
 if [ "$DEV" = false ] ; then
 	MODULE_LINK="latest"

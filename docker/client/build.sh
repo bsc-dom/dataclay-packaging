@@ -15,6 +15,4 @@ printMsg "$REPOSITORY/client:$CLIENT_TAG DONE!"
 popd 
 
 # Tag latest
-if [ "$DEV" = false ] ; then
-	docker tag $REPOSITORY/client:$DEFAULT_TAG $REPOSITORY/client
-fi 
+docker tag $REPOSITORY/client:$DEFAULT_TAG $REPOSITORY/client 
