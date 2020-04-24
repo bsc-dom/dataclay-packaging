@@ -43,7 +43,8 @@ singularity pull $LOCAL_REPOSITORY/client.sif library://support-dataclay/default
 sed "s/SET_VERSION_HERE/${DEFAULT_TAG}/g" ./.travis/marenostrum/module.lua > /tmp/${DEFAULT_TAG}.lua
 
 # Deploy singularity and orchestration scripts to Marenostrum
-ssh dataclay@mn1.bsc.es "rm -rf /apps/DATACLAY/$DEFAULT_TAG/ && mkdir -p /apps/DATACLAY/$DEFAULT_TAG/singularity/images/" #sanity check
+ssh dataclay@mn1.bsc.es "rm -rf /apps/DATACLAY/$DEFAULT_TAG/ && echo $DEFAULT_TAG > /apps/DATACLAY/$DEFAULT_TAG/VERSION.txt && mkdir -p /apps/DATACLAY/$DEFAULT_TAG/singularity/images/" #sanity check
+
 scp -r ./orchestration/* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG
 scp $LOCAL_REPOSITORY/* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/singularity/images/
 
