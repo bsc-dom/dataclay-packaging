@@ -43,7 +43,7 @@ singularity pull $LOCAL_REPOSITORY/client.sif library://support-dataclay/default
 sed "s/SET_VERSION_HERE/${DEFAULT_TAG}/g" ./.travis/marenostrum/module.lua > /tmp/${DEFAULT_TAG}.lua
 
 # Deploy singularity and orchestration scripts to Marenostrum
-ssh dataclay@mn1.bsc.es "rm -rf /apps/DATACLAY/$DEFAULT_TAG/ && echo $DEFAULT_TAG > /apps/DATACLAY/$DEFAULT_TAG/VERSION.txt && mkdir -p /apps/DATACLAY/$DEFAULT_TAG/singularity/images/" #sanity check
+ssh dataclay@mn1.bsc.es "rm -rf /apps/DATACLAY/$DEFAULT_TAG/ && mkdir -p /apps/DATACLAY/$DEFAULT_TAG/singularity/images/" #sanity check
 
 scp -r ./orchestration/* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG
 scp $LOCAL_REPOSITORY/* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/singularity/images/
@@ -55,6 +55,7 @@ if [ "$DEV" = false ] ; then
 	MODULE_LINK="latest"
 fi
 ssh dataclay@mn1.bsc.es "rm /apps/DATACLAY/modules/${MODULE_LINK}.lua && ln -s /apps/DATACLAY/modules/${DEFAULT_TAG}.lua /apps/DATACLAY/modules/${MODULE_LINK}.lua"
+ssh dataclay@mn1.bsc.es "echo $DEFAULT_TAG > /apps/DATACLAY/$DEFAULT_TAG/VERSION.txt"
 
 # Singularity is needed to install client dependencies
 ssh dataclay@mn1.bsc.es "module load GCC/7.2.0 EXTRAE/3.6.1 SINGULARITY/3.5.2 && /apps/DATACLAY/$DEFAULT_TAG/client/install_client_dependencies.sh"
