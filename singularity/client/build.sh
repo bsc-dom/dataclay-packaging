@@ -6,5 +6,5 @@ IMAGE_NAME=client
 TAG=$CLIENT_TAG
 source $BUILDDIR/../misc/_build.sh
 
-rm -f $REPOSITORY/client.sif 
-ln -s $REPOSITORY/client.${CLIENT_TAG}.sif $REPOSITORY/client.sif
+rm -f $REPOSITORY/client:latest.sif 
+ln -s $REPOSITORY/client:${CLIENT_TAG}.sif $REPOSITORY/client:latest.sif

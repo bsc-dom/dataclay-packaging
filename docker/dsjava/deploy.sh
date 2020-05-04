@@ -5,10 +5,12 @@ source $BUILDDIR/../../common/config.sh
 if [ -z $EXECUTION_ENVIRONMENT_TAG ]; then echo "ERROR: EXECUTION_ENVIRONMENT_TAG not defined. Aborting"; exit 1; fi
 source $BUILDDIR/../../common/prepare_docker_builder.sh
 
-# CREATE DATACLAY JAR
-pushd $BUILDDIR/../logicmodule/javaclay
-mvn package -DskipTests=true >/dev/null
-popd
+if [ $PACKAGE_JAR == true ]; then 
+	# CREATE DATACLAY JAR
+	pushd $BUILDDIR/../logicmodule/javaclay
+	mvn package -DskipTests=true >/dev/null
+	popd
+fi
 
 # DSJAVA
 pushd $BUILDDIR
@@ -16,7 +18,8 @@ echo "************* Building image named $REPOSITORY/dsjava:$EXECUTION_ENVIRONME
 docker buildx build -t $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG \
 		--build-arg LOGICMODULE_VERSION=$EXECUTION_ENVIRONMENT_TAG \
 		--platform $PLATFORMS \
-		--cache-to=type=local,dest=${DOCKERX_CACHE},mode=max $EXTRA_ARGS \
+		--cache-to=type=registry,ref=bscdataclay/dsjava:buildxcache,mode=max \
+		--cache-from=type=registry,ref=bscdataclay/dsjava:buildxcache \
 		--push .
 echo "************* $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG DONE! *************"
 popd 

@@ -1,61 +1,54 @@
 #!/bin/bash
-declare -r SSH_FILE="$(mktemp -u $HOME/.ssh/XXXXX)"
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Decrypt the file containing the private key
-openssl aes-256-cbc \
-	-K $encrypted_12a78a482e9b_key -iv $encrypted_12a78a482e9b_iv \
-	-in .travis/marenostrum/marenostrum_deploy_key.enc \
-	-out "$SSH_FILE" -d
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Enable SSH authentication
-chmod 600 "$SSH_FILE" \
-    && printf "%s\n" \
-         "Host dt01.bsc.es" \
-         "  IdentityFile $SSH_FILE" \
-         "  LogLevel ERROR" >> ~/.ssh/config \
-    && printf "%s\n" \
-         "Host mn1.bsc.es" \
-         "  IdentityFile $SSH_FILE" \
-         "  LogLevel ERROR" >> ~/.ssh/config
-         
-chmod 600 "$SSH_FILE" \
-    && printf "%s\n" \
-         "Host *" \
-         "  StrictHostKeyChecking no" \
-         "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
-
-source ./common/config.sh "$@"
+DEPLOYSCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+PACKAGING_DIR=$DEPLOYSCRIPTDIR/../..
+ORCHESTRATION_DIR=$PACKAGING_DIR/orchestration
+source $PACKAGING_DIR/common/config.sh "$@"
 if [ -z $DEFAULT_TAG ]; then 
 	echo "CRITICAL: DEFAULT_TAG not set. Aborting." 
 	exit 1 
 fi
 
-# Pull singularity images if needed
-LOCAL_REPOSITORY=$(mktemp -d -t marenostrum-XXXXXXXXXX)
-singularity pull $LOCAL_REPOSITORY/logicmodule.sif library://support-dataclay/default/logicmodule:$DEFAULT_TAG
-singularity pull $LOCAL_REPOSITORY/dsjava.sif library://support-dataclay/default/dsjava:$DEFAULT_TAG
-singularity pull $LOCAL_REPOSITORY/dspython.sif library://support-dataclay/default/dspython:$DEFAULT_TAG
-singularity pull $LOCAL_REPOSITORY/client.sif library://support-dataclay/default/client:$DEFAULT_TAG
+SECONDS=0
+$ORCHESTRATION_DIR/singularity/singularity_pull.sh
+
+echo "[marenostrum-deploy] Deploying to MN..."
+
+LOCAL_REPOSITORY=$ORCHESTRATION_DIR/singularity/images
 
 # Prepare module definition 
-sed "s/SET_VERSION_HERE/${DEFAULT_TAG}/g" ./.travis/marenostrum/module.lua > /tmp/${DEFAULT_TAG}.lua
+sed "s/SET_VERSION_HERE/${DEFAULT_TAG}/g" $DEPLOYSCRIPTDIR/module.lua > /tmp/${DEFAULT_TAG}.lua
 
 # Deploy singularity and orchestration scripts to Marenostrum
-ssh dataclay@mn1.bsc.es "rm -rf /apps/DATACLAY/$DEFAULT_TAG/ && mkdir -p /apps/DATACLAY/$DEFAULT_TAG/singularity/images/" #sanity check
+DEPLOY_CMD="rm -rf /apps/DATACLAY/$DEFAULT_TAG/ &&\
+ mkdir -p /apps/DATACLAY/$DEFAULT_TAG/singularity/images/ &&\
+ mkdir -p /apps/DATACLAY/$DEFAULT_TAG/javaclay &&\
+ mkdir -p /apps/DATACLAY/$DEFAULT_TAG/pyclay"
+ 
+echo "[marenostrum-deploy] Cleaning and preparing folders in MN..."
+ssh dataclay@mn1.bsc.es "$DEPLOY_CMD"
 
-scp -r ./orchestration/* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG
-scp $LOCAL_REPOSITORY/* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/singularity/images/
+# Send orchestration script and images
+echo "[marenostrum-deploy] Deploying dataclay orchestrator and singularity images..."
+rsync -av -e ssh --progress $PACKAGING_DIR/orchestration/* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG
+
+# Send javaclay and pyclay
+echo "[marenostrum-deploy] Deploying javaclay..."
+pushd $PACKAGING_DIR/docker/logicmodule/javaclay
+mvn package -q -DskipTests=true
+scp target/*-jar-with-dependencies.jar dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/javaclay/dataclay.jar
+popd
+echo "[marenostrum-deploy] Deploying pyclay..."
+rsync -av -e ssh --progress $PACKAGING_DIR/docker/dspython/pyclay/* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/pyclay/
 
 # Module definition
+echo "[marenostrum-deploy] Deploying dataclay module..."
 scp /tmp/${DEFAULT_TAG}.lua dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/modules/
 MODULE_LINK="develop"
 if [ "$DEV" = false ] ; then
 	MODULE_LINK="latest"
 fi
 ssh dataclay@mn1.bsc.es "rm /apps/DATACLAY/modules/${MODULE_LINK}.lua && ln -s /apps/DATACLAY/modules/${DEFAULT_TAG}.lua /apps/DATACLAY/modules/${MODULE_LINK}.lua"
-ssh dataclay@mn1.bsc.es "echo $DEFAULT_TAG > /apps/DATACLAY/$DEFAULT_TAG/VERSION.txt"
 
-# Singularity is needed to install client dependencies
-ssh dataclay@mn1.bsc.es "module load GCC/7.2.0 EXTRAE/3.6.1 SINGULARITY/3.5.2 && /apps/DATACLAY/$DEFAULT_TAG/client/install_client_dependencies.sh"
+duration=$SECONDS
+echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
+echo "MN deployment successfully finished!"

@@ -34,7 +34,7 @@ WORKDIR ${DATACLAY_HOME}
 
 # =================== EXTRAE ENVIRONMENT VARIABLES ======================== #
 ENV EXTRAE_HOME=/home/dataclayusr/.extrae
-ENV EXTRAE_VERSION=3.6.1
+ENV EXTRAE_VERSION=3.5.4
 ENV EXTRAE_SKIP_AUTO_LIBRARY_INITIALIZE=1
 ENV EXTRAE_JAR_PATH=${EXTRAE_HOME}/lib/javatrace.jar
 ENV EXTRAE_CONFIG_FILE=${DATACLAY_HOME}/extrae/extrae_basic.xml
@@ -46,24 +46,31 @@ ENV EXTRAE_BUILD_FOLDER=/tmp/extrae_build/
 RUN mkdir -p ${EXTRAE_BUILD_FOLDER}
 RUN curl -SL https://github.com/bsc-performance-tools/extrae/archive/${EXTRAE_VERSION}.tar.gz | tar -xzC ${EXTRAE_BUILD_FOLDER} --strip-components=1
 
+#	--disable-nanos \
+#	--with-java-aspectj-weaver=/usr/share/java/aspectjweaver.jar \
 RUN cd ${EXTRAE_BUILD_FOLDER} && \
 	./bootstrap && \
 	./configure --prefix=$EXTRAE_HOME \
+	--enable-gettimeofday-clock \
 	--without-mpi \
 	--without-unwind \
 	--without-dyninst \
+	--without-binutils \
 	--with-papi=/usr/share/papi \
 	--with-papi-headers=/usr/include \
 	--with-papi-libs=$(dirname $(find /usr/lib | grep libpapi | head -1)) \
 	--disable-openmp \
+	--enable-nanos \
 	--disable-smpss \
-	--disable-nanos \
-	--with-java-aspectj-weaver=/usr/share/java/aspectjweaver.jar \
+	--disable-instrument-io \
 	--with-java-jdk=${JAVA8_HOME} && \
 	make && \
 	make install && \
 	make distclean && \ 
 	rm -rf ${EXTRAE_BUILD_FOLDER}
+
+# Give permissions for extrae
+RUN chmod -R ugo+rwx /tmp
 
 # Copy extrae configuration files
 COPY ./extrae extrae 
@@ -72,9 +79,10 @@ COPY ./extrae extrae
 ENV LD_PRELOAD=${EXTRAE_HOME}/lib/libpttrace.so:${LD_PRELOAD}
 ENV PATH=${EXTRAE_HOME}/bin:${PATH}
 ENV LD_LIBRARY_PATH=${EXTRAE_HOME}/lib:${LD_LIBRARY_PATH}
+#ENV EXTRAE_SAMPLING_CLOCKTYPE=REAL
 
 # Virtual environment to be inherited from multi-stage docker in client
-ENV VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
+ENV DATACLAY_VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
 
 # ================= SERVICE ==================== #
 

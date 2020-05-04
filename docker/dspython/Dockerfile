@@ -18,8 +18,8 @@ RUN apt-get update \
 # Set virtual environment since we could inherit some other python installations
 RUN pip${PYTHON_PIP_VERSION} install wheel 
 RUN pip${PYTHON_PIP_VERSION} install virtualenv
-RUN python${PYTHON_PIP_VERSION} -m virtualenv --python=/usr/bin/python${DATACLAY_PYVER} ${VIRTUAL_ENV}
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+RUN python${PYTHON_PIP_VERSION} -m virtualenv --python=/usr/bin/python${DATACLAY_PYVER} ${DATACLAY_VIRTUAL_ENV}
+ENV PATH="$DATACLAY_VIRTUAL_ENV/bin:$PATH"
 RUN python --version
 
 # Create source
@@ -31,23 +31,24 @@ COPY ./pyclay/requirements.txt requirements.txt
 RUN pip${PYTHON_PIP_VERSION} install -r requirements.txt --extra-index-url=https://www.piwheels.org/simple  --extra-index-url=https://www.piwheels.hostedpi.com/simple
 # =================== EXTRAE ENVIRONMENT VARIABLES ======================== #
 
-ENV DATACLAY_EXTRAE_WRAPPER_LIB=${DATACLAY_HOME}/pyextrae/dataclay_extrae_wrapper.so
+ENV PYCLAY_EXTRAE_WRAPPER_LIB=${DATACLAY_HOME}/pyextrae/pyclay_extrae_wrapper.so
 ENV PYEXTRAE_PATH=${EXTRAE_HOME}/libexec:${EXTRAE_HOME}/lib
 ENV EXTRAE_CONFIG_FILE=${DATACLAY_HOME}/extrae/extrae_python.xml
-ENV PYTHONPATH=${PYEXTRAE_PATH}:${VIRTUAL_ENV}/lib/python${DATACLAY_PYVER}/site-packages:${PYTHONPATH}
+ENV PYTHONPATH=${PYEXTRAE_PATH}:${DATACLAY_VIRTUAL_ENV}/lib/python${DATACLAY_PYVER}/site-packages:${PYTHONPATH}
 
 # =================== EXTRAE wrapper ======================== #
 
 # Get wrapper lib 
 COPY ./pyextrae pyextrae
-RUN cd pyextrae && gcc -L${EXTRAE_HOME}/lib -I${EXTRAE_HOME}/include extrae_wrapper.c -lpttrace --shared -o ${DATACLAY_EXTRAE_WRAPPER_LIB}
+RUN cd pyextrae && gcc -fPIC -L${EXTRAE_HOME}/lib -I${EXTRAE_HOME}/include extrae_wrapper.c -lpttrace --shared -o ${PYCLAY_EXTRAE_WRAPPER_LIB}
 # check pyextrae is installed
 RUN python -c "import pyextrae.common.extrae as pyextrae_module; print('import ok')"
 RUN python -c "from pyextrae.common.extrae import Extrae as extrae_dict_obj; print('import ok')"
-RUN python -c "from ctypes import cdll; cdll.LoadLibrary(\"${DATACLAY_HOME}/pyextrae/dataclay_extrae_wrapper.so\")"
+RUN python -c "from ctypes import cdll; cdll.LoadLibrary(\"${DATACLAY_HOME}/pyextrae/pyclay_extrae_wrapper.so\")"
 # =============== INSTALL DATACLAY =================== #
-COPY ./pyclay/ ${DATACLAY_HOME}
-RUN python setup.py install
+
+COPY ./pyclay/ ${DATACLAY_HOME}/pyclay/
+RUN cd ${DATACLAY_HOME}/pyclay/ && python setup.py install
 
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
 

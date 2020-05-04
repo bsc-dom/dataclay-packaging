@@ -13,11 +13,11 @@ source $BUILDDIR/../misc/_push.sh
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	## Tag default versions 
 	yes | singularity delete --arch=amd64 $REPOSITORY/logicmodule:$DEFAULT_TAG || true
-	singularity push -U $LOCAL_REPOSITORY/logicmodule.${DEFAULT_JDK_TAG}.sif $REPOSITORY/logicmodule:$DEFAULT_TAG
+	singularity push -U $LOCAL_REPOSITORY/logicmodule:${DEFAULT_JDK_TAG}.sif $REPOSITORY/logicmodule:$DEFAULT_TAG
 	
 	# Tag latest
 	if [ "$DEV" = false ] ; then
 		yes | singularity delete --arch=amd64 $REPOSITORY/logicmodule:latest || true
-		singularity push -U $LOCAL_REPOSITORY/logicmodule.${DEFAULT_TAG}.sif $REPOSITORY/logicmodule:latest
+		singularity push -U $LOCAL_REPOSITORY/logicmodule:${DEFAULT_TAG}.sif $REPOSITORY/logicmodule:latest
 	fi 
 fi

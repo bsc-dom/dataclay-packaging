@@ -13,7 +13,8 @@ docker buildx build -t $REPOSITORY/client:$CLIENT_TAG \
 	--build-arg DATACLAY_LOGICMODULE_DOCKER_TAG=$DEFAULT_JDK_TAG \
 	--build-arg DATACLAY_PYVER=$DEFAULT_PYTHON \
 	--platform $PLATFORMS \
-	--cache-to=type=local,dest=${DOCKERX_CACHE},mode=max $EXTRA_ARGS \
+	--cache-to=type=registry,ref=bscdataclay/client:buildxcache,mode=max \
+	--cache-from=type=registry,ref=bscdataclay/client:buildxcache \
 	--push .
 echo "************* $REPOSITORY/client:$CLIENT_TAG DONE! *************"
 popd 

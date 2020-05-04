@@ -10,6 +10,11 @@ TAG=$EXECUTION_ENVIRONMENT_TAG
 source $BUILDDIR/../misc/_build.sh 
 
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_PY_TAG ]; then
-	rm -f $REPOSITORY/dspython.sif
-	ln -s $REPOSITORY/dspython.${DEFAULT_PY_TAG}.sif $REPOSITORY/dspython.sif
+	rm -f $REPOSITORY/dspython:latest.sif
+	ln -s $REPOSITORY/dspython:${DEFAULT_PY_TAG}.sif $REPOSITORY/dspython:latest.sif
+fi 
+
+if [ $DEV == true ]; then 
+	rm -f $REPOSITORY/dspython:${EXECUTION_ENVIRONMENT_TAG/.dev/}.sif
+	ln -s $REPOSITORY/dspython:${EXECUTION_ENVIRONMENT_TAG}.sif $REPOSITORY/dspython:${EXECUTION_ENVIRONMENT_TAG/.dev/}.sif
 fi 

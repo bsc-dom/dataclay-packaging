@@ -11,7 +11,7 @@ _term() {
 	echo "Caught SIGTERM signal!" 
 	kill -TERM "$service_pid"
 	wait "$service_pid"
-  	if [ "$TRACING" = true ] ; then 
+    if [ $TRACING == true ] && [ $SERVICE == false ] ; then 
 		mkdir -p trace
 		mpi2prv -f TRACE.mpits -o ./trace/dctrace.prv
  	fi
@@ -81,5 +81,5 @@ wait "$service_pid"
 
 if [ $TRACING == true ] && [ $SERVICE == false ] ; then 
 	mkdir -p trace
-	mpi2prv -syn -f TRACE.mpits -o ./trace/dctrace.prv
+	mpi2prv -no-syn -f TRACE.mpits -o ./trace/dctrace.prv
 fi

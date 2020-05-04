@@ -11,5 +11,5 @@ source $BUILDDIR/../misc/_push.sh
 # Tag latest
 if [ "$DEV" = false ] ; then
 	yes | singularity delete --arch=amd64 $REPOSITORY/client:latest || true
-	singularity push -U $LOCAL_REPOSITORY/client.${CLIENT_TAG}.sif $REPOSITORY/client:latest
+	singularity push -U $LOCAL_REPOSITORY/client:${CLIENT_TAG}.sif $REPOSITORY/client:latest
 fi 

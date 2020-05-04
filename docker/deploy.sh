@@ -31,9 +31,17 @@ echo " Welcome to dataClay deploy script!"
 source $SCRIPTDIR/../common/PLATFORMS.txt
 
 $SCRIPTDIR/base/deploy.sh "$@"
+
+# CREATE DATACLAY JAR
+pushd $SCRIPTDIR/logicmodule/javaclay
+echo "Packaging dataclay.jar"
+mvn package -q -DskipTests=true >/dev/null
+echo "dataclay.jar created!"
+popd
+
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
-	$SCRIPTDIR/logicmodule/deploy.sh "$@" --ee jdk${JAVA_VERSION}
-	$SCRIPTDIR/dsjava/deploy.sh "$@" --ee jdk${JAVA_VERSION}
+	$SCRIPTDIR/logicmodule/deploy.sh "$@" --ee jdk${JAVA_VERSION} --do-not-package #already packaged
+	$SCRIPTDIR/dsjava/deploy.sh "$@" --ee jdk${JAVA_VERSION} --do-not-package #already packaged
 done
 for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
 	$SCRIPTDIR/dspython/deploy.sh "$@" --ee py${PYTHON_VERSION}

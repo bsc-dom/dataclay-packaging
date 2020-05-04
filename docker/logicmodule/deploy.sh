@@ -5,12 +5,14 @@ source $BUILDDIR/../../common/config.sh
 if [ -z $EXECUTION_ENVIRONMENT_TAG ]; then echo "ERROR: EXECUTION_ENVIRONMENT_TAG not defined. Aborting"; exit 1; fi
 source $BUILDDIR/../../common/prepare_docker_builder.sh
 
-# CREATE DATACLAY JAR
-pushd $BUILDDIR/javaclay
-echo "Packaging dataclay.jar"
-mvn package -q -DskipTests=true >/dev/null
-echo "dataclay.jar created!"
-popd
+if [ $PACKAGE_JAR == true ]; then 
+	# CREATE DATACLAY JAR
+	pushd $BUILDDIR/javaclay
+	echo "Packaging dataclay.jar"
+	mvn package -q -DskipTests=true >/dev/null
+	echo "dataclay.jar created!"
+	popd
+fi
 
 # LOGICMODULE
 pushd $BUILDDIR
@@ -19,8 +21,8 @@ docker buildx build -t $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG \
 		--build-arg JDK=$JAVA_VERSION \
 		--build-arg BASE_VERSION=$BASE_VERSION_TAG \
 		--build-arg LOCAL_JAR=$JAR_NAME \
-		--platform $PLATFORMS \
-		--cache-to=type=local,dest=${DOCKERX_CACHE},mode=max $EXTRA_ARGS \
+		--cache-to=type=registry,ref=bscdataclay/logicmodule:buildxcache,mode=max \
+		--cache-from=type=registry,ref=bscdataclay/logicmodule:buildxcache \
 		--push .
 echo "************* $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG IMAGE PUSHED! *************"
 popd 
