@@ -16,9 +16,11 @@ PYTHON_FULL_VERSION = "3.7.4"
 GCC_VERSION = "8.1.0"
 
 -- Module dependencies
--- load("java/8u131")
 load("gcc/" .. GCC_VERSION)
-load("python/" .. PYTHON_FULL_VERSION)
+if (not isloaded("python")) then load("python/" .. PYTHON_FULL_VERSION) end
+-- if (not isloaded("EXTRAE/3.5.4")) then load("EXTRAE/3.5.4") end
+
+prereq(atleast("python","3.6.1"))
 load("singularity/" .. SINGULARITY_VERSION) 
 
 -- Bind into dataClay containers
@@ -31,20 +33,16 @@ append_path("PATH", DATACLAY_HOME .. "/bin")
 setenv("DATACLAY_HOME", DATACLAY_HOME)
 
 -- For apps outside containers
-PYCLAY_PATH = DATACLAY_HOME .. "/client/pyclay/lib/python" .. PYTHON_VERSION .. "/site-packages"
-DATACLAY_JAR = DATACLAY_HOME .. "/client/javaclay/dataclay.jar"
-setenv("PYCLAY_PATH", PYCLAY_PATH)
-setenv("DATACLAY_JAR", DATACLAY_JAR)
+
+-- javaclay
+setenv("DATACLAY_JAR", DATACLAY_HOME .. "/javaclay/dataclay.jar")
+
+-- pyclay
+execute {cmd="export PYCLAY_PATH=$DATACLAY_HOME/pyclay/src:$(find /apps/DATACLAY/dependencies/pyenv$(python --version | awk '{print $2}')* -name site-packages)",modeA={"load"}}
 
 -- COMPSs bindings
 append_path("PATH", DATACLAY_HOME .. "/scripts")
 setenv("COMPSS_STORAGE_HOME", DATACLAY_HOME)
-append_path("PYTHONPATH", PYCLAY_PATH)
-
--- Extrae 
--- setenv("DATACLAY_EXTRAE_WRAPPER_LIB", DATACLAY_HOME .. "/client/pyclay/pyextrae/dataclay_extrae_wrapper.so")
--- setenv("EXTRAE_CONFIG_FILE", DATACLAY_HOME .. "/client/pyclay/pyextrae/extrae_python.xml")
--- setenv("EXTRAE_SKIP_AUTO_LIBRARY_INITIALIZE", "1")
 
 
 

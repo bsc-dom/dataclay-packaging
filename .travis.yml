@@ -54,6 +54,12 @@ jobs:
     - stage: docker_deploy_dspython
       if: (branch = develop OR branch = master) AND type = cron
       env:
+         - CACHE_NAME=docker_dspython_py36
+      before_install: .travis/docker/setup.sh 
+      script: ./docker/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.6 
+    - # stage name not required, will continue
+      if: (branch = develop OR branch = master) AND type = cron
+      env:
          - CACHE_NAME=docker_dspython_py37
       before_install: .travis/docker/setup.sh 
       script: ./docker/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.7 
@@ -94,6 +100,12 @@ jobs:
     - stage: singularity_deploy_dspython
       if: (branch = develop OR branch = master) AND type = cron
       env:
+         - CACHE_NAME=singularity_dspython_py36
+      before_install: .travis/singularity/setup.sh 
+      script: ./singularity/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.6
+    - # stage name not required, will continue
+      if: (branch = develop OR branch = master) AND type = cron
+      env:
          - CACHE_NAME=singularity_dspython_py37
       before_install: .travis/singularity/setup.sh 
       script: ./singularity/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.7
@@ -109,19 +121,12 @@ jobs:
       if: (branch = develop OR branch = master) AND type = cron
       env:
          - CACHE_NAME=marenostrum
-      before_install: .travis/singularity/setup.sh 
+      before_install: .travis/singularity/setup.sh && .travis/marenostrum/set_ssh.sh
       script: ./.travis/marenostrum/deploy.sh -y --branch $TRAVIS_BRANCH
 cache:
   directories:
   - $HOME/.m2
   - $HOME/.singularity
-  - ./docker/base/.dockerbuildx
-  - ./docker/logicmodule/.dockerbuildxjdk11
-  - ./docker/logicmodule/.dockerbuildxjdk8
-  - ./docker/dsjava/.dockerbuildxjdk11
-  - ./docker/dsjava/.dockerbuildxjdk8
-  - ./docker/dspython/.dockerbuildxpy37
-  - ./docker/client/.dockerbuildx
 notifications:
   email:
     - commiter:

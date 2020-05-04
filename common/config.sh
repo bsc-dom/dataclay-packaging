@@ -85,6 +85,7 @@ function printError { echo "${red}======== $1 ========${end}"; }
 ################################## OPTIONS ####################################
 set -e
 export DEV=false
+export PACKAGE_JAR=true
 export SINGULARITY_CHECK=false
 DONOTPROMPT=false
 while test $# -gt 0
@@ -107,6 +108,9 @@ do
         -y) 
         	DONOTPROMPT=true 
         	;;
+        --do-not-package) 
+        	export PACKAGE_JAR=false 
+        	;;
         --singularity) 
         	SINGULARITY_CHECK=true
         	INSTALLED_REQUIREMENTS+=("singularity")
@@ -119,6 +123,7 @@ do
 done
 ###############################################################################
 CONFIGDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+ORCHDIR=$CONFIGDIR/../orchestration/
 DATACLAY_DOCKER_DIR=$CONFIGDIR/../docker/
 source $CONFIGDIR/PLATFORMS.txt
 
@@ -131,8 +136,8 @@ if [ "$DEV" = false ] ; then
 	  exit 1;
 	fi
 fi
-
-export DATACLAY_VERSION=$(cat $CONFIGDIR/VERSION.txt)
+DATACLAY_VERSION=$(cat $ORCHDIR/VERSION.txt)
+export DATACLAY_VERSION="${DATACLAY_VERSION//.dev/}"
 export DEFAULT_TAG="$(get_container_version)"
 export BASE_VERSION_TAG="$(get_container_version)"
 export CLIENT_TAG="$(get_container_version)"

@@ -4,12 +4,16 @@ REPOSITORY="bscdataclay"
 source $BUILDDIR/../../common/config.sh
 if [ -z $EXECUTION_ENVIRONMENT_TAG ]; then echo "ERROR: EXECUTION_ENVIRONMENT_TAG not defined. Aborting"; exit 1; fi
 
+
 # CREATE DATACLAY JAR
-pushd $BUILDDIR/../logicmodule/javaclay
-printMsg "Packaging dataclay.jar"
-mvn package -q -DskipTests=true >/dev/null
-printMsg "dataclay.jar created!"
-popd
+if [ $PACKAGE_JAR == true ]; then 
+	# CREATE DATACLAY JAR
+	pushd $BUILDDIR/../logicmodule/javaclay
+	printMsg "Packaging dataclay.jar"
+	mvn package -q -DskipTests=true >/dev/null
+	printMsg "dataclay.jar created!"
+	popd
+fi 
 
 # DSJAVA
 pushd $BUILDDIR
@@ -25,4 +29,3 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	# Tag latest
 	docker tag $REPOSITORY/dsjava:$DEFAULT_TAG $REPOSITORY/dsjava 
 fi
-

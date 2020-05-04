@@ -65,12 +65,5 @@ done
 if [ ! -z $EXECUTION_ENVIRONMENT ]; then 
 	DATACLAY_EE_VERSION="${EXECUTION_ENVIRONMENT//./}"
 fi
-DOCKERX_CACHE=$BUILDDIR/.dockerbuildx$DATACLAY_EE_VERSION
-EXTRA_ARGS=""
-if [ -f $DOCKERX_CACHE/index.json ]; then 
-	echo " -- Found index cache at $DOCKERX_CACHE"
-	EXTRA_ARGS="--cache-from=type=local,src=$DOCKERX_CACHE" 
-fi
-
 
 

@@ -14,5 +14,5 @@ yes | singularity delete --arch=amd64 $REPOSITORY/${SINGULARITY_IMAGE_NAME} || t
 singularity build --force --remote $REPOSITORY/${SINGULARITY_IMAGE_NAME} $tmpfile
 rm $tmpfile
 printMsg "$REPOSITORY/${SINGULARITY_IMAGE_NAME} created!" 
-singularity pull $LOCAL_REPOSITORY/${IMAGE_NAME}.${TAG}.sif $REPOSITORY/${SINGULARITY_IMAGE_NAME}
+singularity pull $LOCAL_REPOSITORY/${IMAGE_NAME}:${TAG}.sif $REPOSITORY/${SINGULARITY_IMAGE_NAME}
 printMsg "$LOCAL_REPOSITORY/${IMAGE_NAME}.${TAG}.sif created!" 

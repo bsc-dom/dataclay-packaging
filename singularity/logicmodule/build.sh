@@ -8,6 +8,11 @@ TAG=$EXECUTION_ENVIRONMENT_TAG
 source $BUILDDIR/../misc/_build.sh
  
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
-	rm -f $REPOSITORY/logicmodule.sif
-	ln -s $REPOSITORY/logicmodule.${DEFAULT_JDK_TAG}.sif $REPOSITORY/logicmodule.sif
+	rm -f $REPOSITORY/logicmodule:latest.sif
+	ln -s $REPOSITORY/logicmodule:${DEFAULT_JDK_TAG}.sif $REPOSITORY/logicmodule:latest.sif
 fi
+
+if [ $DEV == true ]; then 
+	rm -f $REPOSITORY/logicmodule:${EXECUTION_ENVIRONMENT_TAG/.dev/}.sif
+	ln -s $REPOSITORY/logicmodule:${EXECUTION_ENVIRONMENT_TAG}.sif $REPOSITORY/logicmodule:${EXECUTION_ENVIRONMENT_TAG/.dev/}.sif
+fi 

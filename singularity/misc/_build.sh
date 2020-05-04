@@ -2,24 +2,6 @@ if [ -z $IMAGE_NAME ]; then echo "IMAGE_NAME not set. Aborting."; exit 1; fi
 if [ -z $TAG ]; then echo "TAG not set. Aborting."; exit 1; fi
 if [ -z $BUILDDIR ]; then echo "BUILDDIR not set. Aborting."; exit 1; fi
 
-function extract_env {	
-	# Function to extract env variables from Dockerfiles (needed for Singularity)	
-	# Syntax for specifying environment variables needed at runtime:	
-	#   #beginENVruntime	
-	#   .... dockerfile commands ...	
-	#   ENV var0=aaa	
-	#   .... dockerfile commands ...	
-	#   ENV var1=bbb	
-	#   .... dockerfile commands ...	
-	#   #endENVruntime	
-
-	if [ -z "$1" ] || [ "$1" == "-h" ] || [ "$1" == "--help" ] ; then	
-		echo 'Usage: ./$0 <Dockerfile_path>'	
-	else	
-		sed -n '/#beginENVruntime/,/#endENVruntime/p' $@ | grep ^ENV | sed 's/^ENV /\texport /g'	
-	fi	
-}
-
 REPOSITORY=$BUILDDIR/../../orchestration/singularity/images
 DOCKER_REPOSITORY="bscdataclay"
 LOCAL_REGISTRY="localhost:5000"
@@ -41,10 +23,11 @@ echo "WARNING: Make sure to have {"insecure-registries" : ["localhost:5000","127
 echo "WARNING: Images will be created in dataclay-packaging/orchestration/singularity/images folder for better usability"
 echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 SINGULARITY_TEMPLATE=$BUILDDIR/../misc/singularity-template.recipe
-SINGULARITY_IMAGE_NAME=${IMAGE_NAME}.${TAG}.sif
+SINGULARITY_IMAGE_NAME=${IMAGE_NAME}:${TAG}.sif
 SINGULARITY_LOCAL_REGISTRY="${LOCAL_REGISTRY}\/${IMAGE_NAME}:${TAG}"
 printMsg "Creating image $REPOSITORY/${SINGULARITY_IMAGE_NAME} from $SINGULARITY_LOCAL_REGISTRY"
 tmpfile=$(mktemp /tmp/singularity-templateXXXXXX.recipe)
+docker rmi -f ${FROM_DOCKER}:${TAG} #sanity check
 docker tag $DOCKER_REPOSITORY/${IMAGE_NAME}:${TAG} ${FROM_DOCKER}:${TAG}
 docker push ${FROM_DOCKER}:${TAG}
 sed "s/DOCKER_IMAGE/${SINGULARITY_LOCAL_REGISTRY}/g" $SINGULARITY_TEMPLATE >> $tmpfile

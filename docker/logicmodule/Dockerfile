@@ -32,6 +32,19 @@ COPY ./dataclay-mvn-entry-point.sh ${DATACLAY_HOME}/entrypoints/dataclay-mvn-ent
 # Modify path for entrypoints
 ENV PATH=${DATACLAY_HOME}/entrypoints:${PATH}
 
+# Extrae wrapper 
+ENV JAVACLAY_EXTRAE_WRAPPER_LIB=${DATACLAY_HOME}/javaextrae/javaclay_extrae_wrapper.so
+COPY ./javaextrae javaextrae
+RUN cd javaextrae &&\
+		gcc -fPIC \
+	   -I${JAVA_HOME}/include \
+	   -I${JAVA_HOME}/include/linux \
+	   -I${EXTRAE_HOME}/include \
+	   -I${DATACLAY_HOME}/javaextrae \
+	   es_bsc_dataclay_extrae_Wrapper.c \
+	   --shared \
+	   -o ${JAVACLAY_EXTRAE_WRAPPER_LIB}
+
 # Copy healthcheck
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
 
