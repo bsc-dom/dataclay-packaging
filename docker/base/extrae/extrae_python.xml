@@ -16,7 +16,7 @@
     </cpu>
   </counters>
   
-  <pthread enabled="no">
+  <pthread enabled="yes">
     <counters enabled="yes" />
   </pthread>
 

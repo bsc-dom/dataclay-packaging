@@ -9,7 +9,7 @@
   <user-functions enabled="no" list="" exclude-automatic-functions="no">
   </user-functions>
 
-  <pthread enabled="no">
+  <pthread enabled="yes">
     <counters enabled="no" />
   </pthread>
 
