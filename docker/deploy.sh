@@ -28,6 +28,7 @@ echo "'"'
                                       |___/ 
 '"'"
 echo " Welcome to dataClay deploy script!"
+SECONDS=0
 source $SCRIPTDIR/../common/PLATFORMS.txt
 
 $SCRIPTDIR/base/deploy.sh "$@"
@@ -48,4 +49,6 @@ for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
 done
 $SCRIPTDIR/client/deploy.sh "$@"
 
+duration=$SECONDS
+echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
 echo "[dataClay deploy] FINISHED! "
