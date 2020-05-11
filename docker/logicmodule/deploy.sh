@@ -21,8 +21,9 @@ docker buildx build -t $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG \
 		--build-arg JDK=$JAVA_VERSION \
 		--build-arg BASE_VERSION=$BASE_VERSION_TAG \
 		--build-arg LOCAL_JAR=$JAR_NAME \
-		--cache-to=type=registry,ref=bscdataclay/logicmodule:buildxcache,mode=max \
-		--cache-from=type=registry,ref=bscdataclay/logicmodule:buildxcache \
+		--platform $PLATFORMS \
+		--cache-to=type=registry,ref=bscdataclay/logicmodule:buildxcache${EXECUTION_ENVIRONMENT},mode=max \
+		--cache-from=type=registry,ref=bscdataclay/logicmodule:buildxcache${EXECUTION_ENVIRONMENT} \
 		--push .
 echo "************* $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG IMAGE PUSHED! *************"
 popd 

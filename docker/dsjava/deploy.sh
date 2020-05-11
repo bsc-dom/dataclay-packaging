@@ -18,8 +18,8 @@ echo "************* Building image named $REPOSITORY/dsjava:$EXECUTION_ENVIRONME
 docker buildx build -t $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG \
 		--build-arg LOGICMODULE_VERSION=$EXECUTION_ENVIRONMENT_TAG \
 		--platform $PLATFORMS \
-		--cache-to=type=registry,ref=bscdataclay/dsjava:buildxcache,mode=max \
-		--cache-from=type=registry,ref=bscdataclay/dsjava:buildxcache \
+		--cache-to=type=registry,ref=bscdataclay/dsjava:buildxcache${EXECUTION_ENVIRONMENT},mode=max \
+		--cache-from=type=registry,ref=bscdataclay/dsjava:buildxcache${EXECUTION_ENVIRONMENT} \
 		--push .
 echo "************* $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG DONE! *************"
 popd 
