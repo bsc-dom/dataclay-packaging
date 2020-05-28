@@ -47,6 +47,7 @@ RUN cd javaextrae &&\
 
 # Copy healthcheck
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
+COPY ./extrae ${DATACLAY_HOME}/extrae
 
 # Copy configurations and dynamic files (more likely to be changed)
 COPY ./javaclay/dataclay-common/cfglog/log4j2.xml ${DATACLAY_LOG_CONFIG}

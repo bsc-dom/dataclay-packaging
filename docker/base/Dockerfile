@@ -72,9 +72,6 @@ RUN cd ${EXTRAE_BUILD_FOLDER} && \
 # Give permissions for extrae
 RUN chmod -R ugo+rwx /tmp
 
-# Copy extrae configuration files
-COPY ./extrae extrae 
-
 # LD preload and other environment configurations 
 ENV LD_PRELOAD=${EXTRAE_HOME}/lib/libpttrace.so:${LD_PRELOAD}
 ENV PATH=${EXTRAE_HOME}/bin:${PATH}

@@ -51,6 +51,7 @@ COPY ./pyclay/ ${DATACLAY_HOME}/pyclay/
 RUN cd ${DATACLAY_HOME}/pyclay/ && python setup.py install
 
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
+COPY ./extrae ${DATACLAY_HOME}/extrae
 
 # Entrypoint
 COPY ./dataclay-python-entry-point.sh ${DATACLAY_HOME}/entrypoints/dataclay-python-entry-point
