@@ -78,9 +78,6 @@ ENV PATH=${EXTRAE_HOME}/bin:${PATH}
 ENV LD_LIBRARY_PATH=${EXTRAE_HOME}/lib:${LD_LIBRARY_PATH}
 #ENV EXTRAE_SAMPLING_CLOCKTYPE=REAL
 
-# Virtual environment to be inherited from multi-stage docker in client
-ENV DATACLAY_VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
-
 # ================= SERVICE ==================== #
 
 ENTRYPOINT ["echo", "This is dataClay's base image: nothing to do here"] 
