@@ -1,34 +1,27 @@
 ARG BASE_VERSION
+ARG REQUIREMENTS_TAG
+FROM bscdataclay/dspython:${REQUIREMENTS_TAG}
 FROM bscdataclay/base:${BASE_VERSION}
 LABEL maintainer dataClay team <support-dataclay@bsc.es>
 
 ARG DATACLAY_PYVER=3.7
 ARG PYTHON_PIP_VERSION=3
 
-# ============ REQUIREMENTS ================== #
-
-# Install extrae requirements
+# Install
 RUN apt-get update \
        && apt-get install --no-install-recommends -y --allow-unauthenticated python${DATACLAY_PYVER} \
        python${DATACLAY_PYVER}-dev python${PYTHON_PIP_VERSION}-pip \
        python${PYTHON_PIP_VERSION}-setuptools \
-       libatlas3-base libgfortran5 >/dev/null \
        && rm -rf /var/lib/apt/lists/*
 
-# Set virtual environment since we could inherit some other python installations
-RUN pip${PYTHON_PIP_VERSION} install wheel 
-RUN pip${PYTHON_PIP_VERSION} install virtualenv
-RUN python${PYTHON_PIP_VERSION} -m virtualenv --python=/usr/bin/python${DATACLAY_PYVER} ${DATACLAY_VIRTUAL_ENV}
+ENV DATACLAY_VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
+COPY --from=0 ${DATACLAY_HOME}/dataclay_venv ${DATACLAY_VIRTUAL_ENV}
 ENV PATH="$DATACLAY_VIRTUAL_ENV/bin:$PATH"
-RUN python --version
+RUN python${DATACLAY_PYVER} --version
 
 # Create source
 RUN mkdir -p ${DATACLAY_HOME}/deploy/source
 
-# =============== INSTALL DATACLAY REQUIREMENTS =================== #
-
-COPY ./pyclay/requirements.txt requirements.txt
-RUN pip${PYTHON_PIP_VERSION} install -r requirements.txt --extra-index-url=https://www.piwheels.org/simple  --extra-index-url=https://www.piwheels.hostedpi.com/simple
 # =================== EXTRAE ENVIRONMENT VARIABLES ======================== #
 
 ENV PYCLAY_EXTRAE_WRAPPER_LIB=${DATACLAY_HOME}/pyextrae/pyclay_extrae_wrapper.so
@@ -48,7 +41,7 @@ RUN python -c "from ctypes import cdll; cdll.LoadLibrary(\"${DATACLAY_HOME}/pyex
 # =============== INSTALL DATACLAY =================== #
 
 COPY ./pyclay/ ${DATACLAY_HOME}/pyclay/
-RUN cd ${DATACLAY_HOME}/pyclay/ && python setup.py install
+RUN cd ${DATACLAY_HOME}/pyclay/ && python${DATACLAY_PYVER} setup.py install
 
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
 COPY ./extrae ${DATACLAY_HOME}/extrae
