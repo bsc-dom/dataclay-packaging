@@ -80,7 +80,6 @@ jobs:
 cache:
   directories:
   - $HOME/.m2
-  - $HOME/.singularity
 notifications:
   email:
     - commiter:
