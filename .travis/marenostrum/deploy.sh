@@ -13,8 +13,6 @@ $ORCHESTRATION_DIR/singularity/singularity_pull.sh
 
 echo "[marenostrum-deploy] Deploying to MN..."
 
-LOCAL_REPOSITORY=$ORCHESTRATION_DIR/singularity/images
-
 # Prepare module definition 
 sed "s/SET_VERSION_HERE/${DEFAULT_TAG}/g" $DEPLOYSCRIPTDIR/module.lua > /tmp/${DEFAULT_TAG}.lua
 
