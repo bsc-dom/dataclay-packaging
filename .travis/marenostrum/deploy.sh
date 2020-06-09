@@ -38,6 +38,9 @@ popd
 echo "[marenostrum-deploy] Deploying pyclay..."
 rsync -av -e ssh --progress $PACKAGING_DIR/docker/dspython/pyclay/* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/pyclay/
 
+# Changing permissions in pyclay folder 
+ssh dataclay@mn1.bsc.es "chmod -R g-w /apps/DATACLAY/$DEFAULT_TAG/pyclay/"
+
 # Module definition
 echo "[marenostrum-deploy] Deploying dataclay module..."
 scp /tmp/${DEFAULT_TAG}.lua dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/modules/
