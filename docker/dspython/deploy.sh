@@ -30,6 +30,8 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_PY_TAG ]; then
 	##### TAG LATEST #####
 	if [ "$DEV" = false ] ; then
 		docker buildx imagetools create --tag $REPOSITORY/dspython $REPOSITORY/dspython:$DEFAULT_TAG
+	else 
+		docker buildx imagetools create --tag $REPOSITORY/dspython:develop $REPOSITORY/dspython:$DEFAULT_TAG
 	fi
 fi
 #################################################################################################

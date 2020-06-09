@@ -32,6 +32,8 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	##### TAG LATEST #####
 	if [ "$DEV" = false ] ; then
 		docker buildx imagetools create --tag $REPOSITORY/dsjava $REPOSITORY/dsjava:$DEFAULT_TAG
+	else 
+		docker buildx imagetools create --tag $REPOSITORY/dsjava:develop $REPOSITORY/dsjava:$DEFAULT_TAG
 	fi
 fi
 #################################################################################################

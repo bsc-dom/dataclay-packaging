@@ -15,9 +15,10 @@ docker buildx build -t $REPOSITORY/base:$BASE_VERSION_TAG \
 echo "************* $REPOSITORY/base:$BASE_VERSION_TAG IMAGE PUSHED! *************" 
 popd
 
-##### TAG LATEST #####
 if [ "$DEV" = false ] ; then
 	docker buildx imagetools create --tag $REPOSITORY/base $REPOSITORY/base:$DEFAULT_TAG
+else 
+	docker buildx imagetools create --tag $REPOSITORY/base:develop $REPOSITORY/base:$DEFAULT_TAG
 fi
 
 # Remove builder
