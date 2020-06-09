@@ -22,5 +22,9 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_PY_TAG ]; then
 	docker tag $REPOSITORY/dspython:$DEFAULT_PY_TAG $REPOSITORY/dspython:$DEFAULT_TAG
 	
 	# Tag latest
-	docker tag $REPOSITORY/dspython:$DEFAULT_TAG $REPOSITORY/dspython 
+	if [ "$DEV" = false ] ; then
+		docker tag $REPOSITORY/dspython:$DEFAULT_TAG $REPOSITORY/dspython 
+	else 
+		docker tag $REPOSITORY/dspython:$DEFAULT_TAG $REPOSITORY/dspython:develop
+	fi
 fi 

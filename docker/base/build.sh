@@ -10,5 +10,8 @@ docker build -t $REPOSITORY/base:$BASE_VERSION_TAG .
 printMsg "$REPOSITORY/base:$BASE_VERSION_TAG IMAGE DONE!" 
 popd 
 
-# Tag latest
-docker tag $REPOSITORY/base:$DEFAULT_TAG $REPOSITORY/base 
+if [ "$DEV" = false ] ; then
+	docker tag $REPOSITORY/base:$DEFAULT_TAG $REPOSITORY/base 
+else 
+	docker tag $REPOSITORY/base:$DEFAULT_TAG $REPOSITORY/base:develop
+fi

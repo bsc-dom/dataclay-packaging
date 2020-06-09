@@ -19,9 +19,10 @@ docker buildx build -t $REPOSITORY/client:$CLIENT_TAG \
 echo "************* $REPOSITORY/client:$CLIENT_TAG DONE! *************"
 popd 
 
-##### TAG LATEST #####
 if [ "$DEV" = false ] ; then
 	docker buildx imagetools create --tag $REPOSITORY/client $REPOSITORY/client:$DEFAULT_TAG
+else 
+	docker buildx imagetools create --tag $REPOSITORY/client:develop $REPOSITORY/client:$DEFAULT_TAG
 fi
 
 # Remove builder

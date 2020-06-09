@@ -36,6 +36,8 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	##### TAG LATEST #####
 	if [ "$DEV" = false ] ; then
 		docker buildx imagetools create --tag $REPOSITORY/logicmodule $REPOSITORY/logicmodule:$DEFAULT_TAG
+	else 
+		docker buildx imagetools create --tag $REPOSITORY/logicmodule:develop $REPOSITORY/logicmodule:$DEFAULT_TAG
 	fi
 fi
 #################################################################################################

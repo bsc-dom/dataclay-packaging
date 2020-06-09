@@ -14,5 +14,8 @@ docker build --build-arg DATACLAY_DSPYTHON_DOCKER_TAG=$DEFAULT_PY_TAG \
 printMsg "$REPOSITORY/client:$CLIENT_TAG DONE!"
 popd 
 
-# Tag latest
-docker tag $REPOSITORY/client:$DEFAULT_TAG $REPOSITORY/client 
+if [ "$DEV" = false ] ; then
+	docker tag $REPOSITORY/client:$DEFAULT_TAG $REPOSITORY/client 
+else 
+	docker tag $REPOSITORY/client:$DEFAULT_TAG $REPOSITORY/client:develop
+fi
