@@ -14,9 +14,6 @@ jobs:
     - stage: update_submodules_develop 
       if: (branch = develop OR branch = master) AND type = cron
       script: .travis/github/update_submodules.sh --dev
-############### TESTING ###############
-    - stage: test 
-      script: echo "Running functional tests..."
 ############### DOCKER DEPLOYMENT ###############
     - stage: docker_deploy_base
       if: (branch = develop OR branch = master) AND type = cron
