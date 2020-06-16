@@ -1,31 +1,8 @@
 #!/bin/bash
-
-################################## OPTIONS #############################################
-export DEV=false
-FLAGS=""
-BRANCH=""
-# idiomatic parameter and option handling in sh
-while test $# -gt 0
-do
-    case "$1" in
-        --dev) 
-        	export DEV=true
-            FLAGS="--dev"
-            BRANCH="develop"
-            ;;
-        --master) 
-        	BRANCH="master"
-        	;;
-        --*) echo "bad option $1"
-        	exit -1
-            ;;
-        *) echo "bad option $1"
-        	exit -1
-            ;;
-    esac
-    shift
-done
-################################## MAIN #############################################
+DEPLOYSCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+PACKAGING_DIR=$DEPLOYSCRIPTDIR/../..
+ORCHESTRATION_DIR=$PACKAGING_DIR/orchestration
+source $PACKAGING_DIR/common/config.sh "$@"
 
 declare -r SSH_FILE="$(mktemp -u $HOME/.ssh/XXXXX)"
 
