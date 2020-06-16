@@ -47,5 +47,5 @@ git add docker/logicmodule/javaclay/
 git add docker/dspython/pyclay
 git add orchestration
 
-git commit -m "Updating sub-modules from TravisCI build $TRAVIS_BUILD_NUMBER"
+git commit -m "Updating submodules"
 git push origin HEAD:$BRANCH
