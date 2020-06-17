@@ -11,9 +11,9 @@ env:
 jobs:
   include:
 ############### GITHUB SUBMODULES ###############
-    - stage: update_submodules_develop 
+    - stage: update_submodules
       if: (branch = develop AND type = cron) OR (branch = master AND type = api)
-      script: .travis/github/update_submodules.sh --branch $TRAVIS_BRANCH
+      script: .travis/github/update_submodules.sh -y --branch $TRAVIS_BRANCH
 ############### DOCKER DEPLOYMENT ###############
     - stage: docker_deploy_base
       if: (branch = develop AND type = cron) OR (branch = master AND type = api)
