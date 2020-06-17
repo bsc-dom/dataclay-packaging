@@ -47,5 +47,6 @@ git add docker/logicmodule/javaclay/
 git add docker/dspython/pyclay
 git add orchestration
 
-git commit -m "Updating submodules"
+git commit -m "Updating submodules" || true
 git push origin HEAD:$BRANCH
+
