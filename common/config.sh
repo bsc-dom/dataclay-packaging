@@ -101,7 +101,7 @@ do
         	# If branch is named develop, --dev option is set
         	shift 
         	BRANCH=$1 
-        	if [ $BRANCH == "develop" ] || [ $BRANCH == "feature/singularity_deployment" ]; then 
+        	if [ $BRANCH == "develop" ]; then 
         		export DEV=true
         	fi
         	;;
