@@ -60,6 +60,12 @@ jobs:
          - CACHE_NAME=docker_dspython_py37
       before_install: .travis/docker/setup.sh 
       script: travis_retry ./docker/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.7 
+    - # stage name not required, will continue
+      if: (branch = develop AND type = cron) OR (branch = master AND type = api)
+      env:
+         - CACHE_NAME=docker_dspython_py38
+      before_install: .travis/docker/setup.sh 
+      script: travis_retry ./docker/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.8 
 # -------------------------------------------------------
     - stage: docker_deploy_client
       if: (branch = develop AND type = cron) OR (branch = master AND type = api)
