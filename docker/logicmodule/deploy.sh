@@ -41,7 +41,7 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	fi
 fi
 if [ "$DEV" = true ] ; then 
-	docker buildx imagetools create --tag $REPOSITORY/dsjava:develop.jdk${JAVA_VERSION} $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG
+	docker buildx imagetools create --tag $REPOSITORY/logicmodule:develop.jdk${JAVA_VERSION} $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG
 fi 
 #################################################################################################
 
