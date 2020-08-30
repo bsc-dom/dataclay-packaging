@@ -23,7 +23,7 @@ echo "************* $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG DONE! ******
 popd 
 
 
-######################################## default tags ###########################################
+######################################## tags ###########################################
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_PY_TAG ]; then
 	## Tag default versions 
 	docker buildx imagetools create --tag $REPOSITORY/dspython:$DEFAULT_TAG $REPOSITORY/dspython:$DEFAULT_PY_TAG	
@@ -34,6 +34,10 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_PY_TAG ]; then
 		docker buildx imagetools create --tag $REPOSITORY/dspython:develop $REPOSITORY/dspython:$DEFAULT_TAG
 	fi
 fi
+if [ "$DEV" = true ] ; then 
+	DATACLAY_PYTHON_VERSION="${PYTHON_VERSION//./}"
+	docker buildx imagetools create --tag $REPOSITORY/dspython:develop.py${DATACLAY_PYTHON_VERSION} $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG
+fi 
 #################################################################################################
 
 # Remove builder
