@@ -24,7 +24,7 @@ docker buildx build -t $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG \
 echo "************* $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG DONE! *************"
 popd 
 
-######################################## default tags ###########################################
+######################################## tags ###########################################
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	## Tag default versions 
 	docker buildx imagetools create --tag $REPOSITORY/dsjava:$DEFAULT_TAG $REPOSITORY/dsjava:$DEFAULT_JDK_TAG
@@ -36,6 +36,9 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 		docker buildx imagetools create --tag $REPOSITORY/dsjava:develop $REPOSITORY/dsjava:$DEFAULT_TAG
 	fi
 fi
+if [ "$DEV" = true ] ; then 
+	docker buildx imagetools create --tag $REPOSITORY/dsjava:develop.jdk${JAVA_VERSION} $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG
+fi 
 #################################################################################################
 
 # Remove builder

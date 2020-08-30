@@ -31,3 +31,6 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 		docker tag $REPOSITORY/logicmodule:$DEFAULT_TAG $REPOSITORY/logicmodule:develop
 	fi
 fi
+if [ "$DEV" = true ] ; then 
+	docker tag $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG $REPOSITORY/logicmodule:develop.jdk${JAVA_VERSION}
+fi

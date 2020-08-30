@@ -16,7 +16,7 @@ docker build --build-arg BASE_VERSION=$BASE_VERSION_TAG \
 printMsg "$REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG DONE!"
 popd 
 
-######################################## default tags ###########################################
+######################################## default tags ############################c###############
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_PY_TAG ]; then
 	## Tag default versions 
 	docker tag $REPOSITORY/dspython:$DEFAULT_PY_TAG $REPOSITORY/dspython:$DEFAULT_TAG
@@ -27,4 +27,8 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_PY_TAG ]; then
 	else 
 		docker tag $REPOSITORY/dspython:$DEFAULT_TAG $REPOSITORY/dspython:develop
 	fi
+fi
+if [ "$DEV" = true ] ; then 
+	DATACLAY_PYTHON_VERSION="${PYTHON_VERSION//./}"
+	docker tag $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG $REPOSITORY/dspython:develop.py${DATACLAY_PYTHON_VERSION}
 fi 

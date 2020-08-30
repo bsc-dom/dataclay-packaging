@@ -27,7 +27,9 @@ fi
 printf "OK\n"
 
 # prepare architectures
+docker run --rm -t arm64v8/ubuntu uname -m
 docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+docker run --rm -t arm64v8/ubuntu uname -m
 
 DOCKER_BUILDER=$(docker buildx create) 
 docker buildx use $DOCKER_BUILDER

@@ -29,7 +29,7 @@ echo "************* $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG IMAGE PUS
 popd 
 
 
-######################################## default tags ###########################################
+######################################## tags ###########################################
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	## Tag default versions 
 	docker buildx imagetools create --tag $REPOSITORY/logicmodule:$DEFAULT_TAG $REPOSITORY/logicmodule:$DEFAULT_JDK_TAG
@@ -40,6 +40,9 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 		docker buildx imagetools create --tag $REPOSITORY/logicmodule:develop $REPOSITORY/logicmodule:$DEFAULT_TAG
 	fi
 fi
+if [ "$DEV" = true ] ; then 
+	docker buildx imagetools create --tag $REPOSITORY/dsjava:develop.jdk${JAVA_VERSION} $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG
+fi 
 #################################################################################################
 
 # Remove builder

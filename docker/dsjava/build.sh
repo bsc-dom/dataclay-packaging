@@ -33,3 +33,6 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 		docker tag $REPOSITORY/dsjava:$DEFAULT_TAG $REPOSITORY/dsjava:develop
 	fi
 fi
+if [ "$DEV" = true ] ; then 
+	docker tag $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG $REPOSITORY/dsjava:develop.jdk${JAVA_VERSION}
+fi
