@@ -27,14 +27,15 @@ fi
 printf "OK\n"
 
 # prepare architectures
-docker run --rm -t arm64v8/ubuntu uname -m
-docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
+#docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 docker run --rm -t arm64v8/ubuntu uname -m
 
 DOCKER_BUILDER=$(docker buildx create) 
 docker buildx use $DOCKER_BUILDER
 
 echo "Checking buildx with available platforms to simulate..."
+docker buildx inspect --bootstrap
 BUILDER_PLATFORMS=$(docker buildx inspect --bootstrap | grep Platforms | awk -F":" '{print $2}')
 IFS=',' read -ra BUILDER_PLATFORMS_ARRAY <<< "$BUILDER_PLATFORMS"
 IFS=',' read -ra SUPPORTED_PLATFORMS_ARRAY <<< "$PLATFORMS"
