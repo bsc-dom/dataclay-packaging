@@ -50,8 +50,8 @@ jobs:
 # -------------------------------------------------------
     - stage: docker_deploy_client
       script: travis_retry ./docker/client/deploy.sh -y --branch $TRAVIS_BRANCH
-      script: travis_retry ./docker/client/deploy.sh -y --branch $TRAVIS_BRANCH --slim
-      script: travis_retry ./docker/client/deploy.sh -y --branch $TRAVIS_BRANCH --alpine
+    - script: travis_retry ./docker/client/deploy.sh -y --branch $TRAVIS_BRANCH --slim
+    - script: travis_retry ./docker/client/deploy.sh -y --branch $TRAVIS_BRANCH --alpine
 ############### MARENOSTRUM DEPLOYMENT ###############
     - stage: marenostrum_deploy
       before_install: 
