@@ -15,10 +15,15 @@ fi
 
 # LOGICMODULE
 pushd $BUILDDIR
-printMsg "Building image named $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG"
-docker build --build-arg BASE_VERSION=$BASE_VERSION_TAG --build-arg JDK=$JAVA_VERSION --build-arg LOCAL_JAR=$JAR_NAME -t $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG .
-printMsg "$REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG IMAGE DONE!"
+printMsg "Building image named $REPOSITORY/logicmodule:${EXECUTION_ENVIRONMENT_TAG}"
+docker build $DOCKERFILE \
+			 --build-arg BASE_VERSION=$BASE_VERSION_TAG \
+			 --build-arg JDK=$JAVA_VERSION \
+			 --build-arg LOCAL_JAR=$JAR_NAME \
+			 -t $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG .
+printMsg "$REPOSITORY/logicmodule:${EXECUTION_ENVIRONMENT_TAG} IMAGE DONE!"
 popd 
+	
 ######################################## default tags ###########################################
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	## Tag default versions 
@@ -28,9 +33,9 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	if [ "$DEV" = false ] ; then
 		docker tag $REPOSITORY/logicmodule:$DEFAULT_TAG $REPOSITORY/logicmodule 
 	else 
-		docker tag $REPOSITORY/logicmodule:$DEFAULT_TAG $REPOSITORY/logicmodule:develop
+		docker tag $REPOSITORY/logicmodule:$DEFAULT_TAG $REPOSITORY/logicmodule:develop${TAG_SUFFIX} #develop-slim, develop-alpine
 	fi
 fi
 if [ "$DEV" = true ] ; then 
-	docker tag $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG $REPOSITORY/logicmodule:develop.jdk${JAVA_VERSION}
+	docker tag $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG $REPOSITORY/logicmodule:develop.jdk${JAVA_VERSION}${TAG_SUFFIX} #develop.jdk8-slim
 fi

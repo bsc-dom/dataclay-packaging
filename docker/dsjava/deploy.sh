@@ -15,7 +15,7 @@ fi
 # DSJAVA
 pushd $BUILDDIR
 echo "************* Building image named $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG *************"
-docker buildx build -t $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG \
+docker buildx build $DOCKERFILE -t $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG \
 		--build-arg LOGICMODULE_VERSION=$EXECUTION_ENVIRONMENT_TAG \
 		--platform $PLATFORMS \
 		--cache-to=type=registry,ref=bscdataclay/dsjava:buildxcache${EXECUTION_ENVIRONMENT},mode=max \
@@ -33,11 +33,11 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	if [ "$DEV" = false ] ; then
 		docker buildx imagetools create --tag $REPOSITORY/dsjava $REPOSITORY/dsjava:$DEFAULT_TAG
 	else 
-		docker buildx imagetools create --tag $REPOSITORY/dsjava:develop $REPOSITORY/dsjava:$DEFAULT_TAG
+		docker buildx imagetools create --tag $REPOSITORY/dsjava:develop${TAG_SUFFIX} $REPOSITORY/dsjava:$DEFAULT_TAG
 	fi
 fi
 if [ "$DEV" = true ] ; then 
-	docker buildx imagetools create --tag $REPOSITORY/dsjava:develop.jdk${JAVA_VERSION} $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG
+	docker buildx imagetools create --tag $REPOSITORY/dsjava:develop.jdk${JAVA_VERSION}${TAG_SUFFIX} $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG
 fi 
 #################################################################################################
 

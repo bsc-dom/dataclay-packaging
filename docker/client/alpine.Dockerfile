@@ -1,0 +1,42 @@
+ARG DATACLAY_DSPYTHON_DOCKER_TAG
+ARG DATACLAY_LOGICMODULE_DOCKER_TAG
+ARG DATACLAY_PYVER
+
+FROM bscdataclay/dspython:${DATACLAY_DSPYTHON_DOCKER_TAG}
+FROM bscdataclay/logicmodule:${DATACLAY_LOGICMODULE_DOCKER_TAG}
+FROM python:${DATACLAY_PYVER}-alpine
+ARG JDK
+ARG DATACLAY_PYVER
+
+# Install packages:
+RUN apk --no-cache add openjdk${JDK}-jre
+
+ENV DATACLAY_HOME=/home/dataclayusr/dataclay
+ENV DATACLAY_JAR=${DATACLAY_HOME}/dataclay.jar
+ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
+
+WORKDIR ${DATACLAY_HOME}
+
+# Copy from dspython
+COPY --from=0 ${DATACLAY_HOME}/entrypoints/dataclay-python-entry-point ${DATACLAY_HOME}/entrypoints/dataclay-python-entry-point
+COPY --from=0 ${DATACLAY_HOME}/pyclay ${DATACLAY_HOME}/pyclay
+ENV DATACLAY_VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
+COPY --from=0 ${DATACLAY_HOME}/dataclay_venv ${DATACLAY_VIRTUAL_ENV}
+
+# Copy from dsjava
+COPY --from=1 ${DATACLAY_JAR} ${DATACLAY_JAR}
+
+# Make sure we use the virtualenv:
+ENV PATH="${DATACLAY_VIRTUAL_ENV}/bin:$PATH"
+
+# check pyextrae is installed
+RUN echo ${DATACLAY_PYVER}
+RUN python --version
+RUN python -c "import dataclay; print('import ok')"
+
+# WARNING: Note that this script must be located among with dataclay pom.xml (see workdir)
+ENV DATACLAYCMD=${DATACLAY_HOME}/entrypoints/dataclaycmd
+COPY dataclaycmd.sh ${DATACLAYCMD}
+
+# The command can contain additional options
+ENTRYPOINT ["sh", "entrypoints/dataclaycmd"]

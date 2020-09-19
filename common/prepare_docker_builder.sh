@@ -16,7 +16,7 @@
 # VERSION: 1.0
 #===================================================================================
 PREPAREDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-source $PREPAREDIR/PLATFORMS.txt
+#source $PREPAREDIR/PLATFORMS.txt
 
 printf "Checking if docker version >= $REQUIRED_DOCKER_VERSION..."
 version=$(docker version --format '{{.Server.Version}}')

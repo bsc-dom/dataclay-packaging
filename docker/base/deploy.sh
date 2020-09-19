@@ -7,7 +7,7 @@ source $BUILDDIR/../../common/prepare_docker_builder.sh
 # BASE IMAGES 
 pushd $BUILDDIR
 echo "************* Pushing image named $REPOSITORY/base:$BASE_VERSION_TAG *************"
-docker buildx build -t $REPOSITORY/base:$BASE_VERSION_TAG \
+docker buildx build $DOCKERFILE -t $REPOSITORY/base:$BASE_VERSION_TAG \
 	--platform $PLATFORMS \
 	--cache-to=type=registry,ref=bscdataclay/base:buildxcache,mode=max \
 	--cache-from=type=registry,ref=bscdataclay/base:buildxcache \
@@ -18,7 +18,7 @@ popd
 if [ "$DEV" = false ] ; then
 	docker buildx imagetools create --tag $REPOSITORY/base $REPOSITORY/base:$DEFAULT_TAG
 else 
-	docker buildx imagetools create --tag $REPOSITORY/base:develop $REPOSITORY/base:$DEFAULT_TAG
+	docker buildx imagetools create --tag $REPOSITORY/base:develop${TAG_SUFFIX} $REPOSITORY/base:$DEFAULT_TAG
 fi
 
 # Remove builder

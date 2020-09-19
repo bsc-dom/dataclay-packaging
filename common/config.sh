@@ -88,6 +88,10 @@ export DEV=false
 export PACKAGE_JAR=true
 export SINGULARITY_CHECK=false
 DONOTPROMPT=false
+
+DOCKERFILE=""
+TAG_SUFFIX=""
+
 while test $# -gt 0
 do
     case "$1" in
@@ -110,6 +114,14 @@ do
         	;;
         --do-not-package) 
         	export PACKAGE_JAR=false 
+        	;;
+        --slim) 
+        	export DOCKERFILE="-f slim.Dockerfile" 
+        	export TAG_SUFFIX="-slim"
+        	;;
+        --alpine) 
+        	export DOCKERFILE="-f alpine.Dockerfile" 
+        	export TAG_SUFFIX="-alpine"
         	;;
         --singularity) 
         	SINGULARITY_CHECK=true
@@ -138,13 +150,13 @@ if [ "$DEV" = false ] ; then
 fi
 DATACLAY_VERSION=$(cat $ORCHDIR/VERSION.txt)
 export DATACLAY_VERSION="${DATACLAY_VERSION//.dev/}"
-export DEFAULT_TAG="$(get_container_version)"
-export BASE_VERSION_TAG="$(get_container_version)"
-export CLIENT_TAG="$(get_container_version)"
-export DEFAULT_JDK_TAG="$(get_container_version jdk$DEFAULT_JAVA)"
-export DEFAULT_PY_TAG="$(get_container_version py$DEFAULT_PYTHON)"
+export DEFAULT_TAG="$(get_container_version)${TAG_SUFFIX}"
+export BASE_VERSION_TAG="$(get_container_version)${TAG_SUFFIX}"
+export CLIENT_TAG="$(get_container_version)${TAG_SUFFIX}"
+export DEFAULT_JDK_TAG="$(get_container_version jdk$DEFAULT_JAVA)${TAG_SUFFIX}"
+export DEFAULT_PY_TAG="$(get_container_version py$DEFAULT_PYTHON)${TAG_SUFFIX}"
 if [ ! -z $EXECUTION_ENVIRONMENT ]; then 
-	export EXECUTION_ENVIRONMENT_TAG="$(get_container_version $EXECUTION_ENVIRONMENT)"
+	export EXECUTION_ENVIRONMENT_TAG="$(get_container_version $EXECUTION_ENVIRONMENT)${TAG_SUFFIX}"
 fi
 CONTAINER=${PWD##*/}
 
@@ -165,12 +177,21 @@ if [[ $EXECUTION_ENVIRONMENT == jdk* ]]; then
 	echo "Current defined version in pom.xml:$grn $JAR_VERSION $end" 
 elif [[ $EXECUTION_ENVIRONMENT == py* ]]; then 
 	export PYTHON_VERSION=${EXECUTION_ENVIRONMENT#"py"}
+	# Get python version without subversion to install it in some packages
+	export PYTHON_PIP_VERSION=$(echo $PYTHON_VERSION | awk -F '.' '{print $1}')
 	setuppy_version=`cat $DATACLAY_DOCKER_DIR/dspython/pyclay/VERSION.txt`
 	echo "Build Python version will be:$grn $PYTHON_VERSION $end" 
 	echo "Default Python version will be:$grn $DEFAULT_PYTHON $end" 
 	echo "Current defined version in setup.py:$grn $setuppy_version.dev$(date +%Y%m%d) $end" 	
 else 
 	echo "WARNING: Execution environment not specified. Using default ones."
+fi
+
+
+# No support for alpine jdk 11 and ARM 32 available 
+if [[ "$JAVA_VERSION" == "11" ]] && [[ "$TAG_SUFFIX" == "-alpine" ]]; then 
+	export PLATFORMS=${PLATFORMS/linux\/arm\/v7,}
+	echo "WARNING: No support for ARMv7 in ALPINE with JDK 11. Using platforms: $PLATFORMS"
 fi
 
 

@@ -6,29 +6,29 @@ if [ -z $EXECUTION_ENVIRONMENT_TAG ]; then echo "ERROR: EXECUTION_ENVIRONMENT_TA
 
 # DSPYTHON
 pushd $BUILDDIR
-# Get python version without subversion to install it in some packages
-PYTHON_PIP_VERSION=$(echo $PYTHON_VERSION | awk -F '.' '{print $1}')
 printMsg "Building image named $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG python version $PYTHON_VERSION and pip version $PYTHON_PIP_VERSION"
-docker build --build-arg BASE_VERSION=$BASE_VERSION_TAG \
-				 --build-arg REQUIREMENTS_TAG=${EXECUTION_ENVIRONMENT_TAG}-requirements \
-				 --build-arg DATACLAY_PYVER=$PYTHON_VERSION \
-				 --build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION -t $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG .
+docker build $DOCKERFILE \
+			 --build-arg BASE_VERSION=$BASE_VERSION_TAG \
+			 --build-arg REQUIREMENTS_TAG=${EXECUTION_ENVIRONMENT_TAG}-requirements \
+			 --build-arg DATACLAY_PYVER=$PYTHON_VERSION \
+			 --build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION \
+			 -t $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG .
 printMsg "$REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG DONE!"
 popd 
-
+	
 ######################################## default tags ############################c###############
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_PY_TAG ]; then
 	## Tag default versions 
 	docker tag $REPOSITORY/dspython:$DEFAULT_PY_TAG $REPOSITORY/dspython:$DEFAULT_TAG
-	
+		
 	# Tag latest
 	if [ "$DEV" = false ] ; then
 		docker tag $REPOSITORY/dspython:$DEFAULT_TAG $REPOSITORY/dspython 
 	else 
-		docker tag $REPOSITORY/dspython:$DEFAULT_TAG $REPOSITORY/dspython:develop
+		docker tag $REPOSITORY/dspython:$DEFAULT_TAG $REPOSITORY/dspython:develop${TAG_SUFFIX} #develop-slim, develop-alpine
 	fi
 fi
 if [ "$DEV" = true ] ; then 
 	DATACLAY_PYTHON_VERSION="${PYTHON_VERSION//./}"
-	docker tag $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG $REPOSITORY/dspython:develop.py${DATACLAY_PYTHON_VERSION}
-fi 
+	docker tag $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG $REPOSITORY/dspython:develop.py${DATACLAY_PYTHON_VERSION}${TAG_SUFFIX} #develop.py36-slim
+fi

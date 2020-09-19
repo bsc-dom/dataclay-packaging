@@ -17,7 +17,7 @@ fi
 # LOGICMODULE
 pushd $BUILDDIR
 echo "************* Pushing image named $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG *************"
-docker buildx build -t $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG \
+docker buildx build $DOCKERFILE -t $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG \
 		--build-arg JDK=$JAVA_VERSION \
 		--build-arg BASE_VERSION=$BASE_VERSION_TAG \
 		--build-arg LOCAL_JAR=$JAR_NAME \
@@ -37,11 +37,11 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	if [ "$DEV" = false ] ; then
 		docker buildx imagetools create --tag $REPOSITORY/logicmodule $REPOSITORY/logicmodule:$DEFAULT_TAG
 	else 
-		docker buildx imagetools create --tag $REPOSITORY/logicmodule:develop $REPOSITORY/logicmodule:$DEFAULT_TAG
+		docker buildx imagetools create --tag $REPOSITORY/logicmodule:develop${TAG_SUFFIX} $REPOSITORY/logicmodule:$DEFAULT_TAG
 	fi
 fi
 if [ "$DEV" = true ] ; then 
-	docker buildx imagetools create --tag $REPOSITORY/logicmodule:develop.jdk${JAVA_VERSION} $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG
+	docker buildx imagetools create --tag $REPOSITORY/logicmodule:develop.jdk${JAVA_VERSION}${TAG_SUFFIX} $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG
 fi 
 #################################################################################################
 

@@ -1,8 +1,10 @@
 language: generic
+if: (branch = develop AND (type = cron OR type = api)) OR (branch = master AND type = api)
 services:
 - docker
 before_install:
 - .travis/check_branch.sh
+- .travis/docker/setup.sh 
 env:
   global:
   - TRAVIS_GO_VERSION=1.13.1
@@ -12,77 +14,50 @@ jobs:
   include:
 ############### GITHUB SUBMODULES ###############
     - stage: update_submodules
-      if: (branch = develop AND type = cron) OR (branch = master AND type = api)
       script: .travis/github/update_submodules.sh -y --branch $TRAVIS_BRANCH
 ############### DOCKER DEPLOYMENT ###############
     - stage: docker_deploy_base
-      if: (branch = develop AND type = cron) OR (branch = master AND type = api)
-      env:
-         - CACHE_NAME=docker_base
-      before_install: .travis/docker/setup.sh 
-      script: travis_retry ./docker/base/deploy.sh -y --branch $TRAVIS_BRANCH
+      script: travis_retry ./docker/base/deploy.sh -y --branch $TRAVIS_BRANCH 
+    - script: travis_retry ./docker/base/deploy.sh -y --branch $TRAVIS_BRANCH --slim
+    - script: travis_retry ./docker/base/deploy.sh -y --branch $TRAVIS_BRANCH --alpine
 # -------------------------------------------------------
     - stage: docker_deploy_logicmodule
-      if: (branch = develop AND type = cron) OR (branch = master AND type = api)
-      env:
-         - CACHE_NAME=docker_logicmodule_jdk8
-      before_install: .travis/docker/setup.sh 
       script: travis_retry ./docker/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8
-    - # stage name not required, will continue
-      if: (branch = develop AND type = cron) OR (branch = master AND type = api)
-      env:
-         - CACHE_NAME=docker_logicmodule_jdk11
-      before_install: .travis/docker/setup.sh 
-      script: travis_retry ./docker/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11  
+    - script: travis_retry ./docker/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8 --slim
+    - script: travis_retry ./docker/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8 --alpine
+    - script: travis_retry ./docker/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11  
+    - script: travis_retry ./docker/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11 --slim 
+    - script: travis_retry ./docker/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11 --alpine
 # -------------------------------------------------------
     - stage: docker_deploy_dsjava
-      if: (branch = develop AND type = cron) OR (branch = master AND type = api)
-      env:
-         - CACHE_NAME=docker_dsjava_jdk8
-      before_install: .travis/docker/setup.sh 
       script: travis_retry ./docker/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8
-    - # stage name not required, will continue
-      if: (branch = develop AND type = cron) OR (branch = master AND type = api)
-      env:
-         - CACHE_NAME=docker_dsjava_jdk11
-      before_install: .travis/docker/setup.sh 
-      script: travis_retry ./docker/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11
+    - script: travis_retry ./docker/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8 --slim
+    - script: travis_retry ./docker/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8 --alpine
+    - script: travis_retry ./docker/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11
+    - script: travis_retry ./docker/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11 --slim
+    - script: travis_retry ./docker/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11 --alpine
 # -------------------------------------------------------
     - stage: docker_deploy_dspython
-      if: (branch = develop AND type = cron) OR (branch = master AND type = api)
-      env:
-         - CACHE_NAME=docker_dspython_py36
-      before_install: .travis/docker/setup.sh 
       script: travis_retry ./docker/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.6 
-    - # stage name not required, will continue
-      if: (branch = develop AND type = cron) OR (branch = master AND type = api)
-      env:
-         - CACHE_NAME=docker_dspython_py37
-      before_install: .travis/docker/setup.sh 
-      script: travis_retry ./docker/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.7 
-    - # stage name not required, will continue
-      if: (branch = develop AND type = cron) OR (branch = master AND type = api)
-      env:
-         - CACHE_NAME=docker_dspython_py38
-      before_install: .travis/docker/setup.sh 
-      script: travis_retry ./docker/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.8 
+    - script: travis_retry ./docker/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.6 --slim
+    - script: travis_retry ./docker/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.6 --alpine
+    - script: travis_retry ./docker/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.7 
+    - script: travis_retry ./docker/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.7 --slim
+    - script: travis_retry ./docker/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.7 --alpine
+    - script: travis_retry ./docker/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.8 
+    - script: travis_retry ./docker/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.8 --slim
+    - script: travis_retry ./docker/dspython/deploy.sh -y --branch $TRAVIS_BRANCH --ee py3.8 --alpine
 # -------------------------------------------------------
     - stage: docker_deploy_client
-      if: (branch = develop AND type = cron) OR (branch = master AND type = api)
-      env:
-         - CACHE_NAME=docker_client
-      before_install: .travis/docker/setup.sh 
       script: travis_retry ./docker/client/deploy.sh -y --branch $TRAVIS_BRANCH
+      script: travis_retry ./docker/client/deploy.sh -y --branch $TRAVIS_BRANCH --slim
+      script: travis_retry ./docker/client/deploy.sh -y --branch $TRAVIS_BRANCH --alpine
 ############### MARENOSTRUM DEPLOYMENT ###############
     - stage: marenostrum_deploy
-      if: (branch = develop AND type = cron) OR (branch = master AND type = api)
-      env:
-         - CACHE_NAME=marenostrum
-      before_install: .travis/singularity/setup.sh && .travis/marenostrum/set_ssh.sh
+      before_install: 
+         - .travis/check_branch.sh
+         - .travis/singularity/setup.sh && .travis/marenostrum/set_ssh.sh
       script: travis_retry ./.travis/marenostrum/deploy.sh -y --branch $TRAVIS_BRANCH
-cache:
-  directories:
-  - $HOME/.m2
 notifications:
   email:
     - commiter:
