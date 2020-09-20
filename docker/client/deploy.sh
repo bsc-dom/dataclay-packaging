@@ -14,8 +14,8 @@ docker buildx build $DOCKERFILE -t $REPOSITORY/client:$CLIENT_TAG \
 	--build-arg DATACLAY_PYVER=$DEFAULT_PYTHON \
 	--build-arg JDK=$DEFAULT_JAVA \
 	--platform $PLATFORMS \
-	--cache-to=type=registry,ref=bscdataclay/client:buildxcache,mode=max \
-	--cache-from=type=registry,ref=bscdataclay/client:buildxcache \
+	--cache-to=type=registry,ref=bscdataclay/client:${CLIENT_TAG}-buildxcache,mode=max \
+	--cache-from=type=registry,ref=bscdataclay/client:${CLIENT_TAG}-buildxcache \
 	--push .
 echo "************* $REPOSITORY/client:$CLIENT_TAG DONE! *************"
 popd 

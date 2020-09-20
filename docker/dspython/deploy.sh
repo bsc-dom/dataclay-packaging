@@ -16,8 +16,8 @@ docker buildx build $DOCKERFILE -t $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_T
 		--build-arg DATACLAY_PYVER=$PYTHON_VERSION \
 		--build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION \
 		--platform $PLATFORMS \
-		--cache-to=type=registry,ref=bscdataclay/dspython:buildxcache${EXECUTION_ENVIRONMENT},mode=max \
-		--cache-from=type=registry,ref=bscdataclay/dspython:buildxcache${EXECUTION_ENVIRONMENT} \
+		--cache-to=type=registry,ref=bscdataclay/dspython:${EXECUTION_ENVIRONMENT_TAG}-buildxcache,mode=max \
+		--cache-from=type=registry,ref=bscdataclay/dspython:${EXECUTION_ENVIRONMENT_TAG}-buildxcache \
 		--push .
 echo "************* $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG DONE! *************"
 popd 

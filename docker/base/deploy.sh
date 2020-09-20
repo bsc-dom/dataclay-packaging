@@ -9,8 +9,8 @@ pushd $BUILDDIR
 echo "************* Pushing image named $REPOSITORY/base:$BASE_VERSION_TAG *************"
 docker buildx build $DOCKERFILE -t $REPOSITORY/base:$BASE_VERSION_TAG \
 	--platform $PLATFORMS \
-	--cache-to=type=registry,ref=bscdataclay/base:buildxcache,mode=max \
-	--cache-from=type=registry,ref=bscdataclay/base:buildxcache \
+	--cache-to=type=registry,ref=bscdataclay/base:${BASE_VERSION_TAG}-buildxcache,mode=max \
+	--cache-from=type=registry,ref=bscdataclay/base:${BASE_VERSION_TAG}-buildxcache \
 	--push .
 echo "************* $REPOSITORY/base:$BASE_VERSION_TAG IMAGE PUSHED! *************" 
 popd
