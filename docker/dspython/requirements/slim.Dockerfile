@@ -25,7 +25,7 @@ RUN python${PYTHON_PIP_VERSION} -m virtualenv --python=/usr/bin/python${DATACLAY
 # =============== INSTALL DATACLAY REQUIREMENTS =================== #
 
 ENV PATH="$DATACLAY_VIRTUAL_ENV/bin:$PATH"
-COPY ./requirements.txt requirements.txt
+COPY ./slim.requirements.txt requirements.txt
 RUN python${DATACLAY_PYVER} -m pip install --upgrade pip
 
 

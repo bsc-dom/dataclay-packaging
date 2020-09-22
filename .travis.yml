@@ -1,4 +1,5 @@
 language: generic
+dist: xenial
 if: (branch = develop AND (type = cron OR type = api)) OR (branch = master AND type = api)
 services:
 - docker

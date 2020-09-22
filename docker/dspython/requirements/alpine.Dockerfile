@@ -14,10 +14,10 @@ RUN python -m virtualenv ${DATACLAY_VIRTUAL_ENV}
 # =============== INSTALL DATACLAY REQUIREMENTS =================== #
 
 ENV PATH="$DATACLAY_VIRTUAL_ENV/bin:$PATH"
-COPY ./requirements.txt requirements.txt
+COPY ./alpine.requirements.txt requirements.txt
 RUN python -m pip install --default-timeout=$PIP_TIMEOUT --upgrade pip
 RUN apk add --update --no-cache build-base linux-headers \
-	&& python -m pip install --default-timeout=$PIP_TIMEOUT -r requirements.txt --extra-index-url=https://www.piwheels.org/simple \
+	&& python -m pip install --default-timeout=$PIP_TIMEOUT -r requirements.txt \
 	&& apk del build-base linux-headers && \
     rm -rf /var/cache/apk/*
 RUN apk add libstdc++

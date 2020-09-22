@@ -1,43 +1,42 @@
-#!/bin/bash -e
-SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-TRACING=false
-EXEC_ARGS_PROVIDED=false
+#!/bin/sh -e
+TRACING="false"
+EXEC_ARGS_PROVIDED="false"
 EXEC_ARGS=""
-DEBUG=false
-SERVICE=false
+DEBUG="false"
+SERVICE="false"
 ################################## SIGNALING #############################################
 _term() { 
 	echo "Caught SIGTERM signal!" 
 	kill -TERM "$service_pid"
 	wait "$service_pid"
-	if [ $TRACING == true ] && [ $SERVICE == false ] ; then 
+	if [ $TRACING = "true" ] && [ $SERVICE = "false" ] ; then 
 		mkdir -p trace
 		mpi2prv -f TRACE.mpits -o ./trace/dctrace.prv
  	fi
 	echo "ENTRYPOINT SHUTDOWN FINISHED"
 }
 
-trap _term SIGTERM
+trap _term TERM
 
 ################################## OPTIONS #############################################
-while [[ $# -gt 0 ]]; do
+while [ $# -gt 0 ]; do
     key="$1"
 	case $key in
 	--tracing)
-		TRACING=true
+		TRACING="true"
 		shift
         ;;
 	--debug)
-		DEBUG=true
+		DEBUG="true"
 		shift
         ;;
     --service)
-    	SERVICE=true
+    	SERVICE="true"
     	shift
     	;;
     *)
-    	if [ "$EXEC_ARGS_PROVIDED" = false ] ; then
-			EXEC_ARGS_PROVIDED=true
+    	if [ "$EXEC_ARGS_PROVIDED" = "false" ] ; then
+			EXEC_ARGS_PROVIDED="true"
 	    	EXEC_ARGS="$key"  	
 	    else 
 	    	EXEC_ARGS="$EXEC_ARGS $key"  	
@@ -48,7 +47,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 ### ========================== LOGGING ============================= ##
-if [ $DEBUG == true ] ; then
+if [ $DEBUG = "true" ] ; then
 	export DEBUG=True
 fi
 
@@ -56,7 +55,7 @@ fi
 python $EXEC_ARGS &
 service_pid=$! 
 wait "$service_pid"
-if [ $TRACING == true ] && [ $SERVICE == false ] ; then 
+if [ $TRACING = "true" ] && [ $SERVICE = "false" ] ; then 
 	mkdir -p trace
 	mpi2prv -no-syn -f TRACE.mpits -o ./trace/dctrace.prv
 fi

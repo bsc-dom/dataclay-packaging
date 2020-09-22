@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 usage() {
 cat << EOF
@@ -47,9 +47,9 @@ popd () {
 }
 
 
-blu=$'\e[1;34m'
-red=$'\e[1;91m'
-end=$'\e[0m'
+blu='\e[1;34m'
+red='\e[1;91m'
+end='\e[0m'
 
 errorMsg() {
 	echo ""
@@ -58,7 +58,7 @@ errorMsg() {
 	exit -1
 }
 
-shopt -s nocasematch # ignore case in case or if clauses
+#shopt -s nocasematch # ignore case in case or if clauses
 TOOLNAME=$0
 SUPPORTEDLANGS="python | java"
 SUPPORTEDDSETS="public | private"
@@ -67,7 +67,7 @@ echo " ${blu} **  ᴅᴀᴛᴀCʟᴀʏ command tool ** ${end} "
 # WARNING: Note that this script must be located among with pom.xml
 
 # Base ops commands
-if [[ -z "${DATACLAY_JAR}" ]]; then
+if [ -z "${DATACLAY_JAR}" ]; then
 	echo "ERROR: DATACLAY_JAR environemnt variable not defined."
 	exit -1
 fi
@@ -107,62 +107,63 @@ if [ -z $1 ]; then
 	exit 0
 fi
 OPERATION=$1
-
+shift
+PARAMS="$@"
 case $OPERATION in
 	'-h' | '--help' | '?' | 'help')
 		usage
 		;;
 	'NewAccount')
-		$NEW_ACCOUNT ${@:2}
+		$NEW_ACCOUNT $PARAMS
 #		proposal for defaults:
-#		$NEW_NAMESPACE ${@:2} $2_java java
-#		$NEW_NAMESPACE ${@:2} $2_py python
-#		$NEW_DATACONTRACT ${@:2} $2_ds $2
+#		$NEW_NAMESPACE $PARAMS $2_java java
+#		$NEW_NAMESPACE $PARAMS $2_py python
+#		$NEW_DATACONTRACT $PARAMS $2_ds $2
 		;;
 	'GetBackends')
-		$GET_BACKENDS ${@:2}
+		$GET_BACKENDS $PARAMS
 		;;
 	'GetDatasets')
-		$GET_DATASETS ${@:2}
+		$GET_DATASETS $PARAMS
 		;;
 	'NewDataset')
-		$NEW_DATASET ${@:2}
+		$NEW_DATASET $PARAMS
 		;;
 	'NewDataContract')
-		$NEW_DATACONTRACT ${@:2}
+		$NEW_DATACONTRACT $PARAMS
 		;;
 	'NewNamespace')
-		$NEW_NAMESPACE ${@:2}
+		$NEW_NAMESPACE $PARAMS
 		;;
 	'GetNamespaces')
-		$GET_NAMESPACES ${@:2}
+		$GET_NAMESPACES $PARAMS
 		;;
 	'NewModel')
-		FOLDER=$5
-		if [ $# -lt 6 ]; then
+		FOLDER=$4
+		if [ $# -lt 5 ]; then
 			errorMsg "Missing arguments. Usage: NewModel <user_name> <user_pass> <namespace_name> <class_path> <$SUPPORTEDLANGS>"
 		fi
 		if [ ! -d $FOLDER ]; then
 			errorMsg "Model path $FOLDER is not a valid directory."
 		fi
-		case $6 in
+		case $5 in
 			'java')
-				$NEW_NAMESPACE $2 $3 $4 java
+				$NEW_NAMESPACE $1 $2 $3 java
 				if [ $? -ge 0 ]; then
-					INIT_PARAMS="$2 $3 $4 $5"
-					if [ $# -gt 6 ]; then
-						INIT_PARAMS="$INIT_PARAMS ${@:7}"
+					INIT_PARAMS="$1 $2 $3 $4"
+					if [ $# -gt 5 ]; then
+						INIT_PARAMS="$INIT_PARAMS $6"
 					fi
 					$JAVA_NEW_MODEL $INIT_PARAMS
 				fi
 				;;
 			'python')
-				$NEW_NAMESPACE $2 $3 $4 python
+				$NEW_NAMESPACE $1 $2 $3 python
 				if [ $? -ge 0 ]; then
-					if [ $# -gt 6 ]; then
+					if [ $# -gt 5 ]; then
 						errorMsg "Prefetching is only supported in Java applications."
 					fi
-					$PY_NEW_MODEL $2 $3 $4 $5
+					$PY_NEW_MODEL $1 $2 $3 $4
 				fi
 				;;
 			*)
@@ -171,43 +172,43 @@ case $OPERATION in
 		esac
 		;;
 	'GetStubs')
-		FOLDER=$5
-		if [ $# -ne 5 ]; then
+		FOLDER=$4
+		if [ $# -ne 4 ]; then
 			errorMsg "Missing arguments. Usage: GetStubs <user_name> <user_pass> <namespace_name> <stubs_path>"
 		fi
 		if [ ! -d $FOLDER ]; then
 			errorMsg "Stubs path $FOLDER is not a valid directory."
 		fi
-		LANG=`$GET_NAMESPACE_LANG $2 $3 $4 | grep ^LANG`
+		LANG=`$GET_NAMESPACE_LANG $1 $2 $3 | grep ^LANG`
 		case $LANG in
 			'LANG_JAVA')
-				$ACCESS_NS_MODEL $2 $3 $4
+				$ACCESS_NS_MODEL $1 $2 $3
 				if [ $? -ge 0 ]; then
-					$JAVA_GETSTUBS $2 $3 $4 $5
+					$JAVA_GETSTUBS $1 $2 $3 $4
 				fi
 				;;
 			'LANG_PYTHON')
-				CONTRACTID=`$ACCESS_NS_MODEL $2 $3 $4 | tail -1`
+				CONTRACTID=`$ACCESS_NS_MODEL $1 $2 $3 | tail -1`
 				if [ $? -ge 0 ] && [ ! -z $CONTRACTID ]; then
-					$PY_GETSTUBS $2 $3 $CONTRACTID $5
+					$PY_GETSTUBS $1 $2 $CONTRACTID $4
 				fi
 				;;
 			*)
-				errorMsg "Missing or unsupported language: '$6'. Must be one of the supported languages: $SUPPORTEDLANGS."
+				errorMsg "Missing or unsupported language: '$5'. Must be one of the supported languages: $SUPPORTEDLANGS."
 				;;
 		esac
 		;;
 	'GetDataClayID')
-		$GET_DATACLAYID ${@:2}
+		$GET_DATACLAYID $PARAMS
 		;;
 	'RegisterDataClay')
-		$REG_EXT_DATACLAY ${@:2}
+		$REG_EXT_DATACLAY $PARAMS
 		;;
 	'GetExtDataClayID')
-		$GET_EXT_DATACLAYID ${@:2}
+		$GET_EXT_DATACLAYID $PARAMS
 		;;
 	'WaitForDataClayToBeAlive')
-		$WAIT_DATACLAY_ALIVE ${@:2}
+		$WAIT_DATACLAY_ALIVE $PARAMS
 		;;
 	*)
 		echo "[ERROR]: Operation $1 is not supported."

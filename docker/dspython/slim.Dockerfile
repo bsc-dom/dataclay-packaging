@@ -22,7 +22,10 @@ RUN mkdir -p ${DATACLAY_HOME}/deploy/source
 # =============== INSTALL DATACLAY =================== #
 
 COPY ./pyclay/ ${DATACLAY_HOME}/pyclay/
+# ignore requirements
+RUN sed -i '/numpy*/d' ${DATACLAY_HOME}/pyclay/requirements.txt
 RUN cd ${DATACLAY_HOME}/pyclay/ && python${DATACLAY_PYVER} setup.py install
+RUN python -c "import dataclay; print('import ok')"
 
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
 COPY ./extrae ${DATACLAY_HOME}/extrae

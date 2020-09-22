@@ -1,5 +1,4 @@
 #!/bin/bash
-SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 TRACING=false
 EXEC_ARGS_PROVIDED=false
 DEBUG=false
