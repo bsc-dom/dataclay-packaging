@@ -5,7 +5,7 @@ services:
 - docker
 before_install:
 - .travis/check_branch.sh
-- apt-get install openjdk-11-jdk
+- sudo apt-get install openjdk-11-jdk
 - .travis/docker/setup.sh 
 env:
   global:
