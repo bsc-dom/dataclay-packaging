@@ -155,6 +155,8 @@ export BASE_VERSION_TAG="$(get_container_version)${TAG_SUFFIX}"
 export CLIENT_TAG="$(get_container_version)${TAG_SUFFIX}"
 export DEFAULT_JDK_TAG="$(get_container_version jdk$DEFAULT_JAVA)${TAG_SUFFIX}"
 export DEFAULT_PY_TAG="$(get_container_version py$DEFAULT_PYTHON)${TAG_SUFFIX}"
+export DEFAULT_JDK_CLIENT_TAG="$(get_container_version jdk$CLIENT_JAVA)${TAG_SUFFIX}"
+export DEFAULT_PY_CLIENT_TAG="$(get_container_version py$CLIENT_PYTHON)${TAG_SUFFIX}"
 if [ ! -z $EXECUTION_ENVIRONMENT ]; then 
 	export EXECUTION_ENVIRONMENT_TAG="$(get_container_version $EXECUTION_ENVIRONMENT)${TAG_SUFFIX}"
 fi
@@ -188,7 +190,7 @@ else
 fi
 
 
-# No support for alpine jdk 11 and ARM 32 available 
+# No support for alpine jdk 11 available
 if [[ "$JAVA_VERSION" == "11" ]] && [[ "$TAG_SUFFIX" == "-alpine" ]]; then 
 	export PLATFORMS=${PLATFORMS/linux\/arm\/v7,}
 	echo "WARNING: No support for ARMv7 in ALPINE with JDK 11. Using platforms: $PLATFORMS"

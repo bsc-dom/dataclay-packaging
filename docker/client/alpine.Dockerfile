@@ -9,7 +9,7 @@ ARG JDK
 ARG DATACLAY_PYVER
 
 # Install packages:
-RUN apk --no-cache --update add openjdk8-jre
+RUN apk --no-cache --update add openjdk${JDK}-jre libstdc++
 
 ENV DATACLAY_HOME=/home/dataclayusr/dataclay
 ENV DATACLAY_JAR=${DATACLAY_HOME}/dataclay.jar

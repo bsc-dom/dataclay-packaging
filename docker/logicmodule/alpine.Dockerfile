@@ -1,9 +1,11 @@
 ARG BASE_VERSION
-FROM openjdk:8u212-jre-alpine
+FROM alpine:3
 LABEL maintainer dataClay team <support-dataclay@bsc.es>
 
 ARG LOCAL_JAR="*-jar-with-dependencies.jar"
 ARG JDK=11
+# Install packages:
+RUN apk --no-cache --update add openjdk${JDK}-jre
 
 # Working dir 
 ENV DATACLAY_HOME=/home/dataclayusr/dataclay
