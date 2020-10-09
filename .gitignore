@@ -8,3 +8,5 @@ input.txt
 travis.log
 *.sif
 .dockerbuildx
+/.idea/
+dataclay-packaging.iml
