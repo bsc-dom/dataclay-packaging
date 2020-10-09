@@ -9,4 +9,4 @@ travis.log
 *.sif
 .dockerbuildx
 /.idea/
-dataclay-packaging.iml
+*.iml
