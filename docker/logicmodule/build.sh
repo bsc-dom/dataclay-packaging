@@ -7,19 +7,20 @@ if [ -z $EXECUTION_ENVIRONMENT_TAG ]; then echo "ERROR: EXECUTION_ENVIRONMENT_TA
 if [ $PACKAGE_JAR == true ]; then 
 	# CREATE DATACLAY JAR
 	pushd $BUILDDIR/javaclay
-	printMsg "Packaging dataclay.jar"
-	mvn package -q -DskipTests=true >/dev/null
+	printMsg "Packaging dataclay.jar with profile $PACKAGE_PROFILE "
+	mvn clean package -q -DskipTests=true $PACKAGE_PROFILE >/dev/null
 	printMsg "dataclay.jar created!"
 	popd
 fi
 
 # LOGICMODULE
 pushd $BUILDDIR
+ls -la $LOCAL_JAR
 printMsg "Building image named $REPOSITORY/logicmodule:${EXECUTION_ENVIRONMENT_TAG}"
 docker build $DOCKERFILE \
 			 --build-arg BASE_VERSION=$BASE_VERSION_TAG \
 			 --build-arg JDK=$JAVA_VERSION \
-			 --build-arg LOCAL_JAR=$JAR_NAME \
+			 --build-arg LOCAL_JAR=$LOCAL_JAR \
 			 -t $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG .
 printMsg "$REPOSITORY/logicmodule:${EXECUTION_ENVIRONMENT_TAG} IMAGE DONE!"
 popd 

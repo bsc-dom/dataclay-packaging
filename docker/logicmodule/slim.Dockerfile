@@ -2,12 +2,12 @@ ARG BASE_VERSION
 FROM bscdataclay/base:${BASE_VERSION}
 LABEL maintainer dataClay team <support-dataclay@bsc.es>
 
-ARG LOCAL_JAR="*-jar-with-dependencies.jar"
+ARG LOCAL_JAR
 ARG JDK=11
 
 # Install javaclay packages:
 RUN apt-get update \
-        && apt-get install --no-install-recommends -y --allow-unauthenticated openjdk-${JDK}-jre >/dev/null\
+        && apt-get install --no-install-recommends -y --allow-unauthenticated openjdk-${JDK}-jre-headless >/dev/null\
         && rm -rf /var/lib/apt/lists/*
        
 # Set Java home. We create a symbolic link to be arch-independant 
@@ -21,7 +21,7 @@ ENV DATACLAY_LOG_CONFIG=${DATACLAY_HOME}/logging/log4j2.xml
 ENV DATACLAY_JAR=${DATACLAY_HOME}/dataclay.jar
 
 # Get dataClay JAR 
-COPY ./javaclay/target/${LOCAL_JAR} ${DATACLAY_JAR}
+COPY ${LOCAL_JAR} ${DATACLAY_JAR}
 ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
 
 # Copy entrypoint
@@ -33,6 +33,7 @@ ENV PATH=${DATACLAY_HOME}/entrypoints:${PATH}
 
 # Copy healthcheck
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
+COPY ./prepare_to_export.sh /prepare_to_export.sh
 
 # Copy configurations and dynamic files (more likely to be changed)
 COPY ./javaclay/dataclay-common/cfglog/log4j2.xml ${DATACLAY_LOG_CONFIG}

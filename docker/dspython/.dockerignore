@@ -1,1 +1,15 @@
 .dockerbuildx*
+pyclay/docs
+pyclay/tests
+**/*.pyc
+pyclay/build
+pyclay/dist
+pyclay/src/dataClay.egg-info
+**/.travis*
+**/.project
+**/.pydevproject
+**/.git*
+pyclay/venv
+**/.idea
+**/.travis
+pyclay/dataclay-common

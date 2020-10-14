@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 if [ -f "state.txt" ]; then
-	if [ "$(cat state.txt)" == "READY" ]; then 
+	if [ "$(cat state.txt)" = "READY" ]; then
 		echo "HEALTHY"
 		exit 0
 	else

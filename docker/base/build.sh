@@ -3,6 +3,7 @@ BUILDDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 REPOSITORY="bscdataclay"
 source $BUILDDIR/../../common/config.sh
 
+
 # BASE IMAGES 
 pushd $BUILDDIR
 printMsg "Building image named $REPOSITORY/base:$BASE_VERSION_TAG"

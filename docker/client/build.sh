@@ -11,7 +11,7 @@ docker build $DOCKERFILE \
 				 --build-arg DATACLAY_DSPYTHON_DOCKER_TAG=$DEFAULT_PY_CLIENT_TAG \
 				 --build-arg DATACLAY_LOGICMODULE_DOCKER_TAG=$DEFAULT_JDK_CLIENT_TAG \
 				 --build-arg DATACLAY_PYVER=$CLIENT_PYTHON \
-			     --build-arg JDK=$CLIENT_JAVA \
+			   --build-arg JDK=$CLIENT_JAVA \
 				 -t $REPOSITORY/client:$CLIENT_TAG .
 printMsg "$REPOSITORY/client:$CLIENT_TAG DONE!"
 popd 

@@ -1,23 +1,38 @@
-ARG BASE_VERSION
+FROM alpine:3 as packager
+RUN apk --no-cache add openjdk11-jdk openjdk11-jmods
+ENV JAVA_MINIMAL="/opt/java-minimal"
+# build minimal JRE
+RUN /usr/lib/jvm/java-11-openjdk/bin/jlink \
+    --verbose \
+    --add-modules java.base,java.logging,java.transaction.xa,java.compiler,\
+java.sql,java.naming,java.desktop,java.management,java.security.jgss,java.instrument,\
+jdk.unsupported,jdk.jdi \
+    --compress 2 --strip-debug --no-header-files --no-man-pages \
+    --release-info="add:IMPLEMENTOR=radistao:IMPLEMENTOR_VERSION=radistao_JRE" \
+    --output "$JAVA_MINIMAL"
+# Second stage, add only our minimal "JRE" distr and our app
+# ============================================================ #
 FROM alpine:3
 LABEL maintainer dataClay team <support-dataclay@bsc.es>
+ARG LOCAL_JAR
 
-ARG LOCAL_JAR="*-jar-with-dependencies.jar"
-ARG JDK=11
 # Install packages:
-RUN apk --no-cache --update add openjdk${JDK}-jre
+ENV JAVA_MINIMAL="/opt/java-minimal"
+ENV PATH="$PATH:$JAVA_MINIMAL/bin"
+COPY --from=packager "$JAVA_MINIMAL" "$JAVA_MINIMAL"
 
-# Working dir 
+RUN apk --no-cache --update add sqlite
+
 ENV DATACLAY_HOME=/home/dataclayusr/dataclay
+ENV DATACLAY_LOG_CONFIG=${DATACLAY_HOME}/logging/log4j2.xml
+ENV DATACLAY_JAR=${DATACLAY_HOME}/dataclay.jar
+ENV JAVA_HOME=${JAVA_MINIMAL}
+
 RUN mkdir -p ${DATACLAY_HOME}
 WORKDIR ${DATACLAY_HOME}
 
-# Configure dataclay environment variables
-ENV DATACLAY_LOG_CONFIG=${DATACLAY_HOME}/logging/log4j2.xml
-ENV DATACLAY_JAR=${DATACLAY_HOME}/dataclay.jar
-
 # Get dataClay JAR 
-COPY ./javaclay/target/${LOCAL_JAR} ${DATACLAY_JAR}
+COPY ${LOCAL_JAR} ${DATACLAY_JAR}
 ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
 
 # Copy entrypoint
@@ -28,6 +43,7 @@ ENV PATH=${DATACLAY_HOME}/entrypoints:${PATH}
 
 # Copy healthcheck
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
+COPY ./prepare_to_export.sh /prepare_to_export.sh
 
 # Copy configurations and dynamic files (more likely to be changed)
 COPY ./javaclay/dataclay-common/cfglog/log4j2.xml ${DATACLAY_LOG_CONFIG}

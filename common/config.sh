@@ -167,16 +167,24 @@ echo "DEFAULT_TAG=$DEFAULT_TAG"
 echo "BASE_VERSION_TAG=$BASE_VERSION_TAG"
 echo "CLIENT_TAG=$CLIENT_TAG"
 echo "DEFAULT_JDK_TAG=$DEFAULT_JDK_TAG"
-echo "DEFAULT_PY_TAG=$DEFAULT_PY_TAG" 
+echo "DEFAULT_PY_TAG=$DEFAULT_PY_TAG"
+echo "DEFAULT_JDK_CLIENT_TAG=$DEFAULT_JDK_CLIENT_TAG"
+echo "DEFAULT_PY_CLIENT_TAG=$DEFAULT_PY_CLIENT_TAG"
 echo "EXECUTION_ENVIRONMENT_TAG=$EXECUTION_ENVIRONMENT_TAG"
 
 if [[ $EXECUTION_ENVIRONMENT == jdk* ]]; then 
 	export JAR_VERSION=$(grep version $DATACLAY_DOCKER_DIR/logicmodule/javaclay/pom.xml | grep -v -e '<?xml|~'| head -n 1 | sed 's/[[:space:]]//g' | sed -E 's/<.{0,1}version>//g' | awk '{print $1}')
-	export JAR_NAME=dataclay-${JAR_VERSION}-jar-with-dependencies.jar
+	export LOCAL_JAR=./javaclay/target/dataclay-${JAR_VERSION}-shaded.jar
 	export JAVA_VERSION=${EXECUTION_ENVIRONMENT#"jdk"}
+	export PACKAGE_PROFILE=""
+	if [[ "$TAG_SUFFIX" == "-slim" ]] || [[ "$TAG_SUFFIX" == "-alpine" ]]; then
+	    export PACKAGE_PROFILE="-Pslim"
+	fi
 	echo "Build Java version will be:$grn $JAVA_VERSION $end" 
 	echo "Default Java version will be:$grn $DEFAULT_JAVA $end" 
-	echo "Current defined version in pom.xml:$grn $JAR_VERSION $end" 
+	echo "Current defined version in pom.xml:$grn $JAR_VERSION $end"
+	echo "Using jar:$grn $LOCAL_JAR $end"
+	echo "Created with maven profile:$grn $PACKAGE_PROFILE $end"
 elif [[ $EXECUTION_ENVIRONMENT == py* ]]; then 
 	export PYTHON_VERSION=${EXECUTION_ENVIRONMENT#"py"}
 	# Get python version without subversion to install it in some packages
@@ -195,7 +203,6 @@ if [[ "$JAVA_VERSION" == "11" ]] && [[ "$TAG_SUFFIX" == "-alpine" ]]; then
 	export PLATFORMS=${PLATFORMS/linux\/arm\/v7,}
 	echo "WARNING: No support for ARMv7 in ALPINE with JDK 11. Using platforms: $PLATFORMS"
 fi
-
 
 if [ $DONOTPROMPT == false ]; then
 	while true; do

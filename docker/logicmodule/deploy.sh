@@ -9,7 +9,7 @@ if [ $PACKAGE_JAR == true ]; then
 	# CREATE DATACLAY JAR
 	pushd $BUILDDIR/javaclay
 	echo "Packaging dataclay.jar"
-	mvn package -q -DskipTests=true >/dev/null
+	mvn clean package -q -DskipTests=true $PACKAGE_PROFILE >/dev/null
 	echo "dataclay.jar created!"
 	popd
 fi
@@ -20,7 +20,7 @@ echo "************* Pushing image named $REPOSITORY/logicmodule:$EXECUTION_ENVIR
 docker buildx build $DOCKERFILE -t $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG \
 		--build-arg JDK=$JAVA_VERSION \
 		--build-arg BASE_VERSION=$BASE_VERSION_TAG \
-		--build-arg LOCAL_JAR=$JAR_NAME \
+		--build-arg LOCAL_JAR=$LOCAL_JAR \
 		--platform $PLATFORMS \
 		--cache-to=type=registry,ref=bscdataclay/logicmodule:${EXECUTION_ENVIRONMENT_TAG}-buildxcache,mode=max \
 		--cache-from=type=registry,ref=bscdataclay/logicmodule:${EXECUTION_ENVIRONMENT_TAG}-buildxcache \

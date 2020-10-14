@@ -14,17 +14,20 @@ echo "'"'
 echo " Welcome to dataClay build script!"
 ################################## BUILD #############################################
 source $SCRIPTDIR/../common/PLATFORMS.txt
-	
+if [[ "$*" == *--slim* ]] || [[ "$*" == *--alpine* ]]; then
+  export PACKAGE_PROFILE="-Pslim"
+fi
+# CREATE DATACLAY JAR
+pushd $SCRIPTDIR/logicmodule/javaclay
+	echo "Packaging dataclay.jar using profile $PACKAGE_PROFILE"
+	mvn clean package $PACKAGE_PROFILE -DskipTests=true
+	echo "dataclay.jar created!"
+popd
+
+
 $SCRIPTDIR/base/build.sh "$@"
 
-
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
-	# CREATE DATACLAY JAR
-	pushd $SCRIPTDIR/logicmodule/javaclay
-		echo "Packaging dataclay.jar"
-		mvn clean package -q -DskipTests=true -Dmaven.compiler.target=${JAVA_VERSION} -Dmaven.compiler.source=${JAVA_VERSION} -Dmaven.compiler.release=${JAVA_VERSION} > /dev/null
-		echo "dataclay.jar created!"
-	popd
 	$SCRIPTDIR/logicmodule/build.sh "$@" --ee jdk${JAVA_VERSION} --do-not-package #already packaged
 	$SCRIPTDIR/dsjava/build.sh "$@" --ee jdk${JAVA_VERSION} --do-not-package
 done

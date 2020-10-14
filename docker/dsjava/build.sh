@@ -4,13 +4,12 @@ REPOSITORY="bscdataclay"
 source $BUILDDIR/../../common/config.sh
 if [ -z $EXECUTION_ENVIRONMENT_TAG ]; then echo "ERROR: EXECUTION_ENVIRONMENT_TAG not defined. Aborting"; exit 1; fi
 
-
 # CREATE DATACLAY JAR
 if [ $PACKAGE_JAR == true ]; then 
 	# CREATE DATACLAY JAR
 	pushd $BUILDDIR/../logicmodule/javaclay
 	printMsg "Packaging dataclay.jar"
-	mvn package -q -DskipTests=true >/dev/null
+	mvn package -q -DskipTests=true $PACKAGE_PROFILE >/dev/null
 	printMsg "dataclay.jar created!"
 	popd
 fi 

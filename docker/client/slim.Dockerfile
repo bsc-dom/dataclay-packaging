@@ -9,13 +9,12 @@ ARG JDK
 
 # Install packages:
 RUN apt-get update \
-        && apt-get install --no-install-recommends -y --allow-unauthenticated openjdk-${JDK}-jre >/dev/null\
+        && apt-get install --no-install-recommends -y --allow-unauthenticated openjdk-${JDK}-jdk >/dev/null\
         python${DATACLAY_PYVER} python3-distutils \
         && rm -rf /var/lib/apt/lists/*
 
 ENV DATACLAY_HOME=/home/dataclayusr/dataclay
 ENV DATACLAY_JAR=${DATACLAY_HOME}/dataclay.jar
-ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
 
 WORKDIR ${DATACLAY_HOME}
 
@@ -27,6 +26,7 @@ COPY --from=0 ${DATACLAY_HOME}/dataclay_venv ${DATACLAY_VIRTUAL_ENV}
 # Copy from dsjava
 COPY --from=1 ${DATACLAY_JAR} ${DATACLAY_JAR}
 COPY --from=1 ${DATACLAY_HOME}/entrypoints/dataclay-java-entry-point ${DATACLAY_HOME}/entrypoints/dataclay-java-entry-point
+ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
 
 # Make sure we use the virtualenv and entrypoints:
 ENV PATH="${DATACLAY_VIRTUAL_ENV}/bin:${DATACLAY_HOME}/entrypoints:$PATH"

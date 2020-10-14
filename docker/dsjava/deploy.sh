@@ -8,7 +8,7 @@ source $BUILDDIR/../../common/prepare_docker_builder.sh
 if [ $PACKAGE_JAR == true ]; then 
 	# CREATE DATACLAY JAR
 	pushd $BUILDDIR/../logicmodule/javaclay
-	mvn package -DskipTests=true >/dev/null
+	mvn package -DskipTests=true $PACKAGE_PROFILE >/dev/null
 	popd
 fi
 

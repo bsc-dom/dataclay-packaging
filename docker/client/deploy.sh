@@ -12,7 +12,7 @@ docker buildx build $DOCKERFILE -t $REPOSITORY/client:$CLIENT_TAG \
 				 --build-arg DATACLAY_DSPYTHON_DOCKER_TAG=$DEFAULT_PY_CLIENT_TAG \
 				 --build-arg DATACLAY_LOGICMODULE_DOCKER_TAG=$DEFAULT_JDK_CLIENT_TAG \
 				 --build-arg DATACLAY_PYVER=$CLIENT_PYTHON \
-			     --build-arg JDK=$CLIENT_JAVA \
+			   --build-arg JDK=$CLIENT_JAVA \
 				 --platform $PLATFORMS \
 				 --cache-to=type=registry,ref=bscdataclay/client:${CLIENT_TAG}-buildxcache,mode=max \
 				 --cache-from=type=registry,ref=bscdataclay/client:${CLIENT_TAG}-buildxcache \

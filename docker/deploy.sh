@@ -30,15 +30,17 @@ echo "'"'
 echo " Welcome to dataClay deploy script!"
 SECONDS=0
 source $SCRIPTDIR/../common/PLATFORMS.txt
-
+if [[ "$*" == *--slim* ]] || [[ "$*" == *--alpine* ]]; then
+  export PACKAGE_PROFILE="-Pslim"
+fi
+pushd $SCRIPTDIR/logicmodule/javaclay
+	echo "Packaging dataclay.jar using profile $PACKAGE_PROFILE"
+	mvn clean package $PACKAGE_PROFILE -DskipTests=true
+	echo "dataclay.jar created!"
+popd
 $SCRIPTDIR/base/deploy.sh "$@"
 
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
-	pushd $SCRIPTDIR/logicmodule/javaclay
-		echo "Packaging dataclay.jar"
-		mvn clean package -q -DskipTests=true -Dmaven.compiler.target=${JAVA_VERSION} -Dmaven.compiler.source=${JAVA_VERSION} -Dmaven.compiler.release=${JAVA_VERSION} > /dev/null
-		echo "dataclay.jar created!"
-	popd
 	$SCRIPTDIR/logicmodule/deploy.sh "$@" --ee jdk${JAVA_VERSION} --do-not-package #already packaged
 	$SCRIPTDIR/dsjava/deploy.sh "$@" --ee jdk${JAVA_VERSION} --do-not-package #already packaged
 done

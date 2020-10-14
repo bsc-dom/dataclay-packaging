@@ -4,9 +4,7 @@ FROM bscdataclay/dspython:${REQUIREMENTS_TAG}
 FROM python:${DATACLAY_PYVER}-alpine
 LABEL maintainer dataClay team <support-dataclay@bsc.es>
 
-RUN apk add libstdc++
-
-# Working dir 
+# Working dir
 ENV DATACLAY_HOME=/home/dataclayusr/dataclay
 RUN mkdir -p ${DATACLAY_HOME}
 WORKDIR ${DATACLAY_HOME}
@@ -15,6 +13,7 @@ WORKDIR ${DATACLAY_HOME}
 RUN mkdir -p ${DATACLAY_HOME}/deploy/source
 
 # =============== INSTALL DATACLAY =================== #
+RUN apk add libstdc++
 ENV DATACLAY_VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
 COPY --from=0 ${DATACLAY_HOME}/dataclay_venv ${DATACLAY_VIRTUAL_ENV}
 ENV PATH="$DATACLAY_VIRTUAL_ENV/bin:$PATH"
