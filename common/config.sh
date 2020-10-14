@@ -198,10 +198,10 @@ else
 fi
 
 
-# No support for alpine jdk 11 available
-if [[ "$JAVA_VERSION" == "11" ]] && [[ "$TAG_SUFFIX" == "-alpine" ]]; then 
+# No support for alpine jdk 11 available in ARM32
+if [[ "$TAG_SUFFIX" == "-alpine" ]]; then
 	export PLATFORMS=${PLATFORMS/linux\/arm\/v7,}
-	echo "WARNING: No support for ARMv7 in ALPINE with JDK 11. Using platforms: $PLATFORMS"
+	echo "WARNING: No support for ARMv7 in ALPINE. Using platforms: $PLATFORMS"
 fi
 
 if [ $DONOTPROMPT == false ]; then
