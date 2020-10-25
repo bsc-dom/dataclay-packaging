@@ -32,6 +32,7 @@ cat << EOF
  GetDataClayID    
  GetExtDataClayID   <dc_host> <dc_port>
  RegisterDataClay   <dc_host> <dc_port>
+ RegisterModelsInNamespaceFromExternalDataClay <dc_host> <dc_port> <namespace>
  WaitForDataClayToBeAlive	<max_retries> <retries_seconds>
 
 EOF
@@ -46,30 +47,27 @@ popd () {
     command popd "$@" > /dev/null
 }
 
-
-blu='\e[1;34m'
-red='\e[1;91m'
-end='\e[0m'
+CONSOLE_BLUE="\033[1m \033[34m"
+CONSOLE_NORMAL="\033[0m"
+CONSOLE_RED="\033[1m \033[31m"
 
 errorMsg() {
-	echo ""
-	echo " ${red} [dataClay] [ERROR] $1 ${end} "
-	echo ""
-	exit -1
+	printf "\n ${CONSOLE_RED} [dataClay] [ERROR] $1 ${CONSOLE_NORMAL} \n\n"
+	exit 1
 }
 
 #shopt -s nocasematch # ignore case in case or if clauses
 TOOLNAME=$0
 SUPPORTEDLANGS="python | java"
 SUPPORTEDDSETS="public | private"
-echo " ${blu} **  ᴅᴀᴛᴀCʟᴀʏ command tool ** ${end} "
+printf " ${CONSOLE_BLUE} **  ᴅᴀᴛᴀCʟᴀʏ command tool ** ${CONSOLE_NORMAL} \n"
 
 # WARNING: Note that this script must be located among with pom.xml
 
 # Base ops commands
 if [ -z "${DATACLAY_JAR}" ]; then
-	echo "ERROR: DATACLAY_JAR environemnt variable not defined."
-	exit -1
+	errorMsg "ERROR: DATACLAY_JAR environemnt variable not defined."
+	exit 1
 fi
 
 JAVA_OPSBASE="dataclay-java-entry-point"
@@ -100,6 +98,9 @@ PY_GETSTUBS="$PY_OPSBASE get_stubs"
 GET_DATACLAYID="$JAVA_OPSBASE es.bsc.dataclay.tool.GetCurrentDataClayID"
 GET_EXT_DATACLAYID="$JAVA_OPSBASE es.bsc.dataclay.tool.GetExternalDataClayID"
 REG_EXT_DATACLAY="$JAVA_OPSBASE es.bsc.dataclay.tool.NewDataClayInstance"
+REG_MODELS_IN_NAMESPACE_FROM_EXT_DATACLAY="$JAVA_OPSBASE es.bsc.dataclay.tool.RegisterModelsInNamespaceFromExternalDataClay"
+
+
 WAIT_DATACLAY_ALIVE="$JAVA_OPSBASE es.bsc.dataclay.tool.WaitForDataClayToBeAlive"
 
 if [ -z $1 ]; then
@@ -207,12 +208,15 @@ case $OPERATION in
 	'GetExtDataClayID')
 		$GET_EXT_DATACLAYID $PARAMS
 		;;
+  'RegisterModelsInNamespaceFromExternalDataClay')
+    $REG_MODELS_IN_NAMESPACE_FROM_EXT_DATACLAY $PARAMS
+    ;;
 	'WaitForDataClayToBeAlive')
 		$WAIT_DATACLAY_ALIVE $PARAMS
 		;;
 	*)
-		echo "[ERROR]: Operation $1 is not supported."
+		errorMsg "[ERROR]: Operation $1 is not supported."
 		usage
-		exit -1
+		exit 1
 		;;
 esac

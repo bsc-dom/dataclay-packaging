@@ -13,8 +13,20 @@ jdk.unsupported,jdk.jdi \
 # Second stage, add only our minimal "JRE" distr and our app
 # ============================================================ #
 FROM alpine:3
-LABEL maintainer dataClay team <support-dataclay@bsc.es>
-ARG LOCAL_JAR
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION
+LABEL org.opencontainers.image.created=$BUILD_DATE \
+      org.opencontainers.image.title="dataClay client" \
+      org.opencontainers.image.description="Active objects across the network" \
+      org.opencontainers.image.url="https://dataclay.bsc.es/" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url="https://github.com/bsc-dom/dataclay-packaging" \
+      org.opencontainers.image.vendor="Barcelona Supercomputing Center (BSC-CNS)" \
+      org.opencontainers.image.version=$VERSION \
+      org.opencontainers.image.authors="support-dataclay@bsc.es" \
+      org.opencontainers.image.licenses="BSD-3-Clause" \
+      org.label-schema.docker.dockerfile="/docker/logicmodule/alpine.Dockerfile"
 
 # Install packages:
 ENV JAVA_MINIMAL="/opt/java-minimal"
@@ -31,7 +43,8 @@ ENV JAVA_HOME=${JAVA_MINIMAL}
 RUN mkdir -p ${DATACLAY_HOME}
 WORKDIR ${DATACLAY_HOME}
 
-# Get dataClay JAR 
+# Get dataClay JAR
+ARG LOCAL_JAR
 COPY ${LOCAL_JAR} ${DATACLAY_JAR}
 ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
 

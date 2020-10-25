@@ -18,6 +18,9 @@ pushd $BUILDDIR
 ls -la $LOCAL_JAR
 printMsg "Building image named $REPOSITORY/logicmodule:${EXECUTION_ENVIRONMENT_TAG}"
 docker build $DOCKERFILE \
+       --build-arg VCS_REF=`git rev-parse --short HEAD` \
+       --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
+       --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
 			 --build-arg BASE_VERSION=$BASE_VERSION_TAG \
 			 --build-arg JDK=$JAVA_VERSION \
 			 --build-arg LOCAL_JAR=$LOCAL_JAR \

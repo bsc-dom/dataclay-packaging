@@ -1,6 +1,13 @@
 ARG DATACLAY_PYVER=3.7
 FROM python:${DATACLAY_PYVER}-alpine
-LABEL maintainer dataClay team <support-dataclay@bsc.es>
+LABEL org.opencontainers.image.title="dataClay python requirements image" \
+      org.opencontainers.image.description="Active objects across the network" \
+      org.opencontainers.image.url="https://dataclay.bsc.es/" \
+      org.label-schema.vcs-url="https://github.com/bsc-dom/dataclay-packaging" \
+      org.opencontainers.image.vendor="Barcelona Supercomputing Center (BSC-CNS)" \
+      org.opencontainers.image.authors="support-dataclay@bsc.es" \
+      org.opencontainers.image.licenses="BSD-3-Clause" \
+      org.label-schema.docker.dockerfile="/docker/dspython/requirements/alpine.Dockerfile"
 
 ENV DATACLAY_HOME=/home/dataclayusr/dataclay
 ENV PIP_TIMEOUT=300

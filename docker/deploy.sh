@@ -33,19 +33,20 @@ source $SCRIPTDIR/../common/PLATFORMS.txt
 if [[ "$*" == *--slim* ]] || [[ "$*" == *--alpine* ]]; then
   export PACKAGE_PROFILE="-Pslim"
 fi
-pushd $SCRIPTDIR/logicmodule/javaclay
-	echo "Packaging dataclay.jar using profile $PACKAGE_PROFILE"
-	mvn clean package $PACKAGE_PROFILE -DskipTests=true
-	echo "dataclay.jar created!"
-popd
-$SCRIPTDIR/base/deploy.sh "$@"
 
+pushd $SCRIPTDIR/logicmodule/javaclay
+  echo "Packaging dataclay.jar using profile $PACKAGE_PROFILE"
+  mvn clean package $PACKAGE_PROFILE -DskipTests=true
+  echo "dataclay.jar created!"
+popd
+
+$SCRIPTDIR/base/deploy.sh "$@"
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
-	$SCRIPTDIR/logicmodule/deploy.sh "$@" --ee jdk${JAVA_VERSION} --do-not-package #already packaged
-	$SCRIPTDIR/dsjava/deploy.sh "$@" --ee jdk${JAVA_VERSION} --do-not-package #already packaged
+  $SCRIPTDIR/logicmodule/deploy.sh "$@" --ee jdk${JAVA_VERSION} --do-not-package #already packaged
+  $SCRIPTDIR/dsjava/deploy.sh "$@" --ee jdk${JAVA_VERSION} --do-not-package #already packaged
 done
 for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
-	$SCRIPTDIR/dspython/deploy.sh "$@" --ee py${PYTHON_VERSION}
+  $SCRIPTDIR/dspython/deploy.sh "$@" --ee py${PYTHON_VERSION}
 done
 $SCRIPTDIR/client/deploy.sh "$@"
 

@@ -8,6 +8,9 @@ pushd $BUILDDIR
 # client will not have execution environemnt in version, like pypi
 printMsg "Building image named $REPOSITORY/client:$CLIENT_TAG"
 docker build $DOCKERFILE \
+         --build-arg VCS_REF=`git rev-parse --short HEAD` \
+         --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
+         --build-arg VERSION=$CLIENT_TAG \
 				 --build-arg DATACLAY_DSPYTHON_DOCKER_TAG=$DEFAULT_PY_CLIENT_TAG \
 				 --build-arg DATACLAY_LOGICMODULE_DOCKER_TAG=$DEFAULT_JDK_CLIENT_TAG \
 				 --build-arg DATACLAY_PYVER=$CLIENT_PYTHON \

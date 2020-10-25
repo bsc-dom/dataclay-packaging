@@ -19,8 +19,11 @@ fi
 pushd $BUILDDIR
 printMsg "Building image named $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG"
 docker build $DOCKERFILE \
-			 --build-arg LOGICMODULE_VERSION=$EXECUTION_ENVIRONMENT_TAG \
-			 -t $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG .
+         --build-arg VCS_REF=`git rev-parse --short HEAD` \
+         --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
+         --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
+			   --build-arg LOGICMODULE_VERSION=$EXECUTION_ENVIRONMENT_TAG \
+			   -t $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG .
 printMsg " $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG DONE!"
 popd 
 ######################################## default tags ###########################################

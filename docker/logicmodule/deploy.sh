@@ -18,12 +18,13 @@ fi
 pushd $BUILDDIR
 echo "************* Pushing image named $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG *************"
 docker buildx build $DOCKERFILE -t $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG \
+    --build-arg VCS_REF=`git rev-parse --short HEAD` \
+    --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
+    --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
 		--build-arg JDK=$JAVA_VERSION \
 		--build-arg BASE_VERSION=$BASE_VERSION_TAG \
 		--build-arg LOCAL_JAR=$LOCAL_JAR \
 		--platform $PLATFORMS \
-		--cache-to=type=registry,ref=bscdataclay/logicmodule:${EXECUTION_ENVIRONMENT_TAG}-buildxcache,mode=max \
-		--cache-from=type=registry,ref=bscdataclay/logicmodule:${EXECUTION_ENVIRONMENT_TAG}-buildxcache \
 		--push .
 echo "************* $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG IMAGE PUSHED! *************"
 popd 

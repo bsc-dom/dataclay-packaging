@@ -2,8 +2,15 @@
 # Base Dockerfile for dataClay  #
 #############################################
 FROM ubuntu:18.04
-LABEL maintainer dataClay team <support-dataclay@bsc.es>
 ### Extend from ubuntu instead of openjdk specialized image to allow multiple architectures
+LABEL org.opencontainers.image.title="dataClay base image" \
+      org.opencontainers.image.description="Active objects across the network" \
+      org.opencontainers.image.url="https://dataclay.bsc.es/" \
+      org.label-schema.vcs-url="https://github.com/bsc-dom/dataclay-packaging" \
+      org.opencontainers.image.vendor="Barcelona Supercomputing Center (BSC-CNS)" \
+      org.opencontainers.image.authors="support-dataclay@bsc.es" \
+      org.opencontainers.image.licenses="BSD-3-Clause" \
+      org.label-schema.docker.dockerfile="/docker/base/Dockerfile"
 
 # ============ PRE-INSTALLATION ================== #
 

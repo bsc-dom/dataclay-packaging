@@ -2,7 +2,14 @@
 # Base Dockerfile for dataClay  #
 #############################################
 FROM alpine:3
-LABEL maintainer dataClay team <support-dataclay@bsc.es>
+LABEL org.opencontainers.image.title="dataClay base image" \
+      org.opencontainers.image.description="Active objects across the network" \
+      org.opencontainers.image.url="https://dataclay.bsc.es/" \
+      org.label-schema.vcs-url="https://github.com/bsc-dom/dataclay-packaging" \
+      org.opencontainers.image.vendor="Barcelona Supercomputing Center (BSC-CNS)" \
+      org.opencontainers.image.authors="support-dataclay@bsc.es" \
+      org.opencontainers.image.licenses="BSD-3-Clause" \
+      org.label-schema.docker.dockerfile="/docker/base/alpine.Dockerfile"
 # ============ PRE-INSTALLATION ================== #
 # Working dir 
 ENV DATACLAY_HOME=/home/dataclayusr/dataclay

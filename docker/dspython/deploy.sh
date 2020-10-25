@@ -11,13 +11,14 @@ pushd $BUILDDIR
 PYTHON_PIP_VERSION=$(echo $PYTHON_VERSION | awk -F '.' '{print $1}')
 echo "************* Building image named $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG python version $PYTHON_VERSION and pip version $PYTHON_PIP_VERSION *************"
 docker buildx build $DOCKERFILE -t $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG \
+    --build-arg VCS_REF=`git rev-parse --short HEAD` \
+    --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
+    --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
 		--build-arg BASE_VERSION=$BASE_VERSION_TAG \
 		--build-arg REQUIREMENTS_TAG=${EXECUTION_ENVIRONMENT_TAG}-requirements \
 		--build-arg DATACLAY_PYVER=$PYTHON_VERSION \
 		--build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION \
 		--platform $PLATFORMS \
-		--cache-to=type=registry,ref=bscdataclay/dspython:${EXECUTION_ENVIRONMENT_TAG}-buildxcache,mode=max \
-		--cache-from=type=registry,ref=bscdataclay/dspython:${EXECUTION_ENVIRONMENT_TAG}-buildxcache \
 		--push .
 echo "************* $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG DONE! *************"
 popd 

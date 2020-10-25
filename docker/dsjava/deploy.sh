@@ -16,11 +16,12 @@ fi
 pushd $BUILDDIR
 echo "************* Building image named $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG *************"
 docker buildx build $DOCKERFILE -t $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG \
-		--build-arg LOGICMODULE_VERSION=$EXECUTION_ENVIRONMENT_TAG \
-		--platform $PLATFORMS \
-		--cache-to=type=registry,ref=bscdataclay/dsjava:${EXECUTION_ENVIRONMENT_TAG}-buildxcache,mode=max \
-		--cache-from=type=registry,ref=bscdataclay/dsjava:${EXECUTION_ENVIRONMENT_TAG}-buildxcache \
-		--push .
+         --build-arg VCS_REF=`git rev-parse --short HEAD` \
+         --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
+         --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
+		     --build-arg LOGICMODULE_VERSION=$EXECUTION_ENVIRONMENT_TAG \
+		     --platform $PLATFORMS \
+		     --push .
 echo "************* $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG DONE! *************"
 popd 
 

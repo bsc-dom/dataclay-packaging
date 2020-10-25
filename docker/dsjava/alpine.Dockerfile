@@ -1,6 +1,19 @@
 ARG LOGICMODULE_VERSION
 FROM bscdataclay/logicmodule:${LOGICMODULE_VERSION}
-LABEL maintainer dataClay team <support-dataclay@bsc.es>
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION
+LABEL org.opencontainers.image.created=$BUILD_DATE \
+      org.opencontainers.image.title="dataClay client" \
+      org.opencontainers.image.description="Active objects across the network" \
+      org.opencontainers.image.url="https://dataclay.bsc.es/" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url="https://github.com/bsc-dom/dataclay-packaging" \
+      org.opencontainers.image.vendor="Barcelona Supercomputing Center (BSC-CNS)" \
+      org.opencontainers.image.version=$VERSION \
+      org.opencontainers.image.authors="support-dataclay@bsc.es" \
+      org.opencontainers.image.licenses="BSD-3-Clause" \
+      org.label-schema.docker.dockerfile="/docker/dsjava/alpine.Dockerfile"
 
 # Healthcheck
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
