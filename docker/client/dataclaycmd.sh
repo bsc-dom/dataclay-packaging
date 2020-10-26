@@ -32,7 +32,7 @@ cat << EOF
  GetDataClayID    
  GetExtDataClayID   <dc_host> <dc_port>
  RegisterDataClay   <dc_host> <dc_port>
- RegisterModelsInNamespaceFromExternalDataClay <dc_host> <dc_port> <namespace>
+ ImportModelsFromExternalDataClay <dc_host> <dc_port> <namespace>
  WaitForDataClayToBeAlive	<max_retries> <retries_seconds>
 
 EOF
@@ -98,7 +98,7 @@ PY_GETSTUBS="$PY_OPSBASE get_stubs"
 GET_DATACLAYID="$JAVA_OPSBASE es.bsc.dataclay.tool.GetCurrentDataClayID"
 GET_EXT_DATACLAYID="$JAVA_OPSBASE es.bsc.dataclay.tool.GetExternalDataClayID"
 REG_EXT_DATACLAY="$JAVA_OPSBASE es.bsc.dataclay.tool.NewDataClayInstance"
-REG_MODELS_IN_NAMESPACE_FROM_EXT_DATACLAY="$JAVA_OPSBASE es.bsc.dataclay.tool.RegisterModelsInNamespaceFromExternalDataClay"
+IMPORT_MODELS_FROM_EXT_DATACLAY="$JAVA_OPSBASE es.bsc.dataclay.tool.ImportModelsFromExternalDataClay"
 
 
 WAIT_DATACLAY_ALIVE="$JAVA_OPSBASE es.bsc.dataclay.tool.WaitForDataClayToBeAlive"
@@ -208,8 +208,8 @@ case $OPERATION in
 	'GetExtDataClayID')
 		$GET_EXT_DATACLAYID $PARAMS
 		;;
-  'RegisterModelsInNamespaceFromExternalDataClay')
-    $REG_MODELS_IN_NAMESPACE_FROM_EXT_DATACLAY $PARAMS
+  'ImportModelsFromExternalDataClay')
+    $IMPORT_MODELS_FROM_EXT_DATACLAY $PARAMS
     ;;
 	'WaitForDataClayToBeAlive')
 		$WAIT_DATACLAY_ALIVE $PARAMS
