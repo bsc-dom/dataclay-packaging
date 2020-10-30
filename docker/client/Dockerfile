@@ -23,6 +23,8 @@ ARG DATACLAY_PYVER=3.7
 COPY --from=0 ${DATACLAY_HOME}/entrypoints/dataclay-python-entry-point ${DATACLAY_HOME}/entrypoints/dataclay-python-entry-point
 ENV DATACLAY_VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
 COPY --from=0 ${DATACLAY_HOME}/dataclay_venv ${DATACLAY_VIRTUAL_ENV}
+# TODO: remove this
+COPY --from=0 ${DATACLAY_HOME}/pyclay/ ${DATACLAY_HOME}/pyclay/
 
 RUN apt-get update \
        && apt-get install --no-install-recommends -y --allow-unauthenticated python${DATACLAY_PYVER} \
