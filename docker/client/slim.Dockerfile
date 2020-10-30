@@ -30,12 +30,13 @@ RUN apt-get update \
 
 ENV DATACLAY_HOME=/home/dataclayusr/dataclay
 ENV DATACLAY_JAR=${DATACLAY_HOME}/dataclay.jar
+ENV DATACLAY_VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
+ENV DATACLAY_LOG_CONFIG=${DATACLAY_HOME}/logging/log4j2.xml
 
 WORKDIR ${DATACLAY_HOME}
 
 # Copy from dspython
 COPY --from=0 ${DATACLAY_HOME}/entrypoints/dataclay-python-entry-point ${DATACLAY_HOME}/entrypoints/dataclay-python-entry-point
-ENV DATACLAY_VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
 COPY --from=0 ${DATACLAY_HOME}/dataclay_venv ${DATACLAY_VIRTUAL_ENV}
 
 # Copy from dsjava
@@ -47,7 +48,6 @@ ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
 ENV PATH="${DATACLAY_VIRTUAL_ENV}/bin:${DATACLAY_HOME}/entrypoints:$PATH"
 
 # check dataclay is installed 
-RUN echo ${DATACLAY_PYVER}
 RUN python --version
 RUN python -c "import dataclay; print('import ok')"
 

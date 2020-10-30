@@ -5,13 +5,20 @@ ENV JAVA_MINIMAL="/opt/java-minimal"
 RUN /usr/lib/jvm/java-11-openjdk/bin/jlink \
     --verbose \
     --add-modules java.base,java.logging,java.transaction.xa,java.compiler,\
-java.sql,java.naming,java.desktop,java.management,java.security.jgss,java.instrument,\
-jdk.unsupported,jdk.jdi \
+java.sql,java.naming,java.desktop,java.management,java.security.jgss,jdk.crypto.ec,java.instrument,\
+jdk.unsupported,jdk.jdi,java.net.http \
     --compress 2 --strip-debug --no-header-files --no-man-pages \
-    --release-info="add:IMPLEMENTOR=radistao:IMPLEMENTOR_VERSION=radistao_JRE" \
+    --release-info="add:IMPLEMENTOR=bsc:IMPLEMENTOR_VERSION=dataclay_JRE" \
     --output "$JAVA_MINIMAL"
-# Second stage, add only our minimal "JRE" distr and our app
+# Compile javaclay in a different layer with JDK (not JRE)
 # ============================================================ #
+FROM alpine:3 as javaclay-compiler
+RUN apk --no-cache --update add openjdk11 maven
+COPY ./javaclay /javaclay
+RUN cd /javaclay && mvn clean package -DskipTests=true -Pslim
+RUN ls -la /javaclay/target/*.jar
+# ============================================================ #
+# Add only our minimal "JRE" distr and our app
 FROM alpine:3
 ARG BUILD_DATE
 ARG VCS_REF
@@ -44,8 +51,8 @@ RUN mkdir -p ${DATACLAY_HOME}
 WORKDIR ${DATACLAY_HOME}
 
 # Get dataClay JAR
-ARG LOCAL_JAR
-COPY ${LOCAL_JAR} ${DATACLAY_JAR}
+ARG JAR_VERSION
+COPY --from=javaclay-compiler /javaclay/target/dataclay-${JAR_VERSION}-shaded.jar ${DATACLAY_JAR}
 ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
 
 # Copy entrypoint
@@ -56,7 +63,6 @@ ENV PATH=${DATACLAY_HOME}/entrypoints:${PATH}
 
 # Copy healthcheck
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
-COPY ./prepare_to_export.sh /prepare_to_export.sh
 
 # Copy configurations and dynamic files (more likely to be changed)
 COPY ./javaclay/dataclay-common/cfglog/log4j2.xml ${DATACLAY_LOG_CONFIG}

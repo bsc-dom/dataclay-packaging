@@ -4,26 +4,16 @@ REPOSITORY="bscdataclay"
 source $BUILDDIR/../../common/config.sh
 if [ -z $EXECUTION_ENVIRONMENT_TAG ]; then echo "ERROR: EXECUTION_ENVIRONMENT_TAG not defined. Aborting"; exit 1; fi
 
-if [ $PACKAGE_JAR == true ]; then 
-	# CREATE DATACLAY JAR
-	pushd $BUILDDIR/javaclay
-	printMsg "Packaging dataclay.jar with profile $PACKAGE_PROFILE "
-	mvn clean package -q -DskipTests=true $PACKAGE_PROFILE >/dev/null
-	printMsg "dataclay.jar created!"
-	popd
-fi
-
 # LOGICMODULE
 pushd $BUILDDIR
-ls -la $LOCAL_JAR
 printMsg "Building image named $REPOSITORY/logicmodule:${EXECUTION_ENVIRONMENT_TAG}"
-docker build $DOCKERFILE \
+docker build --rm $DOCKERFILE \
        --build-arg VCS_REF=`git rev-parse --short HEAD` \
        --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
        --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
 			 --build-arg BASE_VERSION=$BASE_VERSION_TAG \
 			 --build-arg JDK=$JAVA_VERSION \
-			 --build-arg LOCAL_JAR=$LOCAL_JAR \
+			 --build-arg JAR_VERSION=$JAR_VERSION \
 			 -t $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG .
 printMsg "$REPOSITORY/logicmodule:${EXECUTION_ENVIRONMENT_TAG} IMAGE DONE!"
 popd 
@@ -35,7 +25,8 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 
 	# Tag latest
 	if [ "$DEV" = false ] ; then
-		docker tag $REPOSITORY/logicmodule:$DEFAULT_TAG $REPOSITORY/logicmodule 
+		docker tag $REPOSITORY/logicmodule:$DEFAULT_NORMAL_TAG $REPOSITORY/logicmodule
+	  docker tag $REPOSITORY/logicmodule:$DEFAULT_TAG $REPOSITORY/logicmodule:"${TAG_SUFFIX//-}"
 	else 
 		docker tag $REPOSITORY/logicmodule:$DEFAULT_TAG $REPOSITORY/logicmodule:develop${TAG_SUFFIX} #develop-slim, develop-alpine
 	fi

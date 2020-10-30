@@ -4,16 +4,6 @@ REPOSITORY="bscdataclay"
 source $BUILDDIR/../../common/config.sh
 if [ -z $EXECUTION_ENVIRONMENT_TAG ]; then echo "ERROR: EXECUTION_ENVIRONMENT_TAG not defined. Aborting"; exit 1; fi
 source $BUILDDIR/../../common/prepare_docker_builder.sh
-
-if [ $PACKAGE_JAR == true ]; then 
-	# CREATE DATACLAY JAR
-	pushd $BUILDDIR/javaclay
-	echo "Packaging dataclay.jar"
-	mvn clean package -q -DskipTests=true $PACKAGE_PROFILE >/dev/null
-	echo "dataclay.jar created!"
-	popd
-fi
-
 # LOGICMODULE
 pushd $BUILDDIR
 echo "************* Pushing image named $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG *************"
@@ -23,7 +13,9 @@ docker buildx build $DOCKERFILE -t $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMEN
     --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
 		--build-arg JDK=$JAVA_VERSION \
 		--build-arg BASE_VERSION=$BASE_VERSION_TAG \
-		--build-arg LOCAL_JAR=$LOCAL_JAR \
+		--build-arg JAR_VERSION=$JAR_VERSION \
+		--cache-to=type=registry,ref=bscdataclay/logicmodule:${EXECUTION_ENVIRONMENT_TAG}-buildxcache,mode=max \
+	  --cache-from=type=registry,ref=bscdataclay/logicmodule:${EXECUTION_ENVIRONMENT_TAG}-buildxcache \
 		--platform $PLATFORMS \
 		--push .
 echo "************* $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG IMAGE PUSHED! *************"
@@ -36,7 +28,8 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	docker buildx imagetools create --tag $REPOSITORY/logicmodule:$DEFAULT_TAG $REPOSITORY/logicmodule:$DEFAULT_JDK_TAG
 	##### TAG LATEST #####
 	if [ "$DEV" = false ] ; then
-		docker buildx imagetools create --tag $REPOSITORY/logicmodule $REPOSITORY/logicmodule:$DEFAULT_TAG
+		docker buildx imagetools create --tag $REPOSITORY/logicmodule $REPOSITORY/logicmodule:$DEFAULT_NORMAL_TAG
+		[[ -z "$TAG_SUFFIX" ]] && docker buildx imagetools create --tag $REPOSITORY/logicmodule:"${TAG_SUFFIX//-}" $REPOSITORY/logicmodule:$DEFAULT_TAG # alpine or slim tags
 	else 
 		docker buildx imagetools create --tag $REPOSITORY/logicmodule:develop${TAG_SUFFIX} $REPOSITORY/logicmodule:$DEFAULT_TAG
 	fi

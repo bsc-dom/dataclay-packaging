@@ -1,4 +1,10 @@
 ARG BASE_VERSION
+# ============================================================ #
+FROM maven as javaclay-compiler
+COPY ./javaclay /javaclay
+RUN cd /javaclay && mvn -q package -DskipTests=true
+RUN ls -la /javaclay/target/*.jar
+# ============================================================ #
 FROM bscdataclay/base:${BASE_VERSION}
 ARG BUILD_DATE
 ARG VCS_REF
@@ -15,7 +21,6 @@ LABEL org.opencontainers.image.created=$BUILD_DATE \
       org.opencontainers.image.licenses="BSD-3-Clause" \
       org.label-schema.docker.dockerfile="/docker/logicmodule/slim.Dockerfile"
 
-ARG LOCAL_JAR
 ARG JDK=11
 
 # Install javaclay packages:
@@ -33,8 +38,9 @@ RUN update-alternatives --install "/usr/bin/java" "java" ${JAVA_HOME}/bin/java 9
 ENV DATACLAY_LOG_CONFIG=${DATACLAY_HOME}/logging/log4j2.xml
 ENV DATACLAY_JAR=${DATACLAY_HOME}/dataclay.jar
 
-# Get dataClay JAR 
-COPY ${LOCAL_JAR} ${DATACLAY_JAR}
+# Get dataClay JAR
+ARG JAR_VERSION
+COPY --from=javaclay-compiler /javaclay/target/dataclay-${JAR_VERSION}-shaded.jar ${DATACLAY_JAR}
 ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
 
 # Copy entrypoint
@@ -46,7 +52,6 @@ ENV PATH=${DATACLAY_HOME}/entrypoints:${PATH}
 
 # Copy healthcheck
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
-COPY ./prepare_to_export.sh /prepare_to_export.sh
 
 # Copy configurations and dynamic files (more likely to be changed)
 COPY ./javaclay/dataclay-common/cfglog/log4j2.xml ${DATACLAY_LOG_CONFIG}

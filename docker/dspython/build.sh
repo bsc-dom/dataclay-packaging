@@ -7,7 +7,7 @@ if [ -z $EXECUTION_ENVIRONMENT_TAG ]; then echo "ERROR: EXECUTION_ENVIRONMENT_TA
 # DSPYTHON
 pushd $BUILDDIR
 printMsg "Building image named $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG python version $PYTHON_VERSION and pip version $PYTHON_PIP_VERSION"
-docker build $DOCKERFILE \
+docker build --rm $DOCKERFILE \
        --build-arg VCS_REF=`git rev-parse --short HEAD` \
        --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
        --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
@@ -26,7 +26,8 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_PY_TAG ]; then
 		
 	# Tag latest
 	if [ "$DEV" = false ] ; then
-		docker tag $REPOSITORY/dspython:$DEFAULT_TAG $REPOSITORY/dspython 
+		docker tag $REPOSITORY/dspython:$DEFAULT_NORMAL_TAG $REPOSITORY/dspython
+	  docker tag $REPOSITORY/dspython:$DEFAULT_TAG $REPOSITORY/dspython:"${TAG_SUFFIX//-}"
 	else 
 		docker tag $REPOSITORY/dspython:$DEFAULT_TAG $REPOSITORY/dspython:develop${TAG_SUFFIX} #develop-slim, develop-alpine
 	fi

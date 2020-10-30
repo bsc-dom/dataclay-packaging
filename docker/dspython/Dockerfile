@@ -1,6 +1,15 @@
 ARG BASE_VERSION
 ARG REQUIREMENTS_TAG
-FROM bscdataclay/dspython:${REQUIREMENTS_TAG}
+# ============================================================ #
+FROM bscdataclay/dspython:${REQUIREMENTS_TAG} as pyclay-installer
+ENV DATACLAY_HOME=/home/dataclayusr/dataclay
+ENV DATACLAY_VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
+ENV PATH="$DATACLAY_VIRTUAL_ENV/bin:$PATH"
+COPY ./pyclay/ /pyclay/
+# remove numpy from requirements
+RUN sed -i '/numpy*/d' /pyclay/requirements.txt
+RUN cd /pyclay/ && python setup.py -q install
+# ============================================================ #
 FROM bscdataclay/base:${BASE_VERSION}
 ARG BUILD_DATE
 ARG VCS_REF
@@ -20,17 +29,21 @@ LABEL org.opencontainers.image.created=$BUILD_DATE \
 ARG DATACLAY_PYVER=3.7
 ARG PYTHON_PIP_VERSION=3
 
-# Install
+# Install reqs
 RUN apt-get update \
        && apt-get install --no-install-recommends -y --allow-unauthenticated python${DATACLAY_PYVER} \
        python${DATACLAY_PYVER}-dev python${PYTHON_PIP_VERSION}-pip \
        python${PYTHON_PIP_VERSION}-setuptools \
        && rm -rf /var/lib/apt/lists/*
 
+# Install dataClay
 ENV DATACLAY_VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
-COPY --from=0 ${DATACLAY_HOME}/dataclay_venv ${DATACLAY_VIRTUAL_ENV}
+COPY --from=pyclay-installer ${DATACLAY_HOME}/dataclay_venv ${DATACLAY_VIRTUAL_ENV}
 ENV PATH="$DATACLAY_VIRTUAL_ENV/bin:$PATH"
-RUN python${DATACLAY_PYVER} --version
+RUN python -c "import dataclay; print('import ok')"
+
+# TODO: remove this
+COPY ./pyclay/ ${DATACLAY_HOME}/pyclay/
 
 # Create source
 RUN mkdir -p ${DATACLAY_HOME}/deploy/source
@@ -51,10 +64,7 @@ RUN cd pyextrae && gcc -fPIC -L${EXTRAE_HOME}/lib -I${EXTRAE_HOME}/include extra
 RUN python -c "import pyextrae.common.extrae as pyextrae_module; print('import ok')"
 RUN python -c "from pyextrae.common.extrae import Extrae as extrae_dict_obj; print('import ok')"
 RUN python -c "from ctypes import cdll; cdll.LoadLibrary(\"${DATACLAY_HOME}/pyextrae/pyclay_extrae_wrapper.so\")"
-# =============== INSTALL DATACLAY =================== #
 
-COPY ./pyclay/ ${DATACLAY_HOME}/pyclay/
-RUN cd ${DATACLAY_HOME}/pyclay/ && python${DATACLAY_PYVER} setup.py install
 
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
 COPY ./extrae ${DATACLAY_HOME}/extrae

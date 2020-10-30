@@ -16,13 +16,16 @@ docker buildx build $DOCKERFILE -t $REPOSITORY/client:$CLIENT_TAG \
 				 --build-arg DATACLAY_LOGICMODULE_DOCKER_TAG=$DEFAULT_JDK_CLIENT_TAG \
 				 --build-arg DATACLAY_PYVER=$CLIENT_PYTHON \
 			   --build-arg JDK=$CLIENT_JAVA \
+			   --cache-to=type=registry,ref=bscdataclay/client:${CLIENT_TAG}-buildxcache,mode=max \
+	       --cache-from=type=registry,ref=bscdataclay/client:${CLIENT_TAG}-buildxcache \
 				 --platform $PLATFORMS \
 				 --push .
 echo "************* $REPOSITORY/client:$CLIENT_TAG DONE! *************"
 popd 
 
 if [ "$DEV" = false ] ; then
-	docker buildx imagetools create --tag $REPOSITORY/client $REPOSITORY/client:$DEFAULT_TAG
+  docker buildx imagetools create --tag $REPOSITORY/client $REPOSITORY/client:$DEFAULT_NORMAL_TAG
+	[[ -z "$TAG_SUFFIX" ]] && docker buildx imagetools create --tag $REPOSITORY/client:"${TAG_SUFFIX//-}" $REPOSITORY/client:$DEFAULT_TAG # alpine or slim tags
 else 
 	docker buildx imagetools create --tag $REPOSITORY/client:develop${TAG_SUFFIX} $REPOSITORY/client:$DEFAULT_TAG
 fi

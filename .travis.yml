@@ -26,7 +26,6 @@ jobs:
     - stage: docker_deploy_logicmodule
       script: travis_retry ./docker/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8
     - script: travis_retry ./docker/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8 --slim
-    - script: travis_retry ./docker/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8 --alpine
     - script: travis_retry ./docker/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11  
     - script: travis_retry ./docker/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11 --slim 
     - script: travis_retry ./docker/logicmodule/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11 --alpine
@@ -34,7 +33,6 @@ jobs:
     - stage: docker_deploy_dsjava
       script: travis_retry ./docker/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8
     - script: travis_retry ./docker/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8 --slim
-    - script: travis_retry ./docker/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk8 --alpine
     - script: travis_retry ./docker/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11
     - script: travis_retry ./docker/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11 --slim
     - script: travis_retry ./docker/dsjava/deploy.sh -y --branch $TRAVIS_BRANCH --ee jdk11 --alpine

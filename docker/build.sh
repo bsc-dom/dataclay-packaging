@@ -14,31 +14,23 @@ echo "'"'
 echo " Welcome to dataClay build script!"
 SECONDS=0
 ################################## BUILD #############################################
-source $SCRIPTDIR/../common/PLATFORMS.txt
-if [[ "$*" == *--slim* ]] || [[ "$*" == *--alpine* ]]; then
-  export PACKAGE_PROFILE="-Pslim"
+if [[ "$*" == *--slim* ]]; then
+  source $SCRIPTDIR/../common/SLIM_PLATFORMS.txt
+elif [[ "$*" == *--alpine* ]]; then
+  source $SCRIPTDIR/../common/ALPINE_PLATFORMS.txt
+else
+  source $SCRIPTDIR/../common/PLATFORMS.txt
 fi
-
-# CREATE DATACLAY JAR
-pushd $SCRIPTDIR/logicmodule/javaclay
-  echo "Packaging dataclay.jar using profile $PACKAGE_PROFILE"
-  mvn clean package $PACKAGE_PROFILE -DskipTests=true
-  echo "dataclay.jar created!"
-popd
-
-
 $SCRIPTDIR/base/build.sh "$@"
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
-  $SCRIPTDIR/logicmodule/build.sh "$@" --ee jdk${JAVA_VERSION} --do-not-package #already packaged
-  $SCRIPTDIR/dsjava/build.sh "$@" --ee jdk${JAVA_VERSION} --do-not-package
+  $SCRIPTDIR/logicmodule/build.sh "$@" --ee jdk${JAVA_VERSION}
+  $SCRIPTDIR/dsjava/build.sh "$@" --ee jdk${JAVA_VERSION}
 done
 for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
   $SCRIPTDIR/dspython/build.sh "$@" --ee py${PYTHON_VERSION}
 
 done
 $SCRIPTDIR/client/build.sh "$@"
-
-
 # Check docker images 
 echo "Generated images:"
 docker images | grep "$REPOSITORY/base" | grep "${TAG_SUFFIX}"

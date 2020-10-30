@@ -19,11 +19,12 @@ LABEL org.opencontainers.image.created=$BUILD_DATE \
       org.label-schema.docker.dockerfile="/docker/client/alpine.Dockerfile"
 
 # Install packages:
-RUN apk --no-cache --update add openjdk8 libstdc++
+RUN apk --no-cache --update add openjdk11 libstdc++
 
 ENV DATACLAY_HOME=/home/dataclayusr/dataclay
 ENV DATACLAY_JAR=${DATACLAY_HOME}/dataclay.jar
 ENV DATACLAY_VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
+ENV DATACLAY_LOG_CONFIG=${DATACLAY_HOME}/logging/log4j2.xml
 
 WORKDIR ${DATACLAY_HOME}
 

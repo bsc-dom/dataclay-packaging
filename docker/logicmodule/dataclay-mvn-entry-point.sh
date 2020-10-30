@@ -17,8 +17,8 @@ _term() {
 	echo "ENTRYPOINT SHUTDOWN FINISHED"
 }
 
-trap _term SIGTERM
-
+trap _term TERM
+trap _term INT
 
 ################################## OPTIONS #############################################
 while [[ $# -gt 0 ]]; do

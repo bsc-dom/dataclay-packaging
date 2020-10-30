@@ -21,8 +21,6 @@ ARG DATACLAY_PYVER=3.7
 
 # Copy from dspython
 COPY --from=0 ${DATACLAY_HOME}/entrypoints/dataclay-python-entry-point ${DATACLAY_HOME}/entrypoints/dataclay-python-entry-point
-COPY --from=0 ${DATACLAY_HOME}/pyclay ${DATACLAY_HOME}/pyclay
-
 ENV DATACLAY_VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
 COPY --from=0 ${DATACLAY_HOME}/dataclay_venv ${DATACLAY_VIRTUAL_ENV}
 
@@ -45,6 +43,7 @@ ENV PATH="${DATACLAY_VIRTUAL_ENV}/bin:$PATH"
 # check pyextrae is installed
 RUN echo ${DATACLAY_PYVER}
 RUN python --version
+RUN python -c "import dataclay; print('import ok')"
 RUN python -c "import pyextrae.common.extrae as pyextrae_module; print('import ok')"
 RUN python -c "from pyextrae.common.extrae import Extrae as extrae_dict_obj; print('import ok')"
 

@@ -84,14 +84,15 @@ function printMsg { echo "${blu}[$(basename $0)] $1 ${end}"; }
 function printError { echo "${red}======== $1 ========${end}"; }
 ################################## OPTIONS ####################################
 set -e
+CONFIGDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+ORCHDIR=$CONFIGDIR/../orchestration/
+DATACLAY_DOCKER_DIR=$CONFIGDIR/../docker/
 export DEV=false
-export PACKAGE_JAR=true
 export SINGULARITY_CHECK=false
 DONOTPROMPT=false
-
 DOCKERFILE=""
 TAG_SUFFIX=""
-
+PLATFORMS_FILE=$CONFIGDIR/PLATFORMS.txt
 while test $# -gt 0
 do
     case "$1" in
@@ -112,16 +113,15 @@ do
         -y) 
         	DONOTPROMPT=true 
         	;;
-        --do-not-package) 
-        	export PACKAGE_JAR=false 
-        	;;
         --slim) 
         	export DOCKERFILE="-f slim.Dockerfile" 
         	export TAG_SUFFIX="-slim"
+        	PLATFORMS_FILE=$CONFIGDIR/SLIM_PLATFORMS.txt
         	;;
         --alpine) 
         	export DOCKERFILE="-f alpine.Dockerfile" 
         	export TAG_SUFFIX="-alpine"
+        	PLATFORMS_FILE=$CONFIGDIR/ALPINE_PLATFORMS.txt
         	;;
         --singularity) 
         	SINGULARITY_CHECK=true
@@ -134,10 +134,7 @@ do
     shift
 done
 ###############################################################################
-CONFIGDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-ORCHDIR=$CONFIGDIR/../orchestration/
-DATACLAY_DOCKER_DIR=$CONFIGDIR/../docker/
-source $CONFIGDIR/PLATFORMS.txt
+source $PLATFORMS_FILE
 
 ## Checks
 check_requirements
@@ -150,6 +147,7 @@ if [ "$DEV" = false ] ; then
 fi
 DATACLAY_VERSION=$(cat $ORCHDIR/VERSION.txt)
 export DATACLAY_VERSION="${DATACLAY_VERSION//.dev/}"
+export DEFAULT_NORMAL_TAG="$(get_container_version)"
 export DEFAULT_TAG="$(get_container_version)${TAG_SUFFIX}"
 export BASE_VERSION_TAG="$(get_container_version)${TAG_SUFFIX}"
 export CLIENT_TAG="$(get_container_version)${TAG_SUFFIX}"
@@ -174,18 +172,11 @@ echo "EXECUTION_ENVIRONMENT_TAG=$EXECUTION_ENVIRONMENT_TAG"
 
 if [[ $EXECUTION_ENVIRONMENT == jdk* ]]; then 
 	export JAR_VERSION=$(grep version $DATACLAY_DOCKER_DIR/logicmodule/javaclay/pom.xml | grep -v -e '<?xml|~'| head -n 1 | sed 's/[[:space:]]//g' | sed -E 's/<.{0,1}version>//g' | awk '{print $1}')
-	export LOCAL_JAR=./javaclay/target/dataclay-${JAR_VERSION}-shaded.jar
 	export JAVA_VERSION=${EXECUTION_ENVIRONMENT#"jdk"}
-	export PACKAGE_PROFILE=""
-	if [[ "$TAG_SUFFIX" == "-slim" ]] || [[ "$TAG_SUFFIX" == "-alpine" ]]; then
-	    export PACKAGE_PROFILE="-Pslim"
-	fi
 	echo "Build Java version will be:$grn $JAVA_VERSION $end" 
 	echo "Default Java version will be:$grn $DEFAULT_JAVA $end" 
 	echo "Current defined version in pom.xml:$grn $JAR_VERSION $end"
-	echo "Using jar:$grn $LOCAL_JAR $end"
-	echo "Created with maven profile:$grn $PACKAGE_PROFILE $end"
-elif [[ $EXECUTION_ENVIRONMENT == py* ]]; then 
+elif [[ $EXECUTION_ENVIRONMENT == py* ]]; then
 	export PYTHON_VERSION=${EXECUTION_ENVIRONMENT#"py"}
 	# Get python version without subversion to install it in some packages
 	export PYTHON_PIP_VERSION=$(echo $PYTHON_VERSION | awk -F '.' '{print $1}')
@@ -195,13 +186,6 @@ elif [[ $EXECUTION_ENVIRONMENT == py* ]]; then
 	echo "Current defined version in setup.py:$grn $setuppy_version.dev$(date +%Y%m%d) $end" 	
 else 
 	echo "WARNING: Execution environment not specified. Using default ones."
-fi
-
-
-# No support for alpine jdk 11 available in ARM32
-if [[ "$TAG_SUFFIX" == "-alpine" ]]; then
-	export PLATFORMS=${PLATFORMS/linux\/arm\/v7,}
-	echo "WARNING: No support for ARMv7 in ALPINE. Using platforms: $PLATFORMS"
 fi
 
 if [ $DONOTPROMPT == false ]; then

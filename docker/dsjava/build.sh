@@ -4,21 +4,10 @@ REPOSITORY="bscdataclay"
 source $BUILDDIR/../../common/config.sh
 if [ -z $EXECUTION_ENVIRONMENT_TAG ]; then echo "ERROR: EXECUTION_ENVIRONMENT_TAG not defined. Aborting"; exit 1; fi
 
-# CREATE DATACLAY JAR
-if [ $PACKAGE_JAR == true ]; then 
-	# CREATE DATACLAY JAR
-	pushd $BUILDDIR/../logicmodule/javaclay
-	printMsg "Packaging dataclay.jar"
-	mvn package -q -DskipTests=true $PACKAGE_PROFILE >/dev/null
-	printMsg "dataclay.jar created!"
-	popd
-fi 
-
-
 # DSJAVA
 pushd $BUILDDIR
 printMsg "Building image named $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG"
-docker build $DOCKERFILE \
+docker build --rm $DOCKERFILE \
          --build-arg VCS_REF=`git rev-parse --short HEAD` \
          --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
          --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
@@ -32,7 +21,8 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	docker tag $REPOSITORY/dsjava:$DEFAULT_JDK_TAG $REPOSITORY/dsjava:$DEFAULT_TAG
 		
 	if [ "$DEV" = false ] ; then
-		docker tag $REPOSITORY/dsjava:$DEFAULT_TAG $REPOSITORY/dsjava 
+	  docker tag $REPOSITORY/dsjava:$DEFAULT_NORMAL_TAG $REPOSITORY/dsjava
+	  docker tag $REPOSITORY/dsjava:$DEFAULT_TAG $REPOSITORY/dsjava:"${TAG_SUFFIX//-}"
 	else 
 		docker tag $REPOSITORY/dsjava:$DEFAULT_TAG $REPOSITORY/dsjava:develop${TAG_SUFFIX} #develop-slim, develop-alpine
 	fi

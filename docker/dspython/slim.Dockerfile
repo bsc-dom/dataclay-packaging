@@ -1,6 +1,15 @@
 ARG BASE_VERSION
 ARG REQUIREMENTS_TAG
-FROM bscdataclay/dspython:${REQUIREMENTS_TAG}
+# ============================================================ #
+FROM bscdataclay/dspython:${REQUIREMENTS_TAG} as pyclay-installer
+ENV DATACLAY_HOME=/home/dataclayusr/dataclay
+ENV DATACLAY_VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
+ENV PATH="$DATACLAY_VIRTUAL_ENV/bin:$PATH"
+COPY ./pyclay/ /pyclay/
+# remove numpy from requirements
+RUN sed -i '/numpy*/d' /pyclay/requirements.txt
+RUN cd /pyclay/ && python setup.py -q install
+# ============================================================ #
 FROM bscdataclay/base:${BASE_VERSION}
 ARG BUILD_DATE
 ARG VCS_REF
@@ -19,26 +28,19 @@ LABEL org.opencontainers.image.created=$BUILD_DATE \
 
 ARG DATACLAY_PYVER=3.7
 ARG PYTHON_PIP_VERSION=3
-
-# Install
+# Install requiremenets
 RUN apt-get update \
        && apt-get install --no-install-recommends -y --allow-unauthenticated python${DATACLAY_PYVER} python${PYTHON_PIP_VERSION}-distutils \
        && rm -rf /var/lib/apt/lists/*
 
+# Install dataClay
 ENV DATACLAY_VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
-COPY --from=0 ${DATACLAY_HOME}/dataclay_venv ${DATACLAY_VIRTUAL_ENV}
+COPY --from=pyclay-installer ${DATACLAY_HOME}/dataclay_venv ${DATACLAY_VIRTUAL_ENV}
 ENV PATH="$DATACLAY_VIRTUAL_ENV/bin:$PATH"
-RUN python${DATACLAY_PYVER} --version
+RUN python -c "import dataclay; print('import ok')"
 
 # Create source
 RUN mkdir -p ${DATACLAY_HOME}/deploy/source
-# =============== INSTALL DATACLAY =================== #
-
-COPY ./pyclay/ ${DATACLAY_HOME}/pyclay/
-# ignore requirements
-RUN sed -i '/numpy*/d' ${DATACLAY_HOME}/pyclay/requirements.txt
-RUN cd ${DATACLAY_HOME}/pyclay/ && python${DATACLAY_PYVER} setup.py install
-RUN python -c "import dataclay; print('import ok')"
 
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
 COPY ./extrae ${DATACLAY_HOME}/extrae

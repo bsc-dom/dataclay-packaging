@@ -18,6 +18,8 @@ docker buildx build $DOCKERFILE -t $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_T
 		--build-arg REQUIREMENTS_TAG=${EXECUTION_ENVIRONMENT_TAG}-requirements \
 		--build-arg DATACLAY_PYVER=$PYTHON_VERSION \
 		--build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION \
+		--cache-to=type=registry,ref=bscdataclay/dspython:${EXECUTION_ENVIRONMENT_TAG}-buildxcache,mode=max \
+	  --cache-from=type=registry,ref=bscdataclay/dspython:${EXECUTION_ENVIRONMENT_TAG}-buildxcache \
 		--platform $PLATFORMS \
 		--push .
 echo "************* $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG DONE! *************"
@@ -30,7 +32,8 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_PY_TAG ]; then
 	docker buildx imagetools create --tag $REPOSITORY/dspython:$DEFAULT_TAG $REPOSITORY/dspython:$DEFAULT_PY_TAG	
 	##### TAG LATEST #####
 	if [ "$DEV" = false ] ; then
-		docker buildx imagetools create --tag $REPOSITORY/dspython $REPOSITORY/dspython:$DEFAULT_TAG
+		docker buildx imagetools create --tag $REPOSITORY/dspython $REPOSITORY/dspython:$DEFAULT_NORMAL_TAG
+		[[ -z "$TAG_SUFFIX" ]] && docker buildx imagetools create --tag $REPOSITORY/dspython:"${TAG_SUFFIX//-}" $REPOSITORY/dspython:$DEFAULT_TAG # alpine or slim tags
 	else 
 		docker buildx imagetools create --tag $REPOSITORY/dspython:develop${TAG_SUFFIX} $REPOSITORY/dspython:$DEFAULT_TAG
 	fi

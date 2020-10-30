@@ -1,6 +1,16 @@
 ARG DATACLAY_PYVER
 ARG REQUIREMENTS_TAG
-FROM bscdataclay/dspython:${REQUIREMENTS_TAG}
+# ============================================================ #
+FROM bscdataclay/dspython:${REQUIREMENTS_TAG} as pyclay-installer
+ENV DATACLAY_HOME=/home/dataclayusr/dataclay
+ENV DATACLAY_VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
+ENV PATH="$DATACLAY_VIRTUAL_ENV/bin:$PATH"
+COPY ./pyclay/ /pyclay/
+# remove numpy from requirements
+RUN sed -i '/numpy*/d' /pyclay/requirements.txt
+RUN cd /pyclay/ && python setup.py -q install
+# ============================================================ #
+
 FROM python:${DATACLAY_PYVER}-alpine
 ARG BUILD_DATE
 ARG VCS_REF
@@ -28,13 +38,8 @@ RUN mkdir -p ${DATACLAY_HOME}/deploy/source
 # =============== INSTALL DATACLAY =================== #
 RUN apk add libstdc++
 ENV DATACLAY_VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
-COPY --from=0 ${DATACLAY_HOME}/dataclay_venv ${DATACLAY_VIRTUAL_ENV}
+COPY --from=pyclay-installer ${DATACLAY_HOME}/dataclay_venv ${DATACLAY_VIRTUAL_ENV}
 ENV PATH="$DATACLAY_VIRTUAL_ENV/bin:$PATH"
-
-COPY ./pyclay/ ${DATACLAY_HOME}/pyclay/
-# remove numpy from requirements
-RUN sed -i '/numpy*/d' ${DATACLAY_HOME}/pyclay/requirements.txt
-RUN cd ${DATACLAY_HOME}/pyclay/ && python setup.py install
 RUN python -c "import dataclay; print('import ok')"
 
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
