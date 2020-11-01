@@ -45,6 +45,7 @@ RUN apk --no-cache --update add sqlite
 ENV DATACLAY_HOME=/home/dataclayusr/dataclay
 ENV DATACLAY_LOG_CONFIG=${DATACLAY_HOME}/logging/log4j2.xml
 ENV DATACLAY_JAR=${DATACLAY_HOME}/dataclay.jar
+COPY logging/debug.xml ${DATACLAY_LOG_CONFIG}
 ENV JAVA_HOME=${JAVA_MINIMAL}
 
 RUN mkdir -p ${DATACLAY_HOME}
@@ -64,8 +65,5 @@ ENV PATH=${DATACLAY_HOME}/entrypoints:${PATH}
 # Copy healthcheck
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
 
-# Copy configurations and dynamic files (more likely to be changed)
-COPY ./javaclay/dataclay-common/cfglog/log4j2.xml ${DATACLAY_LOG_CONFIG}
-
 # ================= SERVICE ==================== #
-ENTRYPOINT ["dataclay-java-entry-point", "es.bsc.dataclay.logic.server.LogicModuleSrv","--service"] 
+ENTRYPOINT ["dataclay-java-entry-point", "es.bsc.dataclay.logic.server.LogicModuleSrv"]

@@ -25,7 +25,6 @@ ENV DATACLAY_HOME=/home/dataclayusr/dataclay
 ENV DATACLAY_JAR=${DATACLAY_HOME}/dataclay.jar
 ENV DATACLAY_VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
 ENV DATACLAY_LOG_CONFIG=${DATACLAY_HOME}/logging/log4j2.xml
-
 WORKDIR ${DATACLAY_HOME}
 
 # Copy from dspython
@@ -39,6 +38,7 @@ RUN python -c "import dataclay; print('import ok')"
 
 # Copy from dsjava
 COPY --from=1 ${DATACLAY_JAR} ${DATACLAY_JAR}
+COPY --from=1 ${DATACLAY_LOG_CONFIG} ${DATACLAY_LOG_CONFIG}
 COPY --from=1 ${DATACLAY_HOME}/entrypoints/dataclay-java-entry-point ${DATACLAY_HOME}/entrypoints/dataclay-java-entry-point
 ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
 

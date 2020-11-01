@@ -78,4 +78,4 @@ ENV DEPLOY_PATH=${DATACLAY_HOME}/deploy
 
 # Execute
 # Don't use CMD in order to keep compatibility with singularity container's generator
-ENTRYPOINT ["dataclay-python-entry-point","-m","dataclay.executionenv.server","--service"]
+ENTRYPOINT ["dataclay-python-entry-point","-m","dataclay.executionenv.server"]

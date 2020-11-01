@@ -42,6 +42,7 @@ COPY --from=0 ${DATACLAY_HOME}/dataclay_venv ${DATACLAY_VIRTUAL_ENV}
 # Copy from dsjava
 COPY --from=1 ${DATACLAY_JAR} ${DATACLAY_JAR}
 COPY --from=1 ${DATACLAY_HOME}/entrypoints/dataclay-java-entry-point ${DATACLAY_HOME}/entrypoints/dataclay-java-entry-point
+COPY --from=1 ${DATACLAY_LOG_CONFIG} ${DATACLAY_LOG_CONFIG}
 ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
 
 # Make sure we use the virtualenv and entrypoints:
