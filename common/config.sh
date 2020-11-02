@@ -93,6 +93,7 @@ DONOTPROMPT=false
 DOCKERFILE=""
 TAG_SUFFIX=""
 PLATFORMS_FILE=$CONFIGDIR/PLATFORMS.txt
+export PACKAGE_JAR="true"
 while test $# -gt 0
 do
     case "$1" in
@@ -112,6 +113,9 @@ do
         	;;
         -y) 
         	DONOTPROMPT=true 
+        	;;
+        --do-not-package)
+        	export PACKAGE_JAR="false"
         	;;
         --slim) 
         	export DOCKERFILE="-f slim.Dockerfile" 

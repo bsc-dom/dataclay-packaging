@@ -1,6 +1,4 @@
 .dockerbuildx*
-javaclay/target
-javaclay/target
 javaclay/bin
 javaclay/dbfiles
 javaclay/.classpath

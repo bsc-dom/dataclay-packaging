@@ -4,6 +4,16 @@ REPOSITORY="bscdataclay"
 source $BUILDDIR/../../common/config.sh
 if [ -z $EXECUTION_ENVIRONMENT_TAG ]; then echo "ERROR: EXECUTION_ENVIRONMENT_TAG not defined. Aborting"; exit 1; fi
 source $BUILDDIR/../../common/prepare_docker_builder.sh
+
+if [ "$PACKAGE_JAR" = "true" ]; then
+  # CREATE DATACLAY JAR
+	pushd $BUILDDIR/javaclay
+	printMsg "Packaging dataclay.jar"
+	mvn package -q -DskipTests=true >/dev/null
+	printMsg "dataclay.jar created!"
+	popd
+fi
+
 # LOGICMODULE
 pushd $BUILDDIR
 echo "************* Pushing image named $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG *************"

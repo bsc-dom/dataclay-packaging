@@ -1,10 +1,4 @@
 ARG BASE_VERSION
-# ============================================================ #
-FROM maven as javaclay-compiler
-COPY ./javaclay /javaclay
-RUN cd /javaclay && mvn -q package -DskipTests=true
-RUN ls -la /javaclay/target/*.jar
-# ============================================================ #
 FROM bscdataclay/base:${BASE_VERSION}
 ARG BUILD_DATE
 ARG VCS_REF
@@ -41,7 +35,7 @@ COPY logging/debug.xml ${DATACLAY_LOG_CONFIG}
 
 # Get dataClay JAR
 ARG JAR_VERSION
-COPY --from=javaclay-compiler /javaclay/target/dataclay-${JAR_VERSION}-shaded.jar ${DATACLAY_JAR}
+COPY ./javaclay/target/dataclay-${JAR_VERSION}-shaded.jar ${DATACLAY_JAR}
 ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
 
 # Copy entrypoint

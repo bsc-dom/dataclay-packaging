@@ -12,12 +12,6 @@ jdk.unsupported,jdk.jdi,java.net.http \
     --output "$JAVA_MINIMAL"
 # Compile javaclay in a different layer with JDK (not JRE)
 # ============================================================ #
-FROM alpine:3 as javaclay-compiler
-RUN apk --no-cache --update add openjdk11 maven
-COPY ./javaclay /javaclay
-RUN cd /javaclay && mvn clean package -DskipTests=true -Pslim
-RUN ls -la /javaclay/target/*.jar
-# ============================================================ #
 # Add only our minimal "JRE" distr and our app
 FROM alpine:3
 ARG BUILD_DATE
@@ -53,7 +47,7 @@ WORKDIR ${DATACLAY_HOME}
 
 # Get dataClay JAR
 ARG JAR_VERSION
-COPY --from=javaclay-compiler /javaclay/target/dataclay-${JAR_VERSION}-shaded.jar ${DATACLAY_JAR}
+COPY ./javaclay/target/dataclay-${JAR_VERSION}-shaded.jar ${DATACLAY_JAR}
 ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
 
 # Copy entrypoint
