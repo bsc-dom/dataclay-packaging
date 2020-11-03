@@ -103,4 +103,7 @@ if [ "$DEV" = false ] ; then
   git checkout master
 fi
 
+cd $SCRIPTDIR/supercomputers/marenostrum
+./deploy.sh
+
 printMsg "dataClay successfully released! :)"
