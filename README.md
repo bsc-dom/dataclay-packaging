@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.com/bsc-dom/dataclay-packaging.svg?branch=develop)](https://travis-ci.com/bsc-dom/dataclay-packaging)
 [![License](https://img.shields.io/github/license/bsc-dom/dataclay-packaging)](https://github.com/bsc-dom/dataclay-packaging/blob/develop/LICENSE.txt)
 
 # dataClay packaging
@@ -8,41 +7,6 @@ containers (docker and singularity) in multiple architectures
 
 <img src="https://img.shields.io/badge/docker%20-%230db7ed.svg?&style=for-the-badge&logo=docker&logoColor=white"/><br/>
 
-### Stable version 2.4
-
-[LM:size:latest]: https://img.shields.io/docker/image-size/bscdataclay/logicmodule/latest "https://hub.docker.com/repository/docker/bscdataclay/logicmodule/tags?name=latest&page=1"
-[LM:layers:latest]: https://img.shields.io/microbadger/layers/bscdataclay/logicmodule:latest 
-[LM:size:2.4.jdk11]: https://img.shields.io/docker/image-size/bscdataclay/logicmodule/2.4.jdk11 "https://hub.docker.com/repository/docker/bscdataclay/logicmodule/tags?name=2.4.jdk11&page=1"
-[LM:layers:2.4.jdk11]: https://img.shields.io/microbadger/layers/bscdataclay/logicmodule:2.4.jdk11 
-
-[DSjava:size:latest]: https://img.shields.io/docker/image-size/bscdataclay/dsjava/latest "https://hub.docker.com/repository/docker/bscdataclay/dsjava/tags?name=latest&page=1"
-[DSjava:layers:latest]: https://img.shields.io/microbadger/layers/bscdataclay/dsjava:latest 
-[DSjava:size:2.4.jdk11]: https://img.shields.io/docker/image-size/bscdataclay/dsjava/2.4.jdk11 "https://hub.docker.com/repository/docker/bscdataclay/dsjava/tags?name=2.4.jdk11&page=1"
-[DSjava:layers:2.4.jdk11]: https://img.shields.io/microbadger/layers/bscdataclay/dsjava:2.4.jdk11 
-
-[DSpython:size:latest]: https://img.shields.io/docker/image-size/bscdataclay/dspython/latest "https://hub.docker.com/repository/docker/bscdataclay/dspython/tags?name=latest&page=1"
-[DSpython:layers:latest]: https://img.shields.io/microbadger/layers/bscdataclay/dspython:latest 
-[DSpython:size:2.4.py36]: https://img.shields.io/docker/image-size/bscdataclay/dspython/2.4.py36 "https://hub.docker.com/repository/docker/bscdataclay/dspython/tags?name=2.4.py36&page=1"
-[DSpython:layers:2.4.py36]: https://img.shields.io/microbadger/layers/bscdataclay/dspython:2.4.py36 
-[DSpython:size:2.4.py38]: https://img.shields.io/docker/image-size/bscdataclay/dspython/2.4.py38 "https://hub.docker.com/repository/docker/bscdataclay/dspython/tags?name=2.4.py38&page=1"
-[DSpython:layers:2.4.py38]: https://img.shields.io/microbadger/layers/bscdataclay/dspython:2.4.py38 
-
-[Client:size:latest]: https://img.shields.io/docker/image-size/bscdataclay/client/latest "https://hub.docker.com/repository/docker/bscdataclay/client/tags?name=latest&page=1"
-[Client:layers:latest]: https://img.shields.io/microbadger/layers/bscdataclay/client:latest
-
-
-| image                   | tags             |                                                                                 |
-|-------------------------|------------------|---------------------------------------------------------------------------------|
-| bscdataclay/logicmodule |   `latest` `2.4` `2.4.jdk8` |  ![LM:size:latest] ![LM:layers:latest]  |
-|                         |   `2.4.jdk11`    |  ![LM:size:2.4.jdk11] ![LM:layers:2.4.jdk11]  |
-| bscdataclay/dsjava      |   `latest` `2.4` `2.4.jdk8` |  ![DSjava:size:latest] ![DSjava:layers:latest]  |
-|                         |   `2.4.jdk11`    |  ![DSjava:size:2.4.jdk11] ![DSjava:layers:2.4.jdk11] |
-| bscdataclay/dspython      |   `latest` `2.4` `2.4.py37` |  ![DSpython:size:latest] ![DSpython:layers:latest]  |
-|                         |   `2.4.py36`    |  ![DSpython:size:2.4.py36]  ![DSpython:layers:2.4.py36] |
-|                         |   `2.4.py38`    |  ![DSpython:size:2.4.py38]  ![DSpython:layers:2.4.py38]  |
-| bscdataclay/client |   `latest` `2.4`  |  ![Client:size:latest]   ![Client:layers:latest]  |
-
-#### Development version 2.5.dev
 
 [LM:size:develop]: https://img.shields.io/docker/image-size/bscdataclay/logicmodule/develop "https://hub.docker.com/repository/docker/bscdataclay/logicmodule/tags?name=develop&page=1"
 [LM:layers:develop]: https://img.shields.io/microbadger/layers/bscdataclay/logicmodule:develop 
@@ -149,14 +113,14 @@ containers (docker and singularity) in multiple architectures
 |                         |   `2.5.jdk11.dev-slim`    |  ![DSjava:size:2.5.jdk11.dev-slim] ![DSjava:layers:2.5.jdk11.dev-slim] ![DSjava:commit:2.5.jdk11.dev-slim]  |
 |                         |   `develop-alpine` `2.5.jdk11.dev-alpine`    |  ![DSjava:size:develop-alpine] ![DSjava:layers:develop-alpine] ![DSjava:commit:develop-alpine] |
 | bscdataclay/dspython      |   `develop` `2.5.dev` `2.5.py37.dev` |  ![DSpython:size:develop] ![DSpython:layers:develop] ![DSpython:commit:develop] |
-|                         |   `2.5.py36`    |  ![DSpython:size:2.5.py36.dev] ![DSpython:layers:2.5.py36.dev] ![DSpython:commit:2.5.py36.dev]  |
-|                         |   `2.5.py38`    |  ![DSpython:size:2.5.py38.dev] ![DSpython:layers:2.5.py38.dev] ![DSpython:commit:2.5.py38.dev]  |
+|                         |   `2.5.py36.dev`    |  ![DSpython:size:2.5.py36.dev] ![DSpython:layers:2.5.py36.dev] ![DSpython:commit:2.5.py36.dev]  |
+|                         |   `2.5.py38.dev`    |  ![DSpython:size:2.5.py38.dev] ![DSpython:layers:2.5.py38.dev] ![DSpython:commit:2.5.py38.dev]  |
 |                         |   `develop-slim` `2.5.dev-slim` `2.5.py37.dev-slim` |  ![DSpython:size:develop-slim] ![DSpython:layers:develop-slim] ![DSpython:commit:develop-slim] |
-|                         |   `2.5.py36`    |  ![DSpython:size:2.5.py36.dev-slim] ![DSpython:layers:2.5.py36.dev-slim] ![DSpython:commit:2.5.py36.dev-slim]  |
-|                         |   `2.5.py38`    |  ![DSpython:size:2.5.py38.dev-slim] ![DSpython:layers:2.5.py38.dev-slim] ![DSpython:commit:2.5.py38.dev-slim]  |
+|                         |   `2.5.py36.dev`    |  ![DSpython:size:2.5.py36.dev-slim] ![DSpython:layers:2.5.py36.dev-slim] ![DSpython:commit:2.5.py36.dev-slim]  |
+|                         |   `2.5.py38.dev`    |  ![DSpython:size:2.5.py38.dev-slim] ![DSpython:layers:2.5.py38.dev-slim] ![DSpython:commit:2.5.py38.dev-slim]  |
 |                         |   `develop-alpine` `2.5.dev-alpine` `2.5.py37.dev-alpine` |  ![DSpython:size:develop-alpine] ![DSpython:layers:develop-alpine] ![DSpython:commit:develop-alpine] |
-|                         |   `2.5.py36`    |  ![DSpython:size:2.5.py36.dev-alpine] ![DSpython:layers:2.5.py36.dev-alpine] ![DSpython:commit:2.5.py36.dev-alpine]  |
-|                         |   `2.5.py38`    |  ![DSpython:size:2.5.py38.dev-alpine] ![DSpython:layers:2.5.py38.dev-alpine] ![DSpython:commit:2.5.py38.dev-alpine]  |
+|                         |   `2.5.py36.dev`    |  ![DSpython:size:2.5.py36.dev-alpine] ![DSpython:layers:2.5.py36.dev-alpine] ![DSpython:commit:2.5.py36.dev-alpine]  |
+|                         |   `2.5.py38.dev`    |  ![DSpython:size:2.5.py38.dev-alpine] ![DSpython:layers:2.5.py38.dev-alpine] ![DSpython:commit:2.5.py38.dev-alpine]  |
 | bscdataclay/client |   `develop` `2.5.dev`  |  ![Client:size:develop]  ![Client:layers:develop] ![Client:commit:develop]  |
 |                         |   `develop-slim` `2.5.dev-slim` |  ![Client:size:develop-slim] ![Client:layers:develop-slim] ![Client:commit:develop-slim]  |
 |                         |   `develop-alpine` `2.5.dev-alpine` |  ![Client:size:develop-alpine] ![Client:layers:develop-alpine] ![Client:commit:develop-alpine]  |

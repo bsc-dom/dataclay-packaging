@@ -3,16 +3,19 @@ BUILDDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 REPOSITORY="bscdataclay"
 source $BUILDDIR/../../common/config.sh
 if [ -z $EXECUTION_ENVIRONMENT_TAG ]; then echo "ERROR: EXECUTION_ENVIRONMENT_TAG not defined. Aborting"; exit 1; fi
-source $BUILDDIR/../../common/prepare_docker_builder.sh
+if [ "$SHARE_BUILDERX" = "false" ]; then
+  source $BUILDDIR/../../common/prepare_docker_builder.sh
+fi
 
 # DSPYTHON
 pushd $BUILDDIR
 # Get python version without subversion to install it in some packages
 PYTHON_PIP_VERSION=$(echo $PYTHON_VERSION | awk -F '.' '{print $1}')
-echo "************* Building image named $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG python version $PYTHON_VERSION and pip version $PYTHON_PIP_VERSION *************"
-docker buildx build $DOCKERFILE -t $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG \
+
+echo "************* Pushing image named $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG (retry $n) *************"
+deploy docker buildx build $DOCKERFILE -t $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG \
     --build-arg VCS_REF=`git rev-parse --short HEAD` \
-    --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
+    --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT00:00:00Z"` \
     --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
 		--build-arg BASE_VERSION=$BASE_VERSION_TAG \
 		--build-arg REQUIREMENTS_TAG=${EXECUTION_ENVIRONMENT_TAG}-requirements \
@@ -22,7 +25,8 @@ docker buildx build $DOCKERFILE -t $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_T
 	  --cache-from=type=registry,ref=bscdataclay/dspython:${EXECUTION_ENVIRONMENT_TAG}-buildxcache \
 		--platform $PLATFORMS \
 		--push .
-echo "************* $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG DONE! *************"
+
+echo "************* $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG IMAGE PUSHED! (in $n retries) *************"
 popd 
 
 
@@ -45,8 +49,10 @@ fi
 #################################################################################################
 
 # Remove builder
-docker buildx rm $DOCKER_BUILDER
-printMsg " ===== Done! ====="
+if [ "$SHARE_BUILDERX" = "false" ]; then
+  docker buildx rm $DOCKER_BUILDER
+fi
+printMsg " ===== Done! (in $n retries) ===== "
 
 
 

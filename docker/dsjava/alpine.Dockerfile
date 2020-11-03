@@ -19,4 +19,4 @@ LABEL org.opencontainers.image.created=$BUILD_DATE \
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
 
 # ================= SERVICE ==================== #
-ENTRYPOINT ["sh", "entrypoints/dataclay-java-entry-point", "es.bsc.dataclay.dataservice.server.DataServiceSrv"]
+ENTRYPOINT ["dataclay-java-entry-point", "es.bsc.dataclay.dataservice.server.DataServiceSrv"]

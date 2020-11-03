@@ -78,7 +78,22 @@ function get_container_version {
 	fi
 	echo ${DATACLAY_CONTAINER_VERSION}
 }
+#=== FUNCTION ================================================================
+# NAME: deploy
+# DESCRIPTION: Deploy to DockerHub and retry if connection fails
+#=============================================================================
+function deploy {
+  echo "$@"
+  export n=0
+  until [ "$n" -ge 5 ] # Retry maximum 5 times
+  do
+    eval "$@" && break
+    n=$((n+1))
+    sleep 15
+  done
 
+}
+#==============================================================================
 grn=$'\e[1;32m'; blu=$'\e[1;34m'; red=$'\e[1;91m'; end=$'\e[0m';
 function printMsg { echo "${blu}[$(basename $0)] $1 ${end}"; }
 function printError { echo "${red}======== $1 ========${end}"; }
@@ -90,6 +105,7 @@ DATACLAY_DOCKER_DIR=$CONFIGDIR/../docker/
 export DEV=false
 export SINGULARITY_CHECK=false
 DONOTPROMPT=false
+SHARE_BUILDERX="false"
 DOCKERFILE=""
 TAG_SUFFIX=""
 PLATFORMS_FILE=$CONFIGDIR/PLATFORMS.txt
@@ -117,6 +133,9 @@ do
         --do-not-package)
         	export PACKAGE_JAR="false"
         	;;
+        --share-builder)
+          export SHARE_BUILDERX="true"
+          ;;
         --slim) 
         	export DOCKERFILE="-f slim.Dockerfile" 
         	export TAG_SUFFIX="-slim"

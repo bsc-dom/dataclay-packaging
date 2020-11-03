@@ -65,8 +65,8 @@ do
 done
 	
 ### docker buildx 
-if [ ! -z $EXECUTION_ENVIRONMENT ]; then 
-	DATACLAY_EE_VERSION="${EXECUTION_ENVIRONMENT//./}"
-fi
+#if [ ! -z $EXECUTION_ENVIRONMENT ]; then
+#	DATACLAY_EE_VERSION="${EXECUTION_ENVIRONMENT//./}"
+#fi
 
 

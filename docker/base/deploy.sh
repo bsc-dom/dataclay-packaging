@@ -2,17 +2,20 @@
 BUILDDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 REPOSITORY="bscdataclay"
 source $BUILDDIR/../../common/config.sh
-source $BUILDDIR/../../common/prepare_docker_builder.sh
+if [ "$SHARE_BUILDERX" = "false" ]; then
+  source $BUILDDIR/../../common/prepare_docker_builder.sh
+fi
 
 # BASE IMAGES 
 pushd $BUILDDIR
-echo "************* Pushing image named $REPOSITORY/base:$BASE_VERSION_TAG *************"
-docker buildx build $DOCKERFILE -t $REPOSITORY/base:$BASE_VERSION_TAG \
-	--platform $PLATFORMS \
-	--cache-to=type=registry,ref=bscdataclay/base:${BASE_VERSION_TAG}-buildxcache,mode=max \
-	--cache-from=type=registry,ref=bscdataclay/base:${BASE_VERSION_TAG}-buildxcache \
-	--push .
-echo "************* $REPOSITORY/base:$BASE_VERSION_TAG IMAGE PUSHED! *************" 
+echo "************* Pushing image named $REPOSITORY/base:$BASE_VERSION_TAG (retry $n) *************"
+deploy docker buildx build $DOCKERFILE -t $REPOSITORY/base:$BASE_VERSION_TAG \
+    --platform $PLATFORMS \
+    --cache-to=type=registry,ref=bscdataclay/base:${BASE_VERSION_TAG}-buildxcache,mode=max \
+    --cache-from=type=registry,ref=bscdataclay/base:${BASE_VERSION_TAG}-buildxcache \
+    --push .
+
+echo "************* $REPOSITORY/base:$BASE_VERSION_TAG IMAGE PUSHED! (in $n retries) *************"
 popd
 
 if [ "$DEV" = false ] ; then
@@ -23,8 +26,10 @@ else
 fi
 
 # Remove builder
-docker buildx rm $DOCKER_BUILDER
-printMsg " ===== Done! ====="
+if [ "$SHARE_BUILDERX" = "false" ]; then
+  docker buildx rm $DOCKER_BUILDER
+fi
+printMsg " ===== Done! (in $n retries) ====="
 
 
 

@@ -15,6 +15,25 @@
 # COMPANY: Barcelona Supercomputing Center (BSC)
 # VERSION: 1.0
 #===================================================================================
+
+
+#=== FUNCTION ================================================================
+# NAME: get_container_version
+# DESCRIPTION: Get container version
+# PARAMETER 1: Execution environment version i.e. can be python py3.6 or jdk8
+#===============================================================================
+function deploy {
+  echo "$@"
+  export n=0
+  until [ "$n" -ge 5 ] # Retry maximum 5 times
+  do
+    eval "$@" && break
+    n=$((n+1))
+    sleep 15
+  done
+
+}
+
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 set -e
 echo "'"'
@@ -37,6 +56,8 @@ else
   source $SCRIPTDIR/../common/PLATFORMS.txt
 fi
 
+source $SCRIPTDIR/../common/prepare_docker_builder.sh
+
 # CREATE DATACLAY JAR
 pushd $SCRIPTDIR/logicmodule/javaclay
 echo "Packaging dataclay.jar"
@@ -44,15 +65,21 @@ mvn package -q -DskipTests=true >/dev/null
 echo "dataclay.jar created!"
 popd
 
-$SCRIPTDIR/base/deploy.sh "$@"
+deploy $SCRIPTDIR/base/deploy.sh "$@" --share-builder
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
-  $SCRIPTDIR/logicmodule/deploy.sh "$@" --ee jdk${JAVA_VERSION} --do-not-package
-  $SCRIPTDIR/dsjava/deploy.sh "$@" --ee jdk${JAVA_VERSION} --do-not-package
+  deploy $SCRIPTDIR/logicmodule/deploy.sh "$@" --ee jdk${JAVA_VERSION} --share-builder --do-not-package
+  deploy $SCRIPTDIR/dsjava/deploy.sh "$@" --ee jdk${JAVA_VERSION} --share-builder --do-not-package
+
+
 done
 for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
-  $SCRIPTDIR/dspython/deploy.sh "$@" --ee py${PYTHON_VERSION}
+  deploy $SCRIPTDIR/dspython/deploy.sh "$@" --ee py${PYTHON_VERSION} --share-builder
 done
-$SCRIPTDIR/client/deploy.sh "$@"
+
+deploy  $SCRIPTDIR/client/deploy.sh "$@" --share-builder
+
+docker buildx rm $DOCKER_BUILDER
+
 duration=$SECONDS
 echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
 echo "[dataClay deploy] FINISHED! "
