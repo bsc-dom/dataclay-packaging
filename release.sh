@@ -104,6 +104,6 @@ if [ "$DEV" = false ] ; then
 fi
 
 cd $SCRIPTDIR/supercomputers/marenostrum
-./deploy.sh
+./deploy.sh $DEV_ARG
 
 printMsg "dataClay successfully released! :)"
