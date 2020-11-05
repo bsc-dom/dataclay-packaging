@@ -51,17 +51,21 @@ cd $SCRIPTDIR/docker/dspython/pyclay
 cd $SCRIPTDIR/docker/logicmodule/javaclay
 ./release.sh $DEV_ARG $PROMPT_ARG
 
+if [ "$DEV" = false ] ; then
+  cd $SCRIPTDIR/orchestration
+  ./release.sh $PROMPT_ARG
+  cd $SCRIPTDIR
+fi
+
 cd $SCRIPTDIR/docker
 ./deploy.sh $DEV_ARG $PROMPT_ARG
 ./deploy.sh $DEV_ARG $PROMPT_ARG --slim
 ./deploy.sh $DEV_ARG $PROMPT_ARG --alpine
 
+cd $SCRIPTDIR/supercomputers/marenostrum
+./deploy.sh $DEV_ARG
+
 if [ "$DEV" = false ] ; then
-
-  cd $SCRIPTDIR/orchestration
-  ./release.sh $PROMPT_ARG
-  cd $SCRIPTDIR
-
   printMsg "Post-processing files in master"
   VERSION=$(cat $SCRIPTDIR/orchestration/VERSION.txt)
   PREV_VERSION=$(echo "$VERSION - 0.1" | bc)
@@ -80,7 +84,7 @@ if [ "$DEV" = false ] ; then
 
   git add README.md
   git commit -m "Release ${GIT_TAG}"
-  git push origin master
+  git push
 
   printMsg "Tagging new release in Git"
   git tag -a ${GIT_TAG} -m "Release ${GIT_TAG}"
@@ -88,7 +92,6 @@ if [ "$DEV" = false ] ; then
 
   printMsg "Preparing develop branch"
   ## update develop branch also ##
-  git fetch --all
   git checkout develop
   git merge master
 
@@ -97,13 +100,10 @@ if [ "$DEV" = false ] ; then
 
   git add README.md
   git commit -m "Updating README.md"
-  git push origin develop
+  git push
 
   # back to master
   git checkout master
 fi
-
-cd $SCRIPTDIR/supercomputers/marenostrum
-./deploy.sh $DEV_ARG
 
 printMsg "dataClay successfully released! :)"
