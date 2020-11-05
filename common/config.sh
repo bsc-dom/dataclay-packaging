@@ -162,7 +162,7 @@ source $PLATFORMS_FILE
 ## Checks
 check_requirements
 if [ "$DEV" = false ] ; then
-	GIT_BRANCH=$(git name-rev --name-only HEAD)
+	GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 	if [[ "$GIT_BRANCH" != "master" ]]; then
 	  echo 'Aborting deployment, only master branch can deploy a release. Use --dev instead.';
 	  exit 1;

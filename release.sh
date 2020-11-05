@@ -39,7 +39,7 @@ do
 done
 
 printMsg "Welcome to dataClay release script"
-GIT_BRANCH=$(git name-rev --name-only HEAD)
+GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 if [[ "$GIT_BRANCH" != "$BRANCH_TO_CHECK" ]]; then
   printError "Branch is not $BRANCH_TO_CHECK. Aborting script";
   exit 1;
