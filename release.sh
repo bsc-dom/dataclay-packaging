@@ -68,9 +68,9 @@ cd $SCRIPTDIR/supercomputers/marenostrum
 
 if [ "$DEV" = false ] ; then
   printMsg "Post-processing files in master"
-  VERSION=$(cat $SCRIPTDIR/orchestration/VERSION.txt)
-  PREV_VERSION=$(echo "$VERSION - 0.1" | bc)
-  NEW_VERSION=$(echo "$VERSION + 0.1" | bc)
+  export VERSION=$(cat $SCRIPTDIR/orchestration/VERSION.txt)
+  export PREV_VERSION=$(echo "$VERSION - 0.1" | bc)
+  export NEW_VERSION=$(echo "$VERSION + 0.1" | bc)
   GIT_TAG=$VERSION
 
   # Update all submodules recursively
@@ -95,12 +95,18 @@ if [ "$DEV" = false ] ; then
   ## update develop branch also ##
   git checkout develop
   git merge master
+  bash misc/prepare_dev_readme.sh
 
-  sed -i "s/$VERSION/$NEW_VERSION/g" README.md
-  sed -i "s/$PREV_VERSION/$VERSION/g" README.md
+  pushd $SCRIPTDIR/docker/logicmodule/javaclay/ && git checkout develop && popd
+  pushd $SCRIPTDIR/docker/dspython/pyclay && git checkout develop && popd
+  pushd $SCRIPTDIR/orchestration && git checkout develop && popd
 
+  # Add submodule changes
+  git add docker/logicmodule/javaclay/
+  git add docker/dspython/pyclay
+  git add orchestration
   git add README.md
-  git commit -m "Updating README.md"
+  git commit -m "Preparing new development version"
   git push
 
   # back to master
