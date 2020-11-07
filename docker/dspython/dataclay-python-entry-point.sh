@@ -32,5 +32,10 @@ if [ $DEBUG = "true" ] ; then
 	export DEBUG=True
 fi
 
+### ========================== EXTRA LIBRARIES ============================= ##
+if [ -z ${PYCLAY_LIBS+x} ]; then
+  pip install $PYCLAY_LIBS
+fi
+
 ### ========================== ENTRYPOINT ============================= ##
 exec python -u $EXEC_ARGS

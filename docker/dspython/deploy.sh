@@ -37,7 +37,7 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_PY_TAG ]; then
 	##### TAG LATEST #####
 	if [ "$DEV" = false ] ; then
 		docker buildx imagetools create --tag $REPOSITORY/dspython $REPOSITORY/dspython:$DEFAULT_NORMAL_TAG
-		[[ -z "$TAG_SUFFIX" ]] && docker buildx imagetools create --tag $REPOSITORY/dspython:"${TAG_SUFFIX//-}" $REPOSITORY/dspython:$DEFAULT_TAG # alpine or slim tags
+		[[ ! -z "$TAG_SUFFIX" ]] && docker buildx imagetools create --tag $REPOSITORY/dspython:"${TAG_SUFFIX//-}" $REPOSITORY/dspython:$DEFAULT_TAG # alpine or slim tags
 	else 
 		docker buildx imagetools create --tag $REPOSITORY/dspython:develop${TAG_SUFFIX} $REPOSITORY/dspython:$DEFAULT_TAG
 	fi

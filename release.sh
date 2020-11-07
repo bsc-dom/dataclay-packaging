@@ -58,12 +58,13 @@ if [ "$DEV" = false ] ; then
 fi
 
 cd $SCRIPTDIR/docker
+# TODO: make sure dspython requirements are pushed
 ./deploy.sh $DEV_ARG $PROMPT_ARG
 ./deploy.sh $DEV_ARG $PROMPT_ARG --slim
 ./deploy.sh $DEV_ARG $PROMPT_ARG --alpine
 
 cd $SCRIPTDIR/supercomputers/marenostrum
-./deploy.sh $DEV_ARG
+./deploy.sh $DEV_ARG $PROMPT_ARG
 
 if [ "$DEV" = false ] ; then
   printMsg "Post-processing files in master"

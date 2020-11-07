@@ -20,7 +20,7 @@ popd
 
 if [ "$DEV" = false ] ; then
   docker buildx imagetools create --tag $REPOSITORY/base $REPOSITORY/base:$DEFAULT_NORMAL_TAG
-	[[ -z "$TAG_SUFFIX" ]] && docker buildx imagetools create --tag $REPOSITORY/base:"${TAG_SUFFIX//-}" $REPOSITORY/base:$DEFAULT_TAG # alpine or slim tags
+	[[ ! -z "$TAG_SUFFIX" ]] && docker buildx imagetools create --tag $REPOSITORY/base:"${TAG_SUFFIX//-}" $REPOSITORY/base:$DEFAULT_TAG # alpine or slim tags
 else 
 	docker buildx imagetools create --tag $REPOSITORY/base:develop${TAG_SUFFIX} $REPOSITORY/base:$DEFAULT_TAG
 fi

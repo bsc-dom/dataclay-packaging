@@ -32,7 +32,7 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	##### TAG LATEST #####
 	if [ "$DEV" = false ] ; then
 		docker buildx imagetools create --tag $REPOSITORY/dsjava $REPOSITORY/dsjava:$DEFAULT_NORMAL_TAG
-		[[ -z "$TAG_SUFFIX" ]] && docker buildx imagetools create --tag $REPOSITORY/dsjava:"${TAG_SUFFIX//-}" $REPOSITORY/dsjava:$DEFAULT_TAG # alpine or slim tags
+		[[ ! -z "$TAG_SUFFIX" ]] && docker buildx imagetools create --tag $REPOSITORY/dsjava:"${TAG_SUFFIX//-}" $REPOSITORY/dsjava:$DEFAULT_TAG # alpine or slim tags
 	else 
 		docker buildx imagetools create --tag $REPOSITORY/dsjava:develop${TAG_SUFFIX} $REPOSITORY/dsjava:$DEFAULT_TAG
 	fi

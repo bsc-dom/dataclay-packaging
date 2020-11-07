@@ -44,7 +44,7 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	##### TAG LATEST #####
 	if [ "$DEV" = false ] ; then
 		docker buildx imagetools create --tag $REPOSITORY/logicmodule $REPOSITORY/logicmodule:$DEFAULT_NORMAL_TAG
-		[[ -z "$TAG_SUFFIX" ]] && docker buildx imagetools create --tag $REPOSITORY/logicmodule:"${TAG_SUFFIX//-}" $REPOSITORY/logicmodule:$DEFAULT_TAG # alpine or slim tags
+		[[ ! -z "$TAG_SUFFIX" ]] && docker buildx imagetools create --tag $REPOSITORY/logicmodule:"${TAG_SUFFIX//-}" $REPOSITORY/logicmodule:$DEFAULT_TAG # alpine or slim tags
 	else 
 		docker buildx imagetools create --tag $REPOSITORY/logicmodule:develop${TAG_SUFFIX} $REPOSITORY/logicmodule:$DEFAULT_TAG
 	fi

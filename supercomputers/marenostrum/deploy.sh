@@ -32,7 +32,7 @@ rsync -av -e ssh --progress $PACKAGING_DIR/orchestration/* dataclay@dt01.bsc.es:
 # Send javaclay and pyclay
 echo "[marenostrum-deploy] Deploying javaclay..."
 pushd $PACKAGING_DIR/docker/logicmodule/javaclay
-mvn package -q -DskipTests=true
+mvn clean package -q -DskipTests=true
 scp target/*-jar-with-dependencies.jar dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/javaclay/dataclay.jar
 popd
 echo "[marenostrum-deploy] Deploying pyclay..."
