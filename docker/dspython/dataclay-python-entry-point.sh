@@ -33,7 +33,7 @@ if [ $DEBUG = "true" ] ; then
 fi
 
 ### ========================== EXTRA LIBRARIES ============================= ##
-if [ -z ${PYCLAY_LIBS+x} ]; then
+if [ ! -z ${PYCLAY_LIBS+x} ]; then
   pip install $PYCLAY_LIBS
 fi
 
