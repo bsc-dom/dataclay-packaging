@@ -122,11 +122,11 @@ Alpine images are only available in JDK 11 due to gRPC-SSL security issues.
 |                         |   `2.5.py36`    |  ![DSpython:size:2.5.py36] ![DSpython:layers:2.5.py36] ![DSpython:commit:2.5.py36]  |
 |                         |   `2.5.py38`    |  ![DSpython:size:2.5.py38] ![DSpython:layers:2.5.py38] ![DSpython:commit:2.5.py38]  |
 |                         |   `slim` `2.5-slim` `2.5.py37-slim` |  ![DSpython:size:slim] ![DSpython:layers:slim] ![DSpython:commit:slim] |
-|                         |   `2.5.py36`    |  ![DSpython:size:2.5.py36-slim] ![DSpython:layers:2.5.py36-slim] ![DSpython:commit:2.5.py36-slim]  |
-|                         |   `2.5.py38`    |  ![DSpython:size:2.5.py38-slim] ![DSpython:layers:2.5.py38-slim] ![DSpython:commit:2.5.py38-slim]  |
+|                         |   `2.5.py36-slim`    |  ![DSpython:size:2.5.py36-slim] ![DSpython:layers:2.5.py36-slim] ![DSpython:commit:2.5.py36-slim]  |
+|                         |   `2.5.py38-slim`    |  ![DSpython:size:2.5.py38-slim] ![DSpython:layers:2.5.py38-slim] ![DSpython:commit:2.5.py38-slim]  |
 |                         |   `alpine` `2.5-alpine` `2.5.py37-alpine` |  ![DSpython:size:alpine] ![DSpython:layers:alpine] ![DSpython:commit:alpine] |
-|                         |   `2.5.py36`    |  ![DSpython:size:2.5.py36-alpine] ![DSpython:layers:2.5.py36-alpine] ![DSpython:commit:2.5.py36-alpine]  |
-|                         |   `2.5.py38`    |  ![DSpython:size:2.5.py38-alpine] ![DSpython:layers:2.5.py38-alpine] ![DSpython:commit:2.5.py38-alpine]  |
+|                         |   `2.5.py36-alpine`    |  ![DSpython:size:2.5.py36-alpine] ![DSpython:layers:2.5.py36-alpine] ![DSpython:commit:2.5.py36-alpine]  |
+|                         |   `2.5.py38-alpine`    |  ![DSpython:size:2.5.py38-alpine] ![DSpython:layers:2.5.py38-alpine] ![DSpython:commit:2.5.py38-alpine]  |
 | bscdataclay/client |   `latest` `2.5`  |  ![Client:size:latest]  ![Client:layers:latest] ![Client:commit:latest]  |
 |                         |   `slim` `2.5-slim` |  ![Client:size:slim] ![Client:layers:slim] ![Client:commit:slim]  |
 |                         |   `alpine` `2.5-alpine` |  ![Client:size:alpine] ![Client:layers:alpine] ![Client:commit:alpine]  |
