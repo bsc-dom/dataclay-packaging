@@ -27,7 +27,7 @@ ssh dataclay@mn1.bsc.es "$DEPLOY_CMD"
 
 # Send orchestration script and images
 echo "[marenostrum-deploy] Deploying dataclay orchestrator and singularity images..."
-rsync -av -e ssh --progress $PACKAGING_DIR/orchestration/* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG
+rsync -av -e ssh $PACKAGING_DIR/orchestration/* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG
 
 # Send javaclay and pyclay
 echo "[marenostrum-deploy] Deploying javaclay..."

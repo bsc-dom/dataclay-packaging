@@ -60,7 +60,7 @@ errorMsg() {
 TOOLNAME=$0
 SUPPORTEDLANGS="python | java"
 SUPPORTEDDSETS="public | private"
-printf " ${CONSOLE_BLUE} **  ᴅᴀᴛᴀCʟᴀʏ command tool ** ${CONSOLE_NORMAL} \n"
+printf " ${CONSOLE_BLUE}**  dataClay command tool ** ${CONSOLE_NORMAL} \n"
 
 # WARNING: Note that this script must be located among with pom.xml
 
