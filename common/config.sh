@@ -108,24 +108,19 @@ DONOTPROMPT=false
 SHARE_BUILDERX="false"
 DOCKERFILE=""
 TAG_SUFFIX=""
+BRANCH_TO_CHECK="master"
 PLATFORMS_FILE=$CONFIGDIR/PLATFORMS.txt
 export PACKAGE_JAR="true"
 while test $# -gt 0
 do
     case "$1" in
-        --dev) export DEV=true
+        --dev)
+          export DEV=true
+          BRANCH_TO_CHECK="develop"
             ;;
         --ee) 
         	shift 
         	EXECUTION_ENVIRONMENT=$1 
-        	;;
-        --branch) 
-        	# If branch is named develop, --dev option is set
-        	shift 
-        	BRANCH=$1 
-        	if [ $BRANCH == "develop" ]; then 
-        		export DEV=true
-        	fi
         	;;
         -y) 
         	DONOTPROMPT=true 
@@ -161,13 +156,13 @@ source $PLATFORMS_FILE
 
 ## Checks
 check_requirements
-if [ "$DEV" = false ] ; then
-	GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-	if [[ "$GIT_BRANCH" != "master" ]]; then
-	  echo 'Aborting deployment, only master branch can deploy a release. Use --dev instead.';
-	  exit 1;
-	fi
+
+GIT_BRANCH=$(git for-each-ref --format='%(objectname) %(refname:short)' refs/heads | awk "/^$(git rev-parse HEAD)/ {print \$2}")
+if [[ "$GIT_BRANCH" != "$BRANCH_TO_CHECK" ]]; then
+  printError "Branch is not $BRANCH_TO_CHECK. Found $GIT_BRANCH. Aborting script"
+  exit 1
 fi
+
 DATACLAY_VERSION=$(cat $ORCHDIR/VERSION.txt)
 export DATACLAY_VERSION="${DATACLAY_VERSION//.dev/}"
 export DEFAULT_NORMAL_TAG="$(get_container_version)"
