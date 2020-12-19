@@ -20,7 +20,7 @@ deploy docker buildx build $DOCKERFILE -t $REPOSITORY/client:$CLIENT_TAG \
 			   --build-arg JDK=$CLIENT_JAVA \
 			   --cache-to=type=registry,ref=bscdataclay/client:${CLIENT_TAG}-buildxcache,mode=max \
 	       --cache-from=type=registry,ref=bscdataclay/client:${CLIENT_TAG}-buildxcache \
-				 --platform $PLATFORMS \
+				 --platform $PLATFORMS $DOCKER_PROGRESS \
 				 --push .
 
 echo "************* $REPOSITORY/client:$CLIENT_TAG IMAGE PUSHED! (in $n retries) *************"

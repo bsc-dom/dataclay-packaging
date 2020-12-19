@@ -36,20 +36,6 @@ function check_requirements {
 		fi 
 		printf "OK\n"
 	done
-
-	printf "Checking if java version >= $REQUIRED_JAVA_VERSION..."
-	version=$("java" -version 2>&1 | awk -F '"' '/version/ {print $2}' | awk -F '.' '{print $1}')
-	if (("$version" < "$REQUIRED_JAVA_VERSION")); then       
-	    echo "ERROR: java version is less than $REQUIRED_JAVA_VERSION"
-		exit 1
-	fi
-	printf "OK\n"
-	printf "Checking if javac version >= $REQUIRED_JAVA_VERSION..."	
-	version=$("javac" -version 2>&1 | awk '{print $2}' | awk -F '.' '{print $1}')
-	if (("$version" < "$REQUIRED_JAVA_VERSION")); then    
-	    echo "ERROR: javac version is less than $REQUIRED_JAVA_VERSION"
-		exit 1
-	fi
 	printf "OK\n"
 	echo "Requirements accomplished! "
 	
@@ -109,6 +95,7 @@ SHARE_BUILDERX="false"
 DOCKERFILE=""
 TAG_SUFFIX=""
 BRANCH_TO_CHECK="master"
+DOCKER_PROGRESS=""
 PLATFORMS_FILE=$CONFIGDIR/PLATFORMS.txt
 export PACKAGE_JAR="true"
 while test $# -gt 0
@@ -136,6 +123,9 @@ do
         	export TAG_SUFFIX="-slim"
         	PLATFORMS_FILE=$CONFIGDIR/SLIM_PLATFORMS.txt
         	;;
+        --plain)
+          export DOCKER_PROGRESS="--progress plain"
+          ;;
         --alpine) 
         	export DOCKERFILE="-f alpine.Dockerfile" 
         	export TAG_SUFFIX="-alpine"

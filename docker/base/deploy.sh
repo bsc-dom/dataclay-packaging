@@ -10,7 +10,7 @@ fi
 pushd $BUILDDIR
 echo "************* Pushing image named $REPOSITORY/base:$BASE_VERSION_TAG (retry $n) *************"
 deploy docker buildx build $DOCKERFILE -t $REPOSITORY/base:$BASE_VERSION_TAG \
-    --platform $PLATFORMS \
+    --platform $PLATFORMS $DOCKER_PROGRESS \
     --cache-to=type=registry,ref=bscdataclay/base:${BASE_VERSION_TAG}-buildxcache,mode=max \
     --cache-from=type=registry,ref=bscdataclay/base:${BASE_VERSION_TAG}-buildxcache \
     --push .
