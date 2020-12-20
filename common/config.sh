@@ -131,10 +131,10 @@ do
         	export TAG_SUFFIX="-alpine"
         	PLATFORMS_FILE=$CONFIGDIR/ALPINE_PLATFORMS.txt
         	;;
-        --singularity) 
-        	SINGULARITY_CHECK=true
-        	INSTALLED_REQUIREMENTS+=("singularity")
-            ;;
+        --singularityimg)
+          shift
+        	SINGULARITY_IMG=$1
+        	;;
         *) echo "Bad option $1"
         	exit -1
             ;;

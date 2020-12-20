@@ -39,7 +39,15 @@ environment:
     - DEPLOY: ./docker/client/deploy.sh -y --dev --plain
     - DEPLOY: ./docker/client/deploy.sh -y --dev --plain --slim
     - DEPLOY: ./docker/client/deploy.sh -y --dev --plain --slim
-    - DEPLOY: ./hpc/mn/deploy.sh --dev -y
+    - DEPLOY: ./hpc/mn/deploy_orchestrator.sh -y --dev
+    - DEPLOY: ./hpc/mn/deploy_image.sh -y --dev --singularityimg logicmodule --ee jdk8
+    - DEPLOY: ./hpc/mn/deploy_image.sh -y --dev --singularityimg logicmodule --ee jdk11
+    - DEPLOY: ./hpc/mn/deploy_image.sh -y --dev --singularityimg dsjava --ee jdk8
+    - DEPLOY: ./hpc/mn/deploy_image.sh -y --dev --singularityimg dsjava --ee jdk11
+    - DEPLOY: ./hpc/mn/deploy_image.sh -y --dev --singularityimg dspython --ee py3.6
+    - DEPLOY: ./hpc/mn/deploy_image.sh -y --dev --singularityimg dspython --ee py3.7
+    - DEPLOY: ./hpc/mn/deploy_image.sh -y --dev --singularityimg dspython --ee py3.8
+    - DEPLOY: ./hpc/mn/deploy_image.sh -y --dev --singularityimg client
 install:
   - sh: "# Initialize submodules \ngit submodule init \ngit submodule update \n\n# Install java\nsudo apt-get update\nsudo apt-get install -y --allow-unauthenticated openjdk-11-jdk maven\nsudo ln -s /usr/lib/jvm/java-11-openjdk* /usr/lib/jvm/java-default\nexport JAVA_HOME=/usr/lib/jvm/java-default\nexport PATH=$JAVA_HOME/bin:$PATH\n\njava -version\nmvn -version\n\n# Install docker\ncurl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -\nsudo add-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\"\nsudo apt-get update\nsudo apt-get install binfmt-support qemu qemu-user-static jq\nsudo apt-get -y -o Dpkg::Options::=\"--force-confnew\" install docker-ce\nmkdir -p $HOME/.docker/\necho \"{ \\\"experimental\\\":\\\"enabled\\\" }\" > $HOME/.docker/config.json\nsudo service docker restart\n\n# Login in Dockerhub\necho \"$DOCKER_PASSWORD\" | docker login -u \"$DOCKER_USERNAME\" --password-stdin\n\n# Install singularity \nsudo apt-get update && sudo apt-get install -y \\\n    build-essential \\\n    libssl-dev \\\n    uuid-dev \\\n    libgpgme11-dev \\\n    squashfs-tools \\\n    libseccomp-dev \\\n    wget \\\n    pkg-config \\\n    git \\\n    cryptsetup\n\n# Install go\neval \"$(gimme $TRAVIS_GO_VERSION)\"\n\nexport VERSION=3.5.2\nwget --quiet https://github.com/sylabs/singularity/releases/download/v${VERSION}/singularity-${VERSION}.tar.gz\ntar -xzf singularity-${VERSION}.tar.gz \n\npushd singularity\n./mconfig && \\\n    make -C builddir && \\\n    sudo make -C builddir install\n\npopd\n\n# Install mn keys \ncurl -sflL 'https://raw.githubusercontent.com/appveyor/secure-file/master/install.sh' | bash -e -\n./appveyor-tools/secure-file -decrypt .appveyor/mn_deploy_key.enc -secret $MN_KEY_SECRET -salt $MN_KEY_SALT\n\nmv .appveyor/mn_deploy_key $HOME/.ssh/mn_deploy_key\nchmod 600 \"$HOME/.ssh/mn_deploy_key\" \\\n    && printf \"%s\\n\" \\\n         \"Host *\" \\\n         \"  IdentityFile $HOME/.ssh/mn_deploy_key\" \\\n         \"  StrictHostKeyChecking no\" \\\n         \"  UserKnownHostsFile=/dev/null\" >> ~/.ssh/config"
 cache: /home/appveyor/.singularity
