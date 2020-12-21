@@ -13,7 +13,7 @@ if [ "$PACKAGE_JAR" = "true" ]; then
   # CREATE DATACLAY JAR
 	pushd $BUILDDIR/javaclay
 	printMsg "Packaging dataclay.jar"
-	mvn package -q -DskipTests=true >/dev/null
+	mvn package -q -DskipTests=true
 	printMsg "dataclay.jar created!"
 	popd
 fi
