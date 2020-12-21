@@ -268,32 +268,51 @@ init:
   - /init-scripts/init.sh
 for:
 
-  - job_group: base
+  -
+    matrix:
+      only:
+        - job_group: base
     build_script:
-      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type
+      - sh: ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type
 
-  - job_group: logicmodule
+  -
+    matrix:
+      only:
+        - job_group: logicmodule
     build_script:
-      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+      - sh: ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
-  - job_group: dsjava
+  -
+    matrix:
+      only:
+        - job_group: dsjava
     build_script:
-      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+      - sh: ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
-  - job_group: dspython
+  -
+    matrix:
+      only:
+        - job_group: dspython
     build_script:
-      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+      - sh: ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
-  - job_group: client
+  -
+    matrix:
+      only:
+        - job_group: client
     build_script:
-      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type
+      - sh: ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type
 
-  - job_group: mn_orchestration
+  -
+    matrix:
+      only:
+        - job_group: mn_orchestration
     build_script:
-      - /init-scripts/init_mn.sh
-      - ./hpc/mn/deploy_orchestrator.sh -y --dev
+      - sh: /init-scripts/init_mn.sh && ./hpc/mn/deploy_orchestrator.sh -y --dev
 
-  - job_group: mn_deploy
+  -
+    matrix:
+      only:
+        - job_group: mn_deploy
     build_script:
-      - /init-scripts/init_mn.sh
-      - ./hpc/mn/deploy_image.sh -y --dev --singularityimg $dataclay_image --ee $execution_env
+      - sh: /init-scripts/init_mn.sh && ./hpc/mn/deploy_image.sh -y --dev
