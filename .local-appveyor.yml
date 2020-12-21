@@ -19,13 +19,13 @@ environment:
       job_group: base
       dataclay_image: base
       image_type: normal
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 # BASE SLIM ------------------------------------------------------------------------
     - job_name: Deploy base slim
       job_group: base
       dataclay_image: base
       image_type: slim
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 # LOGICMODULE ------------------------------------------------------------------------
     - job_name: Deploy logicmodule jdk8
       job_group: logicmodule
@@ -33,7 +33,7 @@ environment:
       dataclay_image: logicmodule
       image_type: normal
       execution_env: jdk8
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 
     - job_name: Deploy logicmodule jdk11
       job_group: logicmodule
@@ -41,7 +41,7 @@ environment:
       dataclay_image: logicmodule
       image_type: normal
       execution_env: jdk11
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 # LOGICMODULE SLIM ------------------------------------------------------------------------
     - job_name: Deploy logicmodule slim jdk8
       job_group: logicmodule
@@ -49,7 +49,7 @@ environment:
       dataclay_image: logicmodule
       image_type: slim
       execution_env: jdk8
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 
     - job_name: Deploy logicmodule slim jdk11
       job_group: logicmodule
@@ -57,7 +57,7 @@ environment:
       dataclay_image: logicmodule
       image_type: slim
       execution_env: jdk11
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 # LOGICMODULE ALPINE ------------------------------------------------------------------------
     - job_name: Deploy logicmodule alpine jdk11
       job_group: logicmodule
@@ -65,7 +65,7 @@ environment:
       dataclay_image: logicmodule
       image_type: alpine
       execution_env: jdk11
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 # DSJAVA ------------------------------------------------------------------------
     - job_name: Deploy dsjava jdk8
       job_group: dsjava
@@ -73,7 +73,7 @@ environment:
       dataclay_image: dsjava
       image_type: normal
       execution_env: jdk8
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 
     - job_name: Deploy dsjava jdk8
       job_group: dsjava
@@ -81,7 +81,7 @@ environment:
       dataclay_image: dsjava
       image_type: normal
       execution_env: jdk11
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 # DSJAVA SLIM ------------------------------------------------------------------------
     - job_name: Deploy dsjava slim jdk8
       job_group: dsjava
@@ -89,7 +89,7 @@ environment:
       dataclay_image: dsjava
       image_type: slim
       execution_env: jdk8
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 
     - job_name: Deploy dsjava slim jdk11
       job_group: dsjava
@@ -97,7 +97,7 @@ environment:
       dataclay_image: dsjava
       image_type: slim
       execution_env: jdk11
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 # DSJAVA ALPINE ------------------------------------------------------------------------
     - job_name: Deploy dsjava alpine jdk11
       job_group: dsjava
@@ -105,7 +105,7 @@ environment:
       dataclay_image: dsjava
       image_type: alpine
       execution_env: jdk11
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 # DSPYTHON ------------------------------------------------------------------------
     - job_name: Deploy dspython py3.6
       job_group: dspython
@@ -113,7 +113,7 @@ environment:
       dataclay_image: dspython
       image_type: normal
       execution_env: py3.6
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 
     - job_name: Deploy dspython py3.7
       job_group: dspython
@@ -121,7 +121,7 @@ environment:
       dataclay_image: dspython
       image_type: normal
       execution_env: py3.7
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 
     - job_name: Deploy dspython py3.8
       job_group: dspython
@@ -129,7 +129,7 @@ environment:
       dataclay_image: dspython
       image_type: normal
       execution_env: py3.8
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 # DSPYTHON SLIM ------------------------------------------------------------------------
     - job_name: Deploy dspython slim py3.6
       job_group: dspython
@@ -137,7 +137,7 @@ environment:
       dataclay_image: dspython
       image_type: slim
       execution_env: py3.6
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 
     - job_name: Deploy dspython slim py3.7
       job_group: dspython
@@ -145,7 +145,7 @@ environment:
       dataclay_image: dspython
       image_type: slim
       execution_env: py3.7
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 
     - job_name: Deploy dspython slim py3.8
       job_group: dspython
@@ -153,7 +153,7 @@ environment:
       dataclay_image: dspython
       image_type: slim
       execution_env: py3.8
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 # DSPYTHON ALPINE ------------------------------------------------------------------------
     - job_name: Deploy dspython alpine py3.6
       job_group: dspython
@@ -161,7 +161,7 @@ environment:
       dataclay_image: dspython
       image_type: alpine
       execution_env: py3.6
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 
     - job_name: Deploy dspython alpine py3.7
       job_group: dspython
@@ -169,7 +169,7 @@ environment:
       dataclay_image: dspython
       image_type: alpine
       execution_env: py3.7
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 
     - job_name: Deploy dspython alpine py3.8
       job_group: dspython
@@ -177,28 +177,28 @@ environment:
       dataclay_image: dspython
       image_type: alpine
       execution_env: py3.8
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 # CLIENT ------------------------------------------------------------------------
     - job_name: Deploy client
       job_group: client
       job_depends_on: dspython
       dataclay_image: client
       image_type: normal
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 # CLIENT SLIM ------------------------------------------------------------------------
     - job_name: Deploy client slim
       job_group: client
       job_depends_on: dspython
       dataclay_image: client
       image_type: slim
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 # CLIENT ALPINE ------------------------------------------------------------------------
     - job_name: Deploy client alpine
       job_group: client
       job_depends_on: dspython
       dataclay_image: client
       image_type: alpine
-      docker_image: bscdataclay/continuous-integration
+      docker_image: bscdataclay/continuous-integration:packaging
 # MN ORCHESTRATION ------------------------------------------------------------------------
     - job_name: Deploy mn orchestration scripts
       job_group: mn_orchestration
