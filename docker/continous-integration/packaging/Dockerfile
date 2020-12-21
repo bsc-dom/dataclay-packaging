@@ -16,7 +16,7 @@ RUN mkdir -p $HOME/.docker/cli-plugins && \
 
 WORKDIR /appveyor/projects/dataclay-packaging
 RUN mkdir -p /init-scripts/
-RUN apk update && apk add --no-cache maven qemu git bash
+RUN apk update && apk add --no-cache openjdk8 maven qemu git bash
 # openjdk8 python3
 
 COPY . /init-scripts/

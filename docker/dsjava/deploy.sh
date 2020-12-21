@@ -12,8 +12,6 @@ pushd $BUILDDIR
 
 echo "************* Pushing image named $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG (retry $n) *************"
 deploy docker buildx build $DOCKERFILE -t $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG \
-         --build-arg VCS_REF=`git rev-parse --short HEAD` \
-         --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT00:00:00Z"` \
          --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
 		     --build-arg LOGICMODULE_VERSION=$EXECUTION_ENVIRONMENT_TAG \
 		     --cache-to=type=registry,ref=bscdataclay/dsjava:${EXECUTION_ENVIRONMENT_TAG}-buildxcache,mode=max \

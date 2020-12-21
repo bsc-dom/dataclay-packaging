@@ -4,14 +4,10 @@ FROM bscdataclay/dspython:${DATACLAY_DSPYTHON_DOCKER_TAG}
 FROM bscdataclay/logicmodule:${DATACLAY_LOGICMODULE_DOCKER_TAG}
 FROM ubuntu:18.04
 
-ARG BUILD_DATE
-ARG VCS_REF
 ARG VERSION
-LABEL org.opencontainers.image.created=$BUILD_DATE \
-      org.opencontainers.image.title="dataClay client" \
+LABEL org.opencontainers.image.title="dataClay client" \
       org.opencontainers.image.description="Active objects across the network" \
       org.opencontainers.image.url="https://dataclay.bsc.es/" \
-      org.label-schema.vcs-ref=$VCS_REF \
       org.label-schema.vcs-url="https://github.com/bsc-dom/dataclay-packaging" \
       org.opencontainers.image.vendor="Barcelona Supercomputing Center (BSC-CNS)" \
       org.opencontainers.image.version=$VERSION \

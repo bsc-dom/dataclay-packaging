@@ -11,8 +11,6 @@ pushd $BUILDDIR
 # client will not have execution environemnt in version, like pypi
 echo "************* Pushing image named $REPOSITORY/client:$CLIENT_TAG (retry $n) *************"
 deploy docker buildx build $DOCKERFILE -t $REPOSITORY/client:$CLIENT_TAG \
-         --build-arg VCS_REF=`git rev-parse --short HEAD` \
-         --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT00:00:00Z"` \
          --build-arg VERSION=$CLIENT_TAG \
 				 --build-arg DATACLAY_DSPYTHON_DOCKER_TAG=$DEFAULT_PY_CLIENT_TAG \
 				 --build-arg DATACLAY_LOGICMODULE_DOCKER_TAG=$DEFAULT_JDK_CLIENT_TAG \
