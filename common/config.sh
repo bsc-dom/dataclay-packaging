@@ -5,7 +5,7 @@
 #
 # USAGE: stale-config.sh
 #
-# DESCRIPTION: Check requirements to build/deploy docker and singularity images are
+# DESCRIPTION: -
 # accomplished and prepare versions.
 #
 # OPTIONS: ---
@@ -16,30 +16,6 @@
 # COMPANY: Barcelona Supercomputing Center
 # VERSION: 2.4
 #===================================================================================
-
-
-#=== FUNCTION ================================================================
-# NAME: check_requirements
-# DESCRIPTION: Check requirements
-# PARAMETER 1: ---
-#===============================================================================
-function check_requirements { 
-	echo "Checking requirements ... "
-	source $CONFIGDIR/REQUIREMENTS.txt
-	
-	# check commands
-	for COMMAND in ${INSTALLED_REQUIREMENTS[@]}; do
-		printf "Checking if $COMMAND is installed..."
-		if ! foobar_loc="$(type -p "$COMMAND")" || [[ -z $foobar_loc ]]; then
-			echo "ERROR: please make sure $COMMAND is installed"
-		  	exit -1
-		fi 
-		printf "OK\n"
-	done
-	printf "OK\n"
-	echo "Requirements accomplished! "
-	
-}
 
 #=== FUNCTION ================================================================
 # NAME: get_container_version
@@ -89,7 +65,6 @@ CONFIGDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ORCHDIR=$CONFIGDIR/../orchestration/
 DATACLAY_DOCKER_DIR=$CONFIGDIR/../docker/
 export DEV=false
-export SINGULARITY_CHECK=false
 DONOTPROMPT=false
 SHARE_BUILDERX="false"
 DOCKERFILE=""
@@ -135,6 +110,9 @@ do
           shift
         	SINGULARITY_IMG=$1
         	;;
+        --normal)
+          echo "Skipping option --normal"
+          ;;
         *) echo "Bad option $1"
         	exit -1
             ;;
@@ -143,9 +121,6 @@ do
 done
 ###############################################################################
 source $PLATFORMS_FILE
-
-## Checks
-check_requirements
 
 GIT_BRANCH=$(git for-each-ref --format='%(objectname) %(refname:short)' refs/heads | awk "/^$(git rev-parse HEAD)/ {print \$2}")
 if [[ "$GIT_BRANCH" != "$BRANCH_TO_CHECK" ]]; then
