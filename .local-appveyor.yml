@@ -202,7 +202,7 @@ environment:
     - job_name: Deploy mn orchestration scripts
       job_group: mn_orchestration
       job_depends_on: client
-      docker_image: appveyor/build-image:minimal-ubuntu-18.04
+      docker_image: bscdataclay/continuous-integration:packaging-mn
 # MN LOGICMODULE ------------------------------------------------------------------------
     - job_name: Deploy mn logicmodule jdk8
       job_group: mn_deploy
