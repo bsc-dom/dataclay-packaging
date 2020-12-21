@@ -271,48 +271,230 @@ for:
   -
     matrix:
       only:
-        - job_group: base
+        - job_name: Deploy base
     build_script:
-      - sh: ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type
 
   -
     matrix:
       only:
-        - job_group: logicmodule
+        - job_name: Deploy base slim
     build_script:
-      - sh: ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type
 
   -
     matrix:
       only:
-        - job_group: dsjava
+        - job_name: Deploy logicmodule jdk8
     build_script:
-      - sh: ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
   -
     matrix:
       only:
-        - job_group: dspython
+        - job_name: Deploy logicmodule jdk11
     build_script:
-      - sh: ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
   -
     matrix:
       only:
-        - job_group: client
+        - job_name: Deploy logicmodule slim jdk8
     build_script:
-      - sh: ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
   -
     matrix:
       only:
-        - job_group: mn_orchestration
+        - job_name: Deploy logicmodule slim jdk11
     build_script:
-      - sh: /init-scripts/init_mn.sh && ./hpc/mn/deploy_orchestrator.sh -y --dev
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
   -
     matrix:
       only:
-        - job_group: mn_deploy
+        - job_name: Deploy logicmodule alpine jdk11
     build_script:
-      - sh: /init-scripts/init_mn.sh && ./hpc/mn/deploy_image.sh -y --dev
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy dsjava jdk8
+    build_script:
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy dsjava jdk11
+    build_script:
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy dsjava slim jdk8
+    build_script:
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy dsjava slim jdk11
+    build_script:
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy dsjava alpine jdk11
+    build_script:
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy dspython py3.6
+    build_script:
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy dspython py3.7
+    build_script:
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy dspython py3.8
+    build_script:
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy dspython slim py3.6
+    build_script:
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy dspython slim py3.7
+    build_script:
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy dspython slim py3.8
+    build_script:
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy dspython alpine py3.6
+    build_script:
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy dspython alpine py3.7
+    build_script:
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy dspython alpine py3.8
+    build_script:
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy client
+    build_script:
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy client slim
+    build_script:
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy client alpine
+    build_script:
+      - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy mn orchestration scripts
+    build_script:
+      - /init-scripts/init_mn.sh && ./hpc/mn/deploy_orchestrator.sh -y --dev
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy mn logicmodule jdk8
+    build_script:
+      - /init-scripts/init_mn.sh && ./hpc/mn/deploy_image.sh -y --dev
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy mn logicmodule jdk11
+    build_script:
+      - /init-scripts/init_mn.sh && ./hpc/mn/deploy_image.sh -y --dev
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy mn dsjava jdk8
+    build_script:
+      - /init-scripts/init_mn.sh && ./hpc/mn/deploy_image.sh -y --dev
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy mn dsjava jdk11
+    build_script:
+      - /init-scripts/init_mn.sh && ./hpc/mn/deploy_image.sh -y --dev
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy mn dspython py3.6
+    build_script:
+      - /init-scripts/init_mn.sh && ./hpc/mn/deploy_image.sh -y --dev
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy mn dspython py3.7
+    build_script:
+      - /init-scripts/init_mn.sh && ./hpc/mn/deploy_image.sh -y --dev
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy mn dspython py3.8
+    build_script:
+      - /init-scripts/init_mn.sh && ./hpc/mn/deploy_image.sh -y --dev
+
+  -
+    matrix:
+      only:
+        - job_name: Deploy mn client
+    build_script:
+      - /init-scripts/init_mn.sh && ./hpc/mn/deploy_image.sh -y --dev
