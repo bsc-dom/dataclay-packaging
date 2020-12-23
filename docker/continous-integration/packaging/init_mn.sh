@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# Initialize
+/init-scripts/init.sh
+
 # Install mn keys
 echo "-----BEGIN RSA PRIVATE KEY-----" > $HOME/.ssh/mn_deploy_key
 echo $MN_PRIVATE_KEY >> $HOME/.ssh/mn_deploy_key
@@ -10,3 +14,5 @@ chmod 600 "$HOME/.ssh/mn_deploy_key" \
          "  IdentityFile $HOME/.ssh/mn_deploy_key" \
          "  StrictHostKeyChecking no" \
          "  UserKnownHostsFile=/dev/null" >> $HOME/.ssh/config
+
+exec $@

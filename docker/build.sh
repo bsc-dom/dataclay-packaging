@@ -22,17 +22,10 @@ else
   source $SCRIPTDIR/../common/PLATFORMS.txt
 fi
 
-# CREATE DATACLAY JAR
-pushd $SCRIPTDIR/logicmodule/javaclay
-echo "Packaging dataclay.jar"
-mvn package -q -DskipTests=true >/dev/null
-echo "dataclay.jar created!"
-popd
-
 $SCRIPTDIR/base/build.sh "$@"
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
-  $SCRIPTDIR/logicmodule/build.sh "$@" --ee jdk${JAVA_VERSION} --do-not-package
-  $SCRIPTDIR/dsjava/build.sh "$@" --ee jdk${JAVA_VERSION} --do-not-package
+  $SCRIPTDIR/logicmodule/build.sh "$@" --ee jdk${JAVA_VERSION}
+  $SCRIPTDIR/dsjava/build.sh "$@" --ee jdk${JAVA_VERSION}
 done
 for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
   $SCRIPTDIR/dspython/build.sh "$@" --ee py${PYTHON_VERSION}

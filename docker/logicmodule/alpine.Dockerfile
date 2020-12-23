@@ -1,5 +1,9 @@
-FROM alpine:3 as packager
-RUN apk --no-cache add openjdk11-jdk openjdk11-jmods
+FROM --platform=linux/amd64 maven:3.6.1-jdk-8-alpine as packager
+COPY ./javaclay/ /javaclay/
+RUN cd /javaclay/ && mvn package -DskipTests=true
+
+FROM alpine:3 as minijdk
+RUN apk --no-cache add openjdk11-jdk openjdk11-jmods maven
 ENV JAVA_MINIMAL="/opt/java-minimal"
 # build minimal JRE
 RUN /usr/lib/jvm/java-11-openjdk/bin/jlink \
@@ -10,7 +14,8 @@ jdk.unsupported,jdk.jdi,java.net.http \
     --compress 2 --strip-debug --no-header-files --no-man-pages \
     --release-info="add:IMPLEMENTOR=bsc:IMPLEMENTOR_VERSION=dataclay_JRE" \
     --output "$JAVA_MINIMAL"
-# Compile javaclay in a different layer with JDK (not JRE)
+
+
 # ============================================================ #
 # Add only our minimal "JRE" distr and our app
 FROM alpine:3
@@ -28,7 +33,7 @@ LABEL org.opencontainers.image.title="dataClay client" \
 # Install packages:
 ENV JAVA_MINIMAL="/opt/java-minimal"
 ENV PATH="$PATH:$JAVA_MINIMAL/bin"
-COPY --from=packager "$JAVA_MINIMAL" "$JAVA_MINIMAL"
+COPY --from=minijdk "$JAVA_MINIMAL" "$JAVA_MINIMAL"
 
 RUN apk --no-cache --update add sqlite
 
@@ -43,7 +48,7 @@ WORKDIR ${DATACLAY_HOME}
 
 # Get dataClay JAR
 ARG JAR_VERSION
-COPY ./javaclay/target/dataclay-${JAR_VERSION}-shaded.jar ${DATACLAY_JAR}
+COPY --from=packager /javaclay/target/dataclay-${JAR_VERSION}-shaded.jar ${DATACLAY_JAR}
 ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
 
 # Copy entrypoint

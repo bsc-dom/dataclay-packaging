@@ -58,17 +58,10 @@ fi
 
 source $SCRIPTDIR/../common/prepare_docker_builder.sh
 
-# CREATE DATACLAY JAR
-pushd $SCRIPTDIR/logicmodule/javaclay
-echo "Packaging dataclay.jar"
-mvn package -q -DskipTests=true >/dev/null
-echo "dataclay.jar created!"
-popd
-
 deploy $SCRIPTDIR/base/deploy.sh "$@" --share-builder
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
-  deploy $SCRIPTDIR/logicmodule/deploy.sh "$@" --ee jdk${JAVA_VERSION} --share-builder --do-not-package
-  deploy $SCRIPTDIR/dsjava/deploy.sh "$@" --ee jdk${JAVA_VERSION} --share-builder --do-not-package
+  deploy $SCRIPTDIR/logicmodule/deploy.sh "$@" --ee jdk${JAVA_VERSION} --share-builder
+  deploy $SCRIPTDIR/dsjava/deploy.sh "$@" --ee jdk${JAVA_VERSION} --share-builder
 
 
 done

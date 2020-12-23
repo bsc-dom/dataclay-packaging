@@ -1,4 +1,8 @@
 ARG BASE_VERSION
+FROM --platform=linux/amd64 maven:3.6.1-jdk-8-alpine as packager
+COPY ./javaclay/ /javaclay/
+RUN cd /javaclay/ && mvn package -DskipTests=true
+
 FROM bscdataclay/base:${BASE_VERSION}
 ARG VERSION
 LABEL org.opencontainers.image.title="dataClay client" \
@@ -31,7 +35,7 @@ COPY logging/debug.xml ${DATACLAY_LOG_CONFIG}
 
 # Get dataClay JAR
 ARG JAR_VERSION
-COPY ./javaclay/target/dataclay-${JAR_VERSION}-shaded.jar ${DATACLAY_JAR}
+COPY --from=packager /javaclay/target/dataclay-${JAR_VERSION}-shaded.jar ${DATACLAY_JAR}
 ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
 
 # Copy entrypoint
