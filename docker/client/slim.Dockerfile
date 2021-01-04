@@ -20,7 +20,7 @@ ARG JDK
 
 # Install packages:
 RUN apt-get update \
-        && apt-get install --no-install-recommends -y --allow-unauthenticated openjdk-${JDK}-jdk >/dev/null\
+        && apt-get install --no-install-recommends -y --allow-unauthenticated openjdk-${JDK}-jdk \
         python${DATACLAY_PYVER} python3-distutils \
         && rm -rf /var/lib/apt/lists/*
 
@@ -47,6 +47,7 @@ ENV PATH="${DATACLAY_VIRTUAL_ENV}/bin:${DATACLAY_HOME}/entrypoints:$PATH"
 # check dataclay is installed 
 RUN python --version
 RUN python -c "import dataclay; print('import ok')"
+RUN python -c "from grpc._cython import cygrpc as _cygrpc"
 
 # WARNING: Note that this script must be located among with dataclay pom.xml (see workdir)
 ENV DATACLAYCMD=${DATACLAY_HOME}/entrypoints/dataclaycmd

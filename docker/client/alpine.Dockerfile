@@ -31,6 +31,7 @@ ENV PATH="${DATACLAY_VIRTUAL_ENV}/bin:${DATACLAY_HOME}/entrypoints:$PATH"
 # check dataclay is installed 
 RUN python --version
 RUN python -c "import dataclay; print('import ok')"
+RUN python -c "from grpc._cython import cygrpc as _cygrpc"
 
 # Copy from dsjava
 COPY --from=1 ${DATACLAY_JAR} ${DATACLAY_JAR}

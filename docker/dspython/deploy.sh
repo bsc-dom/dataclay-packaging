@@ -19,8 +19,6 @@ deploy docker buildx build $DOCKERFILE -t $REPOSITORY/dspython:$EXECUTION_ENVIRO
 		--build-arg REQUIREMENTS_TAG=${EXECUTION_ENVIRONMENT_TAG}-requirements \
 		--build-arg DATACLAY_PYVER=$PYTHON_VERSION \
 		--build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION \
-		--cache-to=type=registry,ref=bscdataclay/dspython:${EXECUTION_ENVIRONMENT_TAG}-buildxcache,mode=max \
-	  --cache-from=type=registry,ref=bscdataclay/dspython:${EXECUTION_ENVIRONMENT_TAG}-buildxcache \
 		--platform $PLATFORMS $DOCKER_PROGRESS \
 		--push .
 

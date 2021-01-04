@@ -40,9 +40,10 @@ RUN python${DATACLAY_PYVER} -m pip install --upgrade pip
 RUN apt-get update \
        && apt-get install --no-install-recommends -y --allow-unauthenticated \
        build-essential python${DATACLAY_PYVER}-dev >/dev/null \
-       && python${DATACLAY_PYVER} -m pip install -r requirements.txt --extra-index-url=https://www.piwheels.org/simple \
+       && python${DATACLAY_PYVER} -m pip install -r requirements.txt \
        && apt-get purge -y build-essential python${DATACLAY_PYVER}-dev \
        python${DATACLAY_PYVER}-dev >/dev/null \
        && rm -rf /var/lib/apt/lists/*
+RUN python${DATACLAY_PYVER} -c "from grpc._cython import cygrpc as _cygrpc"
 
 ENTRYPOINT ["Nothing to do here"]

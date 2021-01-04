@@ -18,8 +18,6 @@ deploy docker buildx build $DOCKERFILE -t $REPOSITORY/logicmodule:$EXECUTION_ENV
 		--build-arg JDK=$JAVA_VERSION \
 		--build-arg BASE_VERSION=$BASE_VERSION_TAG \
 		--build-arg JAR_VERSION=$JAR_VERSION \
-		--cache-to=type=registry,ref=bscdataclay/logicmodule:${EXECUTION_ENVIRONMENT_TAG}-buildxcache,mode=max \
-	  --cache-from=type=registry,ref=bscdataclay/logicmodule:${EXECUTION_ENVIRONMENT_TAG}-buildxcache \
 		--platform $PLATFORMS $DOCKER_PROGRESS \
 		--push .
 echo "************* $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG IMAGE PUSHED! (in $n retries) *************"

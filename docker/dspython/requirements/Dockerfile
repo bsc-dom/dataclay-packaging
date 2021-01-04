@@ -36,6 +36,7 @@ RUN python${PYTHON_PIP_VERSION} -m virtualenv --python=/usr/bin/python${DATACLAY
 ENV PATH="$DATACLAY_VIRTUAL_ENV/bin:$PATH"
 COPY ./requirements.txt requirements.txt
 RUN python${DATACLAY_PYVER} -m pip install --upgrade pip
-RUN python${DATACLAY_PYVER} -m pip install -r requirements.txt --extra-index-url=https://www.piwheels.org/simple  --extra-index-url=https://www.piwheels.hostedpi.com/simple
+RUN python${DATACLAY_PYVER} -m pip install -r requirements.txt
+RUN python${DATACLAY_PYVER} -c "from grpc._cython import cygrpc as _cygrpc"
 
 ENTRYPOINT ["Nothing to do here"]

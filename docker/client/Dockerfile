@@ -44,6 +44,7 @@ RUN python --version
 RUN python -c "import dataclay; print('import ok')"
 RUN python -c "import pyextrae.common.extrae as pyextrae_module; print('import ok')"
 RUN python -c "from pyextrae.common.extrae import Extrae as extrae_dict_obj; print('import ok')"
+RUN python -c "from grpc._cython import cygrpc as _cygrpc"
 
 # WARNING: Note that this script must be located among with dataclay pom.xml (see workdir)
 ENV DATACLAYCMD=${DATACLAY_HOME}/entrypoints/dataclaycmd

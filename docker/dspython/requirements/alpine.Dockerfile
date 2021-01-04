@@ -28,5 +28,6 @@ RUN apk add --update --no-cache build-base linux-headers \
 	&& apk del build-base linux-headers && \
     rm -rf /var/cache/apk/*
 RUN apk add libstdc++
+RUN python -c "from grpc._cython import cygrpc as _cygrpc"
 
 ENTRYPOINT ["Nothing to do here"]

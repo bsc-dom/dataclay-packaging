@@ -14,8 +14,6 @@ echo "************* Pushing image named $REPOSITORY/dsjava:$EXECUTION_ENVIRONMEN
 deploy docker buildx build $DOCKERFILE -t $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG \
          --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
 		     --build-arg LOGICMODULE_VERSION=$EXECUTION_ENVIRONMENT_TAG \
-		     --cache-to=type=registry,ref=bscdataclay/dsjava:${EXECUTION_ENVIRONMENT_TAG}-buildxcache,mode=max \
-	       --cache-from=type=registry,ref=bscdataclay/dsjava:${EXECUTION_ENVIRONMENT_TAG}-buildxcache \
 		     --platform $PLATFORMS $DOCKER_PROGRESS \
 		     --push .
 
