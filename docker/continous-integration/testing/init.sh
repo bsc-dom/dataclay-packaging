@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Initialize
-/init-scripts/init.sh
+# Login in Dockerhub
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 # Install  keys
 /appveyor-tools/secure-file -decrypt .appveyor/mn_deploy_key.enc -secret $MN_SECRET -salt $MN_SALT
