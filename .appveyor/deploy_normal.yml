@@ -109,7 +109,7 @@ for:
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
-          w=$APPVEYOR_BUILD_FOLDER \
+          -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
@@ -123,6 +123,6 @@ for:
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
-          w=$APPVEYOR_BUILD_FOLDER \
+          -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type
