@@ -22,7 +22,7 @@ DEPLOY_CMD="rm -rf /apps/DATACLAY/$DEFAULT_TAG/ &&\
  mkdir -p /apps/DATACLAY/$DEFAULT_TAG/pyclay"
 
 echo "[marenostrum-deploy] Cleaning and preparing folders in MN..."
-ssh dataclay@mn1.bsc.es "$DEPLOY_CMD"
+ssh dataclay@mn2.bsc.es "$DEPLOY_CMD"
 
 # Send orchestration script and images
 echo "[marenostrum-deploy] Deploying dataclay orchestrator and singularity images..."
@@ -38,7 +38,7 @@ echo "[marenostrum-deploy] Deploying pyclay..."
 rsync -av -e ssh --progress $PACKAGING_DIR/docker/dspython/pyclay/* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/pyclay/
 
 # Changing permissions in pyclay folder
-ssh dataclay@mn1.bsc.es "chmod -R g-w /apps/DATACLAY/$DEFAULT_TAG/pyclay/"
+ssh dataclay@mn2.bsc.es "chmod -R g-w /apps/DATACLAY/$DEFAULT_TAG/pyclay/"
 
 # Module definition
 echo "[marenostrum-deploy] Deploying dataclay module..."
@@ -47,7 +47,7 @@ MODULE_LINK="develop"
 if [ "$DEV" = false ] ; then
 	MODULE_LINK="latest"
 fi
-ssh dataclay@mn1.bsc.es "rm /apps/DATACLAY/modules/${MODULE_LINK}.lua && ln -s /apps/DATACLAY/modules/${DEFAULT_TAG}.lua /apps/DATACLAY/modules/${MODULE_LINK}.lua"
+ssh dataclay@mn2.bsc.es "rm /apps/DATACLAY/modules/${MODULE_LINK}.lua && ln -s /apps/DATACLAY/modules/${DEFAULT_TAG}.lua /apps/DATACLAY/modules/${MODULE_LINK}.lua"
 
 duration=$SECONDS
 echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."

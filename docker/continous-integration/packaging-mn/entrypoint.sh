@@ -5,8 +5,6 @@ git submodule init
 git submodule update
 
 # Install  keys
-echo $MN_SALT
-echo $MN_SECRET
 /appveyor-tools/secure-file -decrypt .appveyor/mn_deploy_key.enc -secret $MN_SECRET -salt $MN_SALT
 mv .appveyor/mn_deploy_key $HOME/.ssh/mn_deploy_key
 
