@@ -7,10 +7,6 @@ skip_branch_with_pr: true
 image: Ubuntu1804
 max_jobs: 4
 environment:
-  DOCKER_USERNAME:
-    secure: d9s0OSEPlE156nPrhrsNnA==
-  DOCKER_PASSWORD:
-    secure: TO42yeTsoNEkuoRQ9ES7MQ==
   MN_SECRET:
     secure: fOYbgYSg0A2yudFL4mi8glRpB/VlAdbf0Genq44vLws=
   MN_SALT:
@@ -24,43 +20,43 @@ environment:
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: logicmodule
-      execution_env: jdk8
+      execution_env: --ee jdk8
 
     - job_name: Deploy mn logicmodule jdk11
       job_group: mn_logicmodule
       job_depends_on: mn_orchestration
       dataclay_image: logicmodule
-      execution_env: jdk11
+      execution_env: --ee jdk11
     # MN DSJAVA ------------------------------------------------------------------------
     - job_name: Deploy mn dsjava jdk8
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: dsjava
-      execution_env: jdk8
+      execution_env: --ee jdk8
 
     - job_name: Deploy mn dsjava jdk11
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: dsjava
-      execution_env: jdk11
+      execution_env: --ee jdk11
     # MN DSPYTHON ------------------------------------------------------------------------
     - job_name: Deploy mn dspython py3.6
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: dspython
-      execution_env: py3.6
+      execution_env: --ee py3.6
 
     - job_name: Deploy mn dspython py3.7
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: dspython
-      execution_env: py3.7
+      execution_env: --ee py3.7
 
     - job_name: Deploy mn dspython py3.8
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: dspython
-      execution_env: py3.8
+      execution_env: --ee py3.8
     # MN CLIENT ------------------------------------------------------------------------
     - job_name: Deploy mn client
       job_group: mn_deploy
@@ -81,8 +77,6 @@ for:
       - |
         docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
           -v /var/run/docker.sock:/var/run/docker.sock \
-          -e DOCKER_USERNAME=$DOCKER_USERNAME \
-          -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
           -e MN_SALT=$MN_SALT \
           -e MN_SECRET=$MN_SECRET \
           -w=$APPVEYOR_BUILD_FOLDER \
@@ -97,10 +91,8 @@ for:
       - |
         docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
           -v /var/run/docker.sock:/var/run/docker.sock \
-          -e DOCKER_USERNAME=$DOCKER_USERNAME \
-          -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
           -e MN_SALT=$MN_SALT \
           -e MN_SECRET=$MN_SECRET \
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging-mn \
-          ./hpc/mn/deploy_image.sh -y --dev --singularityimg $dataclay_image --ee $execution_env
+          ./hpc/mn/deploy_image.sh -y --dev --singularityimg $dataclay_image $execution_env
