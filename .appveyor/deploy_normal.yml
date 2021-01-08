@@ -89,6 +89,7 @@ for:
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
+          -w=$PWD \
           --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
@@ -102,6 +103,7 @@ for:
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
+          -w=$PWD \
           --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
@@ -115,6 +117,7 @@ for:
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
+          w=$PWD \
           --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
@@ -128,5 +131,6 @@ for:
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
+          w=$PWD \
           --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type
