@@ -1,4 +1,4 @@
-FROM alpine:3
+FROM mcr.microsoft.com/dotnet/sdk:3.1-alpine
 # Install
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apk update && apk add --no-cache openssh git bash curl

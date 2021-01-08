@@ -16,4 +16,11 @@ RUN apk update && apk add --no-cache qemu git bash openssh curl
 RUN mkdir /appveyor-tools/ \
     && cd / && curl -sflL 'https://raw.githubusercontent.com/appveyor/secure-file/master/install.sh' | bash -e -
 COPY . /scripts/
+
+RUN /scripts/dotnet-install.sh
+
+ENV DOTNET_ROOT=$HOME/dotnet
+ENV PATH=$HOME/dotnet:$PATH
+RUN dotnet --version
+
 ENTRYPOINT ["/scripts/test.sh"]

@@ -10,10 +10,10 @@ environment:
     secure: d9s0OSEPlE156nPrhrsNnA==
   DOCKER_PASSWORD:
     secure: TO42yeTsoNEkuoRQ9ES7MQ==
-  MN_SALT:
-    secure: mfxxGVIGJAn/9bdDJuddZPelTGttAp5E/Zhp5gWAYMXK4vs0ZNG7Y1me51KAMohPm2LoBOlJJcXDiTzHArWHBA==
   MN_SECRET:
-    secure: hSTFAA0tfcvWY5Z+UekLapymVeyo7HxGMW52TMM8O6g=
+    secure: fOYbgYSg0A2yudFL4mi8glRpB/VlAdbf0Genq44vLws=
+  MN_SALT:
+    secure: 36ZGkh6PxmQeiJfk3ErfZlpGGNXYLROluqkTmcByCrdRzAU3UjcSHJhsho5kLBOYHza4nGSLhRsZcSbu1EC5vA==
   matrix:
     # MN ORCHESTRATION ------------------------------------------------------------------------
     - job_name: Deploy mn orchestration scripts
