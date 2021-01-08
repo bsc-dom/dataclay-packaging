@@ -85,11 +85,12 @@ for:
         - job_group: logicmodule
     build_script:
       - |
-        docker run -v $PWD:$PWD \
+        echo $APPVEYOR_BUILD_FOLDER
+        docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
-          -w=$PWD \
+          -w=$APPVEYOR_BUILD_FOLDER \
           --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
@@ -99,11 +100,11 @@ for:
         - job_group: dsjava
     build_script:
       - |
-        docker run -v $PWD:$PWD \
+        docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
-          -w=$PWD \
+          -w=$APPVEYOR_BUILD_FOLDER \
           --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
@@ -113,11 +114,11 @@ for:
         - job_group: dspython
     build_script:
       - |
-        docker run -v $PWD:$PWD \
+        docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
-          w=$PWD \
+          w=$APPVEYOR_BUILD_FOLDER \
           --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
@@ -127,10 +128,10 @@ for:
         - job_group: client
     build_script:
       - |
-        docker run -v $PWD:$PWD \
+        docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
-          w=$PWD \
+          w=$APPVEYOR_BUILD_FOLDER \
           --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type
