@@ -5,6 +5,7 @@ branches:
 skip_tags: true
 skip_branch_with_pr: true
 image: Ubuntu1804
+max_jobs: 4
 environment:
   DOCKER_USERNAME:
     secure: d9s0OSEPlE156nPrhrsNnA==
@@ -102,4 +103,4 @@ for:
           -e MN_SECRET=$MN_SECRET \
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging-mn \
-          ./hpc/mn/deploy_image.sh -y --dev
+          ./hpc/mn/deploy_image.sh -y --dev --singularityimg $dataclay_image --ee $execution_env
