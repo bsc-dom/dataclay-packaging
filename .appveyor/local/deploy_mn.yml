@@ -85,8 +85,8 @@ for:
       only:
         - job_group: mn_orchestration
     build_script:
-      - /init-scripts/init.sh
-      - /init-scripts/init_mn.sh
+      - /scripts/init.sh
+      - /scripts/init_mn.sh
       - ./hpc/mn/deploy_orchestrator.sh -y --dev
 
   -
@@ -94,6 +94,6 @@ for:
       only:
         - job_group: mn_deploy
     build_script:
-      - /init-scripts/init.sh
-      - /init-scripts/init_mn.sh
+      - /scripts/init.sh
+      - /scripts/init_mn.sh
       - ./hpc/mn/deploy_image.sh -y --dev

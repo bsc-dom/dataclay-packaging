@@ -70,11 +70,11 @@ for:
         - job_group: logicmodule
     build_script:
       - |
-        docker run -v /appveyor/projects/dataclay-packaging:/appveyor/projects/dataclay-packaging \
+        docker run -v $PWD:$PWD \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
-          --entrypoint /init-scripts/init.sh bscdataclay/continuous-integration:packaging \
+          --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
   -
@@ -83,11 +83,11 @@ for:
         - job_group: dsjava
     build_script:
       - |
-        docker run -v /appveyor/projects/dataclay-packaging:/appveyor/projects/dataclay-packaging \
+        docker run -v $PWD:$PWD \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
-          --entrypoint /init-scripts/init.sh bscdataclay/continuous-integration:packaging \
+          --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
   -
@@ -96,11 +96,11 @@ for:
         - job_group: dspython
     build_script:
       - |
-        docker run -v /appveyor/projects/dataclay-packaging:/appveyor/projects/dataclay-packaging \
+        docker run -v $PWD:$PWD \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
-          --entrypoint /init-scripts/init.sh bscdataclay/continuous-integration:packaging \
+          --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
   -
@@ -109,9 +109,9 @@ for:
         - job_group: client
     build_script:
       - |
-        docker run -v /appveyor/projects/dataclay-packaging:/appveyor/projects/dataclay-packaging \
+        docker run -v $PWD:$PWD \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
-          --entrypoint /init-scripts/init.sh bscdataclay/continuous-integration:packaging \
+          --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type

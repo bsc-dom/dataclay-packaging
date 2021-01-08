@@ -87,12 +87,12 @@ for:
         - job_group: mn_orchestration
     build_script:
       - |
-        docker run -v /appveyor/projects/dataclay-packaging:/appveyor/projects/dataclay-packaging \
+        docker run -v $PWD:$PWD \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
           -e MN_PRIVATE_KEY=$MN_PRIVATE_KEY \
-          --entrypoint /init-scripts/init_mn.sh bscdataclay/continuous-integration:packaging-mn \
+          --entrypoint /scripts/init_mn.sh bscdataclay/continuous-integration:packaging-mn \
           ./hpc/mn/deploy_orchestrator.sh -y --dev
 
   -
@@ -101,10 +101,10 @@ for:
         - job_group: mn_deploy
     build_script:
       - |
-        docker run -v /appveyor/projects/dataclay-packaging:/appveyor/projects/dataclay-packaging \
+        docker run -v $PWD:$PWD \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
           -e MN_PRIVATE_KEY=$MN_PRIVATE_KEY \
-          --entrypoint /init-scripts/init_mn.sh bscdataclay/continuous-integration:packaging-mn \
+          --entrypoint /scripts/init_mn.sh bscdataclay/continuous-integration:packaging-mn \
           ./hpc/mn/deploy_image.sh -y --dev

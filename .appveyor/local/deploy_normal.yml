@@ -83,7 +83,7 @@ for:
       only:
         - job_group: logicmodule
     build_script:
-      - /init-scripts/init.sh
+      - /scripts/init.sh
       - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
   -
@@ -91,7 +91,7 @@ for:
       only:
         - job_group: dsjava
     build_script:
-      - /init-scripts/init.sh
+      - /scripts/init.sh
       - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
   -
@@ -99,7 +99,7 @@ for:
       only:
         - job_group: dspython
     build_script:
-      - /init-scripts/init.sh
+      - /scripts/init.sh
       - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
   -
@@ -107,5 +107,5 @@ for:
       only:
         - job_group: client
     build_script:
-      - /init-scripts/init.sh
+      - /scripts/init.sh
       - ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type
