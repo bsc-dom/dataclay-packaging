@@ -12,7 +12,9 @@ RUN mkdir -p $HOME/.docker/cli-plugins && \
     chmod a+x $HOME/.docker/cli-plugins/docker-buildx
 
 WORKDIR /appveyor/projects/dataclay-packaging
-RUN mkdir -p /init-scripts/
+RUN mkdir -p /scripts/
 RUN apk update && apk add --no-cache openjdk8 maven qemu git bash
 
-COPY . /init-scripts/
+COPY . /scripts/
+
+ENTRYPOINT ["/scripts/entrypoint.sh"]

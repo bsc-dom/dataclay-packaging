@@ -6,3 +6,4 @@ RUN mkdir /appveyor-tools/ \
     && cd / && curl -sflL 'https://raw.githubusercontent.com/appveyor/secure-file/master/install.sh' | bash -e -
 RUN mkdir -p /scripts/
 COPY . /scripts/
+ENTRYPOINT ["/scripts/entrypoint.sh"]

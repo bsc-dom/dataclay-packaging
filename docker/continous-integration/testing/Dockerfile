@@ -16,3 +16,4 @@ RUN apk update && apk add --no-cache qemu git bash openssh curl
 RUN mkdir /appveyor-tools/ \
     && cd / && curl -sflL 'https://raw.githubusercontent.com/appveyor/secure-file/master/install.sh' | bash -e -
 COPY . /scripts/
+ENTRYPOINT ["/scripts/test.sh"]

@@ -18,62 +18,53 @@ environment:
     # MN ORCHESTRATION ------------------------------------------------------------------------
     - job_name: Deploy mn orchestration scripts
       job_group: mn_orchestration
-      docker_image: bscdataclay/continuous-integration:packaging-mn
     # MN LOGICMODULE ------------------------------------------------------------------------
     - job_name: Deploy mn logicmodule jdk8
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: logicmodule
       execution_env: jdk8
-      docker_image: bscdataclay/continuous-integration:packaging-mn
 
     - job_name: Deploy mn logicmodule jdk11
       job_group: mn_logicmodule
       job_depends_on: mn_orchestration
       dataclay_image: logicmodule
       execution_env: jdk11
-      docker_image: bscdataclay/continuous-integration:packaging-mn
     # MN DSJAVA ------------------------------------------------------------------------
     - job_name: Deploy mn dsjava jdk8
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: dsjava
       execution_env: jdk8
-      docker_image: bscdataclay/continuous-integration:packaging-mn
 
     - job_name: Deploy mn dsjava jdk11
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: dsjava
       execution_env: jdk11
-      docker_image: bscdataclay/continuous-integration:packaging-mn
     # MN DSPYTHON ------------------------------------------------------------------------
     - job_name: Deploy mn dspython py3.6
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: dspython
       execution_env: py3.6
-      docker_image: bscdataclay/continuous-integration:packaging-mn
 
     - job_name: Deploy mn dspython py3.7
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: dspython
       execution_env: py3.7
-      docker_image: bscdataclay/continuous-integration:packaging-mn
 
     - job_name: Deploy mn dspython py3.8
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: dspython
       execution_env: py3.8
-      docker_image: bscdataclay/continuous-integration:packaging-mn
     # MN CLIENT ------------------------------------------------------------------------
     - job_name: Deploy mn client
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: client
-      docker_image: bscdataclay/continuous-integration:packaging-mn
 # the first failed job cancels other jobs and fails entire build
 matrix:
   fast_finish: true
@@ -87,12 +78,14 @@ for:
         - job_group: mn_orchestration
     build_script:
       - |
-        docker run -v $PWD:$PWD \
+        docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
-          -e MN_PRIVATE_KEY=$MN_PRIVATE_KEY \
-          --entrypoint /scripts/init_mn.sh bscdataclay/continuous-integration:packaging-mn \
+          -e MN_SALT=$MN_SALT \
+          -e MN_SECRET=$MN_SECRET \
+          -w=$APPVEYOR_BUILD_FOLDER \
+          bscdataclay/continuous-integration:packaging-mn \
           ./hpc/mn/deploy_orchestrator.sh -y --dev
 
   -
@@ -101,10 +94,12 @@ for:
         - job_group: mn_deploy
     build_script:
       - |
-        docker run -v $PWD:$PWD \
+        docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
-          -e MN_PRIVATE_KEY=$MN_PRIVATE_KEY \
-          --entrypoint /scripts/init_mn.sh bscdataclay/continuous-integration:packaging-mn \
+          -e MN_SALT=$MN_SALT \
+          -e MN_SECRET=$MN_SECRET \
+          -w=$APPVEYOR_BUILD_FOLDER \
+          bscdataclay/continuous-integration:packaging-mn \
           ./hpc/mn/deploy_image.sh -y --dev

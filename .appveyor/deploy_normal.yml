@@ -17,14 +17,12 @@ environment:
       dataclay_image: logicmodule
       image_type: normal
       execution_env: jdk8
-      docker_image: bscdataclay/continuous-integration:packaging
 
     - job_name: Deploy logicmodule jdk11
       job_group: logicmodule
       dataclay_image: logicmodule
       image_type: normal
       execution_env: jdk11
-      docker_image: bscdataclay/continuous-integration:packaging
     # DSJAVA ------------------------------------------------------------------------
     - job_name: Deploy dsjava jdk8
       job_group: dsjava
@@ -32,7 +30,6 @@ environment:
       dataclay_image: dsjava
       image_type: normal
       execution_env: jdk8
-      docker_image: bscdataclay/continuous-integration:packaging
 
     - job_name: Deploy dsjava jdk8
       job_group: dsjava
@@ -40,7 +37,6 @@ environment:
       dataclay_image: dsjava
       image_type: normal
       execution_env: jdk11
-      docker_image: bscdataclay/continuous-integration:packaging
     # DSPYTHON ------------------------------------------------------------------------
     - job_name: Deploy dspython py3.6
       job_group: dspython
@@ -48,7 +44,6 @@ environment:
       dataclay_image: dspython
       image_type: normal
       execution_env: py3.6
-      docker_image: bscdataclay/continuous-integration:packaging
 
     - job_name: Deploy dspython py3.7
       job_group: dspython
@@ -56,7 +51,6 @@ environment:
       dataclay_image: dspython
       image_type: normal
       execution_env: py3.7
-      docker_image: bscdataclay/continuous-integration:packaging
 
     - job_name: Deploy dspython py3.8
       job_group: dspython
@@ -64,14 +58,12 @@ environment:
       dataclay_image: dspython
       image_type: normal
       execution_env: py3.8
-      docker_image: bscdataclay/continuous-integration:packaging
     # CLIENT ------------------------------------------------------------------------
     - job_name: Deploy client
       job_group: client
       job_depends_on: dspython
       dataclay_image: client
       image_type: normal
-      docker_image: bscdataclay/continuous-integration:packaging
 # the first failed job cancels other jobs and fails entire build
 matrix:
   fast_finish: true
@@ -85,13 +77,12 @@ for:
         - job_group: logicmodule
     build_script:
       - |
-        echo $APPVEYOR_BUILD_FOLDER
         docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
           -w=$APPVEYOR_BUILD_FOLDER \
-          --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
+          bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
   -
@@ -105,7 +96,7 @@ for:
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
           -w=$APPVEYOR_BUILD_FOLDER \
-          --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
+          bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
   -
@@ -119,7 +110,7 @@ for:
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
           w=$APPVEYOR_BUILD_FOLDER \
-          --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
+          bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
   -
@@ -133,5 +124,5 @@ for:
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
           w=$APPVEYOR_BUILD_FOLDER \
-          --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
+          bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type

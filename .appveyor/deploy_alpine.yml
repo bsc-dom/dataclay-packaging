@@ -17,7 +17,6 @@ environment:
       dataclay_image: logicmodule
       image_type: alpine
       execution_env: jdk11
-      docker_image: bscdataclay/continuous-integration:packaging
     # DSJAVA ALPINE ------------------------------------------------------------------------
     - job_name: Deploy dsjava alpine jdk11
       job_group: dsjava
@@ -25,7 +24,6 @@ environment:
       dataclay_image: dsjava
       image_type: alpine
       execution_env: jdk11
-      docker_image: bscdataclay/continuous-integration:packaging
     # DSPYTHON ALPINE ------------------------------------------------------------------------
     - job_name: Deploy dspython alpine py3.6
       job_group: dspython
@@ -33,7 +31,6 @@ environment:
       dataclay_image: dspython
       image_type: alpine
       execution_env: py3.6
-      docker_image: bscdataclay/continuous-integration:packaging
 
     - job_name: Deploy dspython alpine py3.7
       job_group: dspython
@@ -41,7 +38,6 @@ environment:
       dataclay_image: dspython
       image_type: alpine
       execution_env: py3.7
-      docker_image: bscdataclay/continuous-integration:packaging
 
     - job_name: Deploy dspython alpine py3.8
       job_group: dspython
@@ -49,14 +45,12 @@ environment:
       dataclay_image: dspython
       image_type: alpine
       execution_env: py3.8
-      docker_image: bscdataclay/continuous-integration:packaging
     # CLIENT ALPINE ------------------------------------------------------------------------
     - job_name: Deploy client alpine
       job_group: client
       job_depends_on: dspython
       dataclay_image: client
       image_type: alpine
-      docker_image: bscdataclay/continuous-integration:packaging
 # the first failed job cancels other jobs and fails entire build
 matrix:
   fast_finish: true
@@ -70,11 +64,12 @@ for:
         - job_group: logicmodule
     build_script:
       - |
-        docker run -v $PWD:$PWD \
+        docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
-          --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
+          -w=$APPVEYOR_BUILD_FOLDER \
+          bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
   -
@@ -83,11 +78,12 @@ for:
         - job_group: dsjava
     build_script:
       - |
-        docker run -v $PWD:$PWD \
+        docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
-          --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
+          -w=$APPVEYOR_BUILD_FOLDER \
+          bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
   -
@@ -96,11 +92,12 @@ for:
         - job_group: dspython
     build_script:
       - |
-        docker run -v $PWD:$PWD \
+        docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
-          --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
+          -w=$APPVEYOR_BUILD_FOLDER \
+          bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
 
   -
@@ -109,9 +106,10 @@ for:
         - job_group: client
     build_script:
       - |
-        docker run -v $PWD:$PWD \
+        docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e DOCKER_USERNAME=$DOCKER_USERNAME \
           -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
-          --entrypoint /scripts/init.sh bscdataclay/continuous-integration:packaging \
+          -w=$APPVEYOR_BUILD_FOLDER \
+          bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type
