@@ -12,8 +12,12 @@ RUN cd /pyclay/ && python setup.py -q install
 # ============================================================ #
 
 FROM python:${DATACLAY_PYVER}-alpine
+ARG BUILD_DATE
+ARG VCS_REF
 ARG VERSION
-LABEL org.opencontainers.image.title="dataClay client" \
+LABEL org.opencontainers.image.title="dataClay dspython" \
+      org.opencontainers.image.created=$BUILD_DATE \
+      org.label-schema.vcs-ref=$VCS_REF \
       org.opencontainers.image.description="Active objects across the network" \
       org.opencontainers.image.url="https://dataclay.bsc.es/" \
       org.label-schema.vcs-url="https://github.com/bsc-dom/dataclay-packaging" \

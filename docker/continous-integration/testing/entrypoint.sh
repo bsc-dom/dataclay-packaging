@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Install  keys
+mkdir -p $HOME/.ssh
 /appveyor-tools/secure-file -decrypt .appveyor/mn_deploy_key.enc -secret $MN_SECRET -salt $MN_SALT
 mv .appveyor/mn_deploy_key $HOME/.ssh/mn_deploy_key
 

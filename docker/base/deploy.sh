@@ -10,11 +10,10 @@ fi
 pushd $BUILDDIR
 echo "************* Pushing image named $REPOSITORY/base:$BASE_VERSION_TAG (retry $n) *************"
 deploy docker buildx build $DOCKERFILE -t $REPOSITORY/base:$BASE_VERSION_TAG \
+    --build-arg VCS_REF=`git rev-parse --short HEAD` \
+    --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
     --platform $PLATFORMS $DOCKER_PROGRESS \
     --push .
-
-#    --cache-to=type=registry,ref=bscdataclay/base:${BASE_VERSION_TAG}-buildxcache,mode=max \
-#    --cache-from=type=registry,ref=bscdataclay/base:${BASE_VERSION_TAG}-buildxcache \
 
 echo "************* $REPOSITORY/base:$BASE_VERSION_TAG IMAGE PUSHED! (in $n retries) *************"
 popd

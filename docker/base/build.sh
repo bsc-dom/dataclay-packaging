@@ -8,7 +8,9 @@ source $BUILDDIR/../../common/config.sh
 pushd $BUILDDIR
 printMsg "Building image named $REPOSITORY/base:$BASE_VERSION_TAG"
 docker build --rm $DOCKERFILE \
-  -t $REPOSITORY/base:$BASE_VERSION_TAG .
+         --build-arg VCS_REF=`git rev-parse --short HEAD` \
+         --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
+         -t $REPOSITORY/base:$BASE_VERSION_TAG .
 printMsg "$REPOSITORY/base:$BASE_VERSION_TAG IMAGE DONE!" 
 popd 
 

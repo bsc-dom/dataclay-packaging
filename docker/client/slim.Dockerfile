@@ -3,9 +3,12 @@ ARG DATACLAY_LOGICMODULE_DOCKER_TAG
 FROM bscdataclay/dspython:${DATACLAY_DSPYTHON_DOCKER_TAG}
 FROM bscdataclay/logicmodule:${DATACLAY_LOGICMODULE_DOCKER_TAG}
 FROM ubuntu:18.04
-
+ARG BUILD_DATE
+ARG VCS_REF
 ARG VERSION
 LABEL org.opencontainers.image.title="dataClay client" \
+      org.opencontainers.image.created=$BUILD_DATE \
+      org.label-schema.vcs-ref=$VCS_REF \
       org.opencontainers.image.description="Active objects across the network" \
       org.opencontainers.image.url="https://dataclay.bsc.es/" \
       org.label-schema.vcs-url="https://github.com/bsc-dom/dataclay-packaging" \
