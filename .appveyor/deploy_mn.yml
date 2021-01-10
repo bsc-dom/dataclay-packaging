@@ -75,6 +75,8 @@ for:
         - job_group: mn_orchestration
     build_script:
       - |
+        echo $MN_SALT
+        echo $MN_SECRET
         docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e MN_SALT=$MN_SALT \
