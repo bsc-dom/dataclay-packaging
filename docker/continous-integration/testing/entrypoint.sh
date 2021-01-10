@@ -15,9 +15,14 @@ chmod 600 "$HOME/.ssh/mn_deploy_key" \
 
 # Run test
 bash $@
+EXIT_CODE=$?
+if [ $EXIT_CODE -ne 0 ]; then
+ 		FINAL_EXIT_CODE=$EXIT_CODE
+fi
 
 # Publish results
 ssh dataclay@mn1.bsc.es "mkdir -p ~/appveyor/testing-results/"
 scp -r allure-results/* dataclay@mn1.bsc.es:~/appveyor/testing-results/
+exit $FINAL_EXIT_CODE
 
   

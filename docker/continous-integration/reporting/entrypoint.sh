@@ -5,10 +5,18 @@
 /appveyor-tools/secure-file -decrypt .appveyor/github_deploy_key.enc -secret $GITHUB_SECRET -salt $GITHUB_SALT
 mv .appveyor/mn_deploy_key $HOME/.ssh/mn_deploy_key
 mv .appveyor/github_deploy_key $HOME/.ssh/github_deploy_key
+mv .appveyor/github_deploy_key.pub $HOME/.ssh/github_deploy_key.pub
+cat $HOME/.ssh/github_deploy_key
 
 # Configure ssh
 chmod 600 "$HOME/.ssh/mn_deploy_key"
 chmod 600 "$HOME/.ssh/github_deploy_key"
+chmod 600 "$HOME/.ssh/github_deploy_key.pub"
+
+eval `ssh-agent -s`;
+ssh-add $HOME/.ssh/mn_deploy_key
+ssh-add $HOME/.ssh/github_deploy_key
+
 printf "%s\n" \
          "Host mn1.bsc.es" \
          "  IdentityFile $HOME/.ssh/mn_deploy_key" \
@@ -21,16 +29,13 @@ printf "%s\n" \
          "  UserKnownHostsFile=/dev/null" >> $HOME/.ssh/config
 printf "%s\n" \
          "Host *" \
-         "  StrictHostKeyChecking no" \
-         "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
-printf "%s\n" \
-         "Host github.com" \
          "  IdentityFile $HOME/.ssh/github_deploy_key" \
          "  StrictHostKeyChecking no" \
          "  UserKnownHostsFile=/dev/null" >> $HOME/.ssh/config
 
 git remote set-url origin git@github.com:bsc-dom/bsc-dom.github.io.git
-
+git config --global user.email "support-dataclay@bsc.es"
+git config --global user.name "Appveyor CI"
 # get test results
 echo " ** Getting results ** "
 mkdir -p /tmp/allure-results
@@ -63,6 +68,7 @@ if [ "$(ls -A /tmp/allure-results/)" ]; then
 	echo " ** Generated executor ** "
 	# remove previous report 
 	echo " ** Removing previous report ** "
+	ls -la
 	git rm -rf testing-report/*
 	echo " ** Removed previous report ** "
 	
