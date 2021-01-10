@@ -11,53 +11,91 @@ environment:
     # MN ORCHESTRATION ------------------------------------------------------------------------
     - job_name: Deploy mn orchestration scripts
       job_group: mn_orchestration
+      MN_SECRET:
+        secure: fOYbgYSg0A2yudFL4mi8glRpB/VlAdbf0Genq44vLws=
+      MN_SALT:
+        secure: 36ZGkh6PxmQeiJfk3ErfZlpGGNXYLROluqkTmcByCrdRzAU3UjcSHJhsho5kLBOYHza4nGSLhRsZcSbu1EC5vA==
     # MN LOGICMODULE ------------------------------------------------------------------------
     - job_name: Deploy mn logicmodule jdk8
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: logicmodule
       execution_env: --ee jdk8
+      MN_SECRET:
+        secure: fOYbgYSg0A2yudFL4mi8glRpB/VlAdbf0Genq44vLws=
+      MN_SALT:
+        secure: 36ZGkh6PxmQeiJfk3ErfZlpGGNXYLROluqkTmcByCrdRzAU3UjcSHJhsho5kLBOYHza4nGSLhRsZcSbu1EC5vA==
 
     - job_name: Deploy mn logicmodule jdk11
       job_group: mn_logicmodule
       job_depends_on: mn_orchestration
       dataclay_image: logicmodule
       execution_env: --ee jdk11
+      MN_SECRET:
+        secure: fOYbgYSg0A2yudFL4mi8glRpB/VlAdbf0Genq44vLws=
+      MN_SALT:
+        secure: 36ZGkh6PxmQeiJfk3ErfZlpGGNXYLROluqkTmcByCrdRzAU3UjcSHJhsho5kLBOYHza4nGSLhRsZcSbu1EC5vA==
+
     # MN DSJAVA ------------------------------------------------------------------------
     - job_name: Deploy mn dsjava jdk8
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: dsjava
       execution_env: --ee jdk8
+      MN_SECRET:
+        secure: fOYbgYSg0A2yudFL4mi8glRpB/VlAdbf0Genq44vLws=
+      MN_SALT:
+        secure: 36ZGkh6PxmQeiJfk3ErfZlpGGNXYLROluqkTmcByCrdRzAU3UjcSHJhsho5kLBOYHza4nGSLhRsZcSbu1EC5vA==
 
     - job_name: Deploy mn dsjava jdk11
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: dsjava
       execution_env: --ee jdk11
+      MN_SECRET:
+        secure: fOYbgYSg0A2yudFL4mi8glRpB/VlAdbf0Genq44vLws=
+      MN_SALT:
+        secure: 36ZGkh6PxmQeiJfk3ErfZlpGGNXYLROluqkTmcByCrdRzAU3UjcSHJhsho5kLBOYHza4nGSLhRsZcSbu1EC5vA==
+
     # MN DSPYTHON ------------------------------------------------------------------------
     - job_name: Deploy mn dspython py3.6
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: dspython
       execution_env: --ee py3.6
+      MN_SECRET:
+        secure: fOYbgYSg0A2yudFL4mi8glRpB/VlAdbf0Genq44vLws=
+      MN_SALT:
+        secure: 36ZGkh6PxmQeiJfk3ErfZlpGGNXYLROluqkTmcByCrdRzAU3UjcSHJhsho5kLBOYHza4nGSLhRsZcSbu1EC5vA==
 
     - job_name: Deploy mn dspython py3.7
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: dspython
       execution_env: --ee py3.7
+      MN_SECRET:
+        secure: fOYbgYSg0A2yudFL4mi8glRpB/VlAdbf0Genq44vLws=
+      MN_SALT:
+        secure: 36ZGkh6PxmQeiJfk3ErfZlpGGNXYLROluqkTmcByCrdRzAU3UjcSHJhsho5kLBOYHza4nGSLhRsZcSbu1EC5vA==
 
     - job_name: Deploy mn dspython py3.8
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: dspython
       execution_env: --ee py3.8
+      MN_SECRET:
+        secure: fOYbgYSg0A2yudFL4mi8glRpB/VlAdbf0Genq44vLws=
+      MN_SALT:
+        secure: 36ZGkh6PxmQeiJfk3ErfZlpGGNXYLROluqkTmcByCrdRzAU3UjcSHJhsho5kLBOYHza4nGSLhRsZcSbu1EC5vA==
     # MN CLIENT ------------------------------------------------------------------------
     - job_name: Deploy mn client
       job_group: mn_deploy
       job_depends_on: mn_orchestration
       dataclay_image: client
+      MN_SECRET:
+        secure: fOYbgYSg0A2yudFL4mi8glRpB/VlAdbf0Genq44vLws=
+      MN_SALT:
+        secure: 36ZGkh6PxmQeiJfk3ErfZlpGGNXYLROluqkTmcByCrdRzAU3UjcSHJhsho5kLBOYHza4nGSLhRsZcSbu1EC5vA==
 # the first failed job cancels other jobs and fails entire build
 matrix:
   fast_finish: true
@@ -69,11 +107,6 @@ for:
     matrix:
       only:
         - job_group: mn_orchestration
-    environment:
-      MN_SECRET:
-        secure: fOYbgYSg0A2yudFL4mi8glRpB/VlAdbf0Genq44vLws=
-      MN_SALT:
-        secure: 36ZGkh6PxmQeiJfk3ErfZlpGGNXYLROluqkTmcByCrdRzAU3UjcSHJhsho5kLBOYHza4nGSLhRsZcSbu1EC5vA==
     build_script:
       - |
         echo $MN_SALT
@@ -90,11 +123,6 @@ for:
     matrix:
       only:
         - job_group: mn_deploy
-    environment:
-      MN_SECRET:
-        secure: fOYbgYSg0A2yudFL4mi8glRpB/VlAdbf0Genq44vLws=
-      MN_SALT:
-        secure: 36ZGkh6PxmQeiJfk3ErfZlpGGNXYLROluqkTmcByCrdRzAU3UjcSHJhsho5kLBOYHza4nGSLhRsZcSbu1EC5vA==
     build_script:
       - |
         docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
