@@ -96,3 +96,10 @@ for:
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging-mn \
           ./hpc/mn/deploy_image.sh -y --dev --singularityimg $dataclay_image $execution_env
+notifications:
+  - provider: Email
+    to:
+      - dgasull@bsc.es
+    on_build_success: false
+    on_build_failure: true
+    on_build_status_changed: true
