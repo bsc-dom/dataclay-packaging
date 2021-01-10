@@ -122,11 +122,11 @@ done
 ###############################################################################
 source $PLATFORMS_FILE
 
-GIT_BRANCH=$(git for-each-ref --format='%(objectname) %(refname:short)' refs/heads | awk "/^$(git rev-parse HEAD)/ {print \$2}")
-if [[ "$GIT_BRANCH" != "$BRANCH_TO_CHECK" ]]; then
-  printError "Branch is not $BRANCH_TO_CHECK. Found $GIT_BRANCH. Aborting script"
-  exit 1
-fi
+#GIT_BRANCH=$(git for-each-ref --format='%(objectname) %(refname:short)' refs/heads | awk "/^$(git rev-parse HEAD)/ {print \$2}")
+#if [[ "$GIT_BRANCH" != "$BRANCH_TO_CHECK" ]]; then
+#  printError "Branch is not $BRANCH_TO_CHECK. Found $GIT_BRANCH. Aborting script"
+#  exit 1
+#fi
 
 DATACLAY_VERSION=$(cat $ORCHDIR/VERSION.txt)
 export DATACLAY_VERSION="${DATACLAY_VERSION//.dev/}"
