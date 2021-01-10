@@ -7,10 +7,10 @@ skip_branch_with_pr: true
 image: Ubuntu1804
 max_jobs: 4
 environment:
+  MN_SALT:
+    secure: y0lD3CmSDZQx7zsNkyqUQyFtiV2eoewZ94bxSk9yoUrc6Mfgto18k7hzAitfVxs124Pai3GGvBpDZppuXikFPQ==
   MN_SECRET:
     secure: +ZRoLZnCowoJI/RvYao/XzgDz4usFDcZRX5aRoTBHUY=
-  MN_SALT:
-    secure: OQ7Hd5L/I+b/HGlljDJIDqZ49eagXgLAhyB8fbbKK/ky8I9bJVJEGUtSrZ6/Y61wObhom+9FWicALWwrpGNFqQ==
   matrix:
     # MN ORCHESTRATION ------------------------------------------------------------------------
     - job_name: Deploy mn orchestration scripts
