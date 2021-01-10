@@ -8,9 +8,9 @@ image: Ubuntu1804
 max_jobs: 4
 environment:
   MN_SECRET:
-    secure: +ZRoLZnCowoJI/RvYao/XzgDz4usFDcZRX5aRoTBHUY=
+    secure: fOYbgYSg0A2yudFL4mi8glRpB/VlAdbf0Genq44vLws=
   MN_SALT:
-    secure: OQ7Hd5L/I+b/HGlljDJIDqZ49eagXgLAhyB8fbbKK/ky8I9bJVJEGUtSrZ6/Y61wObhom+9FWicALWwrpGNFqQ==
+    secure: 36ZGkh6PxmQeiJfk3ErfZlpGGNXYLROluqkTmcByCrdRzAU3UjcSHJhsho5kLBOYHza4nGSLhRsZcSbu1EC5vA==
   matrix:
     # MN ORCHESTRATION ------------------------------------------------------------------------
     - job_name: Deploy mn orchestration scripts

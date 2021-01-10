@@ -7,9 +7,9 @@ skip_branch_with_pr: true
 image: Ubuntu1804
 environment:
   DOCKER_USERNAME:
-    secure: BjCQHIN21F+sOx1mQICY5Q==
+    secure: d9s0OSEPlE156nPrhrsNnA==
   DOCKER_PASSWORD:
-    secure: 4tDbnFmVNXL6+VAwzvb61w==
+    secure: TO42yeTsoNEkuoRQ9ES7MQ==
   matrix:
     # LOGICMODULE ALPINE ------------------------------------------------------------------------
     - job_name: Deploy logicmodule alpine jdk11

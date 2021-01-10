@@ -7,50 +7,63 @@ skip_branch_with_pr: true
 image: Ubuntu1804
 environment:
   DOCKER_USERNAME:
-    secure: BjCQHIN21F+sOx1mQICY5Q==
+    secure: d9s0OSEPlE156nPrhrsNnA==
   DOCKER_PASSWORD:
-    secure: 4tDbnFmVNXL6+VAwzvb61w==
+    secure: TO42yeTsoNEkuoRQ9ES7MQ==
   matrix:
-    # LOGICMODULE ALPINE ------------------------------------------------------------------------
-    - job_name: Deploy logicmodule alpine jdk11
+    # LOGICMODULE SLIM ------------------------------------------------------------------------
+    - job_name: Deploy logicmodule slim jdk8
       job_group: logicmodule
       dataclay_image: logicmodule
-      image_type: alpine
+      image_type: slim
+      execution_env: jdk8
+
+    - job_name: Deploy logicmodule slim jdk11
+      job_group: logicmodule
+      dataclay_image: logicmodule
+      image_type: slim
       execution_env: jdk11
-    # DSJAVA ALPINE ------------------------------------------------------------------------
-    - job_name: Deploy dsjava alpine jdk11
+    # DSJAVA SLIM ------------------------------------------------------------------------
+    - job_name: Deploy dsjava slim jdk8
       job_group: dsjava
       job_depends_on: logicmodule
       dataclay_image: dsjava
-      image_type: alpine
+      image_type: slim
+      execution_env: jdk8
+
+    - job_name: Deploy dsjava slim jdk11
+      job_group: dsjava
+      job_depends_on: logicmodule
+      dataclay_image: dsjava
+      image_type: slim
       execution_env: jdk11
-    # DSPYTHON ALPINE ------------------------------------------------------------------------
-    - job_name: Deploy dspython alpine py3.6
+    # DSPYTHON SLIM ------------------------------------------------------------------------
+    - job_name: Deploy dspython slim py3.6
       job_group: dspython
       job_depends_on: dsjava
       dataclay_image: dspython
-      image_type: alpine
+      image_type: slim
       execution_env: py3.6
 
-    - job_name: Deploy dspython alpine py3.7
+    - job_name: Deploy dspython slim py3.7
       job_group: dspython
       job_depends_on: dsjava
       dataclay_image: dspython
-      image_type: alpine
+      image_type: slim
       execution_env: py3.7
 
-    - job_name: Deploy dspython alpine py3.8
+    - job_name: Deploy dspython slim py3.8
       job_group: dspython
       job_depends_on: dsjava
       dataclay_image: dspython
-      image_type: alpine
+      image_type: slim
       execution_env: py3.8
-    # CLIENT ALPINE ------------------------------------------------------------------------
-    - job_name: Deploy client alpine
+    # CLIENT SLIM ------------------------------------------------------------------------
+    - job_name: Deploy client slim
       job_group: client
       job_depends_on: dspython
       dataclay_image: client
-      image_type: alpine
+      image_type: slim
 # the first failed job cancels other jobs and fails entire build
 matrix:
   fast_finish: true
