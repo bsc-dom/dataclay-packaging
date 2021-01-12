@@ -84,6 +84,8 @@ for:
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e MN_SALT=$MN_SALT \
           -e MN_SECRET=$MN_SECRET \
+          -e DOCKER_USERNAME=$DOCKER_USERNAME \
+          -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging-mn \
           ./hpc/mn/deploy_orchestrator.sh -y --dev
@@ -99,6 +101,8 @@ for:
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e MN_SALT=$MN_SALT \
           -e MN_SECRET=$MN_SECRET \
+          -e DOCKER_USERNAME=$DOCKER_USERNAME \
+          -e DOCKER_PASSWORD=$DOCKER_PASSWORD \
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging-mn \
           ./hpc/mn/deploy_image.sh -y --dev --singularityimg $dataclay_image $execution_env

@@ -13,6 +13,9 @@ chmod 600 "$HOME/.ssh/mn_deploy_key" \
          "  StrictHostKeyChecking no" \
          "  UserKnownHostsFile=/dev/null" >> $HOME/.ssh/config
 
+# Init docker session
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
 # Run test
 bash $@
 EXIT_CODE=$?
