@@ -8,14 +8,11 @@ fi
 
 # BASE IMAGES 
 pushd $BUILDDIR
-echo "************* Pushing image named $REPOSITORY/base:$BASE_VERSION_TAG (retry $n) *************"
 deploy docker buildx build $DOCKERFILE -t $REPOSITORY/base:$BASE_VERSION_TAG \
     --build-arg VCS_REF=`git rev-parse --short HEAD` \
     --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
     --platform $PLATFORMS $DOCKER_PROGRESS \
     --push .
-
-echo "************* $REPOSITORY/base:$BASE_VERSION_TAG IMAGE PUSHED! (in $n retries) *************"
 popd
 
 if [ "$DEV" = false ] ; then
@@ -25,11 +22,16 @@ else
 	docker buildx imagetools create --tag $REPOSITORY/base:develop${TAG_SUFFIX} $REPOSITORY/base:$DEFAULT_TAG
 fi
 
+
+RESULT=$?
 # Remove builder
 if [ "$SHARE_BUILDERX" = "false" ]; then
   docker buildx rm $DOCKER_BUILDER
 fi
-printMsg " ===== Done! (in $n retries) ====="
+if [ $RESULT -ne 0 ]; then
+   exit 1
+fi
+printMsg " ===== Done! ===== "
 
 
 

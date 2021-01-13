@@ -45,15 +45,39 @@ function get_container_version {
 # DESCRIPTION: Deploy to DockerHub and retry if connection fails
 #=============================================================================
 function deploy {
-  echo "$@"
+  SECONDS=0
+  COMMAND=""
+  while [[ $# -gt 0 ]]; do
+    param="$1"
+    case $param in
+        -t)
+        IMAGE="$2"
+        COMMAND+="$1 $2 "
+        shift # past argument
+        shift # past value
+        ;;
+        *)    # unknown option
+        COMMAND+="$1 "
+        shift # past argument
+        ;;
+    esac
+  done
+  echo "$COMMAND"
   export n=0
   until [ "$n" -ge 5 ] # Retry maximum 5 times
   do
-    eval "$@" && break
+    echo "************* Pushing image $IMAGE (retry $n) *************"
+    eval "$COMMAND" && break
     n=$((n+1))
     sleep 15
   done
+  if [ "$n" -eq 5 ]; then
+    echo "ERROR: $IMAGE could not be pushed"
+    return 1
+  fi
 
+  echo "************* $IMAGE IMAGE PUSHED! (in $n retries) *************"
+  echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
 }
 #==============================================================================
 grn=$'\e[1;32m'; blu=$'\e[1;34m'; red=$'\e[1;91m'; end=$'\e[0m';

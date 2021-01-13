@@ -9,7 +9,6 @@ fi
 # CLIENT 
 pushd $BUILDDIR
 # client will not have execution environemnt in version, like pypi
-echo "************* Pushing image named $REPOSITORY/client:$CLIENT_TAG (retry $n) *************"
 deploy docker buildx build $DOCKERFILE -t $REPOSITORY/client:$CLIENT_TAG \
          --build-arg VCS_REF=`git rev-parse --short HEAD` \
          --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
@@ -21,8 +20,7 @@ deploy docker buildx build $DOCKERFILE -t $REPOSITORY/client:$CLIENT_TAG \
 				 --platform $PLATFORMS $DOCKER_PROGRESS \
 				 --push .
 
-echo "************* $REPOSITORY/client:$CLIENT_TAG IMAGE PUSHED! (in $n retries) *************"
-popd 
+popd
 
 if [ "$DEV" = false ] ; then
   docker buildx imagetools create --tag $REPOSITORY/client $REPOSITORY/client:$DEFAULT_NORMAL_TAG
@@ -31,11 +29,15 @@ else
 	docker buildx imagetools create --tag $REPOSITORY/client:develop${TAG_SUFFIX} $REPOSITORY/client:$DEFAULT_TAG
 fi
 
+RESULT=$?
 # Remove builder
 if [ "$SHARE_BUILDERX" = "false" ]; then
   docker buildx rm $DOCKER_BUILDER
 fi
-printMsg " ===== Done! (in $n retries) ====="
+if [ $RESULT -ne 0 ]; then
+   exit 1
+fi
+printMsg " ===== Done! ===== "
 
 
 

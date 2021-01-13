@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 #===================================================================================
 #
 # FILE: deploy.sh
@@ -15,27 +15,7 @@
 # COMPANY: Barcelona Supercomputing Center (BSC)
 # VERSION: 1.0
 #===================================================================================
-
-
-#=== FUNCTION ================================================================
-# NAME: get_container_version
-# DESCRIPTION: Get container version
-# PARAMETER 1: Execution environment version i.e. can be python py3.6 or jdk8
-#===============================================================================
-function deploy {
-  echo "$@"
-  export n=0
-  until [ "$n" -ge 5 ] # Retry maximum 5 times
-  do
-    eval "$@" && break
-    n=$((n+1))
-    sleep 15
-  done
-
-}
-
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-set -e
 echo "'"'
       _       _         _____ _             
      | |     | |       / ____| |            
@@ -60,17 +40,14 @@ source $SCRIPTDIR/../common/prepare_docker_builder.sh
 
 deploy $SCRIPTDIR/base/deploy.sh "$@" --share-builder
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
-  deploy $SCRIPTDIR/logicmodule/deploy.sh "$@" --ee jdk${JAVA_VERSION} --share-builder
-  deploy $SCRIPTDIR/dsjava/deploy.sh "$@" --ee jdk${JAVA_VERSION} --share-builder
-
-
+  $SCRIPTDIR/logicmodule/deploy.sh "$@" --ee jdk${JAVA_VERSION} --share-builder
+  $SCRIPTDIR/dsjava/deploy.sh "$@" --ee jdk${JAVA_VERSION} --share-builder
 done
 for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
-  deploy $SCRIPTDIR/dspython/deploy.sh "$@" --ee py${PYTHON_VERSION} --share-builder
+  $SCRIPTDIR/dspython/deploy.sh "$@" --ee py${PYTHON_VERSION} --share-builder
 done
 
-deploy  $SCRIPTDIR/client/deploy.sh "$@" --share-builder
-
+$SCRIPTDIR/client/deploy.sh "$@" --share-builder
 docker buildx rm $DOCKER_BUILDER
 
 duration=$SECONDS

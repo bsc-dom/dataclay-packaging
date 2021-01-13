@@ -10,7 +10,6 @@ fi
 # DSJAVA
 pushd $BUILDDIR
 
-echo "************* Pushing image named $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG (retry $n) *************"
 deploy docker buildx build $DOCKERFILE -t $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG \
          --build-arg VCS_REF=`git rev-parse --short HEAD` \
          --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
@@ -19,8 +18,7 @@ deploy docker buildx build $DOCKERFILE -t $REPOSITORY/dsjava:$EXECUTION_ENVIRONM
 		     --platform $PLATFORMS $DOCKER_PROGRESS \
 		     --push .
 
-echo "************* $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG IMAGE PUSHED! (in $n retries) *************"
-popd 
+popd
 
 ######################################## tags ###########################################
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
@@ -40,11 +38,16 @@ if [ "$DEV" = true ] ; then
 fi 
 #################################################################################################
 
+
+RESULT=$?
 # Remove builder
 if [ "$SHARE_BUILDERX" = "false" ]; then
   docker buildx rm $DOCKER_BUILDER
 fi
-printMsg " ===== Done! (in $n retries) ===== "
+if [ $RESULT -ne 0 ]; then
+   exit 1
+fi
+printMsg " ===== Done! ===== "
 
 
 
