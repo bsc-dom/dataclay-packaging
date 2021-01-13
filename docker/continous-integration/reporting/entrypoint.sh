@@ -6,7 +6,6 @@
 mv .appveyor/mn_deploy_key $HOME/.ssh/mn_deploy_key
 mv .appveyor/github_deploy_key $HOME/.ssh/github_deploy_key
 mv .appveyor/github_deploy_key.pub $HOME/.ssh/github_deploy_key.pub
-cat $HOME/.ssh/github_deploy_key
 
 # Configure ssh
 chmod 600 "$HOME/.ssh/mn_deploy_key"
