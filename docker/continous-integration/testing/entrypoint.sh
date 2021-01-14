@@ -26,6 +26,9 @@ fi
 # Publish results
 ssh dataclay@mn1.bsc.es "mkdir -p ~/appveyor/testing-results/"
 scp -r allure-results/* dataclay@mn1.bsc.es:~/appveyor/testing-results/
+
+docker logout
+
 exit $FINAL_EXIT_CODE
 
   

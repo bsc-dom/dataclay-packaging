@@ -86,7 +86,7 @@ for:
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
-
+        docker logout
   -
     matrix:
       only:
@@ -101,7 +101,7 @@ for:
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
-
+        docker logout
   -
     matrix:
       only:
@@ -116,7 +116,7 @@ for:
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
-
+        docker logout
   -
     matrix:
       only:
@@ -131,6 +131,7 @@ for:
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type
+        docker logout
 notifications:
   - provider: Email
     to:

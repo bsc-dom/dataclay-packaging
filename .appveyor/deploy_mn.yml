@@ -89,7 +89,7 @@ for:
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging-mn \
           ./hpc/mn/deploy_orchestrator.sh -y --dev
-
+        docker logout
   -
     matrix:
       only:
@@ -106,6 +106,7 @@ for:
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging-mn \
           ./hpc/mn/deploy_image.sh -y --dev --singularityimg $dataclay_image $execution_env
+        docker logout
 notifications:
   - provider: Email
     to:

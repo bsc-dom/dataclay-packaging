@@ -19,4 +19,6 @@ chmod 600 "$HOME/.ssh/mn_deploy_key" \
          "  StrictHostKeyChecking no" \
          "  UserKnownHostsFile=/dev/null" >> $HOME/.ssh/config
 
-exec $@
+bash $@
+
+docker logout
