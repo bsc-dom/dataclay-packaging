@@ -13,9 +13,6 @@ chmod 600 "$HOME/.ssh/mn_deploy_key" \
          "  StrictHostKeyChecking no" \
          "  UserKnownHostsFile=/dev/null" >> $HOME/.ssh/config
 
-# Init docker session
-echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-
 # Run test
 bash $@
 EXIT_CODE=$?
@@ -26,8 +23,6 @@ fi
 # Publish results
 ssh dataclay@mn1.bsc.es "mkdir -p ~/appveyor/testing-results/"
 scp -r allure-results/* dataclay@mn1.bsc.es:~/appveyor/testing-results/
-
-docker logout
 
 exit $FINAL_EXIT_CODE
 
