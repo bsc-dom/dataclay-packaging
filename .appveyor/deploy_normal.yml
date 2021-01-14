@@ -11,6 +11,7 @@ environment:
     secure: BjCQHIN21F+sOx1mQICY5Q==
   DOCKER_PASSWORD:
     secure: 4tDbnFmVNXL6+VAwzvb61w==
+  DOCKER_CLI_EXPERIMENTAL: enabled
   matrix:
     # LOGICMODULE ------------------------------------------------------------------------
     - job_name: Deploy logicmodule jdk8
@@ -80,7 +81,7 @@ for:
       - |
         echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
-          -v ${HOME}/.docker/:/root/.docker/:ro \
+          -v ${HOME}/.docker/config.json:/root/.docker/config.json:ro \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging \
@@ -94,7 +95,7 @@ for:
       - |
         echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
-          -v ${HOME}/.docker/:/root/.docker/:ro \
+          -v ${HOME}/.docker/config.json:/root/.docker/config.json:ro \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging \
@@ -108,7 +109,7 @@ for:
       - |
         echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
-          -v ${HOME}/.docker/:/root/.docker/:ro \
+          -v ${HOME}/.docker/config.json:/root/.docker/config.json:ro \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging \
@@ -122,7 +123,7 @@ for:
       - |
         echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
-          -v ${HOME}/.docker/:/root/.docker/:ro \
+          -v ${HOME}/.docker/config.json:/root/.docker/config.json:ro \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging \

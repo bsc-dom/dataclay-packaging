@@ -11,6 +11,7 @@ environment:
     secure: d9s0OSEPlE156nPrhrsNnA==
   DOCKER_PASSWORD:
     secure: TO42yeTsoNEkuoRQ9ES7MQ==
+  DOCKER_CLI_EXPERIMENTAL: enabled
   MN_SALT:
     secure: A2CVXopXaMJuIZw+vkdiklA4nLKgFmjW9W3PpofFBi1elXHhnPaoHbdOv6Rk1NHP04O7y8D7l21XzmPgYtZF8g==
   MN_SECRET:
@@ -81,7 +82,7 @@ for:
       - |
         echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
-          -v ${HOME}/.docker/:/root/.docker/:ro \
+          -v ${HOME}/.docker/config.json:/root/.docker/config.json:ro \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e MN_SALT=$MN_SALT \
           -e MN_SECRET=$MN_SECRET \
@@ -97,7 +98,7 @@ for:
       - |
         echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
-          -v ${HOME}/.docker/:/root/.docker/:ro \
+          -v ${HOME}/.docker/config.json:/root/.docker/config.json:ro \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -e MN_SALT=$MN_SALT \
           -e MN_SECRET=$MN_SECRET \
