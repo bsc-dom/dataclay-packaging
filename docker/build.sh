@@ -22,7 +22,6 @@ else
   source $SCRIPTDIR/../common/PLATFORMS.txt
 fi
 
-$SCRIPTDIR/base/build.sh "$@"
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
   $SCRIPTDIR/logicmodule/build.sh "$@" --ee jdk${JAVA_VERSION}
   $SCRIPTDIR/dsjava/build.sh "$@" --ee jdk${JAVA_VERSION}

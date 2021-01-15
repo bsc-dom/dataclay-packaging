@@ -89,7 +89,9 @@ for:
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging-mn \
           ./hpc/mn/deploy_orchestrator.sh -y --dev
+        EXIT_CODE=$?
         docker logout
+        exit $EXIT_CODE
   -
     matrix:
       only:
@@ -105,7 +107,9 @@ for:
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging-mn \
           ./hpc/mn/deploy_image.sh -y --dev --singularityimg $dataclay_image $execution_env
+        EXIT_CODE=$?
         docker logout
+        exit $EXIT_CODE
 notifications:
   - provider: Email
     to:

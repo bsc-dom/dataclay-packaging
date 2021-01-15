@@ -20,6 +20,12 @@ deploy docker buildx build $DOCKERFILE \
 			--push .
 popd
 	
+######################################## tags ###########################################
+if [ "$DEV" = true ] ; then
+	DATACLAY_PYTHON_VERSION="${PYTHON_VERSION//./}"
+	docker buildx imagetools create --tag $REPOSITORY/dspython:develop.py${DATACLAY_PYTHON_VERSION}${TAG_SUFFIX}-requirements $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG-requirements
+fi
+#################################################################################################
 
 RESULT=$?
 # Remove builder

@@ -86,7 +86,9 @@ for:
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+        EXIT_CODE=$?
         docker logout
+        exit $EXIT_CODE
   -
     matrix:
       only:
@@ -100,7 +102,9 @@ for:
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+        EXIT_CODE=$?
         docker logout
+        exit $EXIT_CODE
   -
     matrix:
       only:
@@ -114,7 +118,9 @@ for:
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type --ee $execution_env
+        EXIT_CODE=$?
         docker logout
+        exit $EXIT_CODE
   -
     matrix:
       only:
@@ -128,7 +134,9 @@ for:
           -w=$APPVEYOR_BUILD_FOLDER \
           bscdataclay/continuous-integration:packaging \
           ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type
+        EXIT_CODE=$?
         docker logout
+        exit $EXIT_CODE
 notifications:
   - provider: Email
     to:

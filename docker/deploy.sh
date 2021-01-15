@@ -38,7 +38,6 @@ fi
 
 source $SCRIPTDIR/../common/prepare_docker_builder.sh
 
-$SCRIPTDIR/base/deploy.sh "$@" --share-builder
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
   $SCRIPTDIR/logicmodule/deploy.sh "$@" --ee jdk${JAVA_VERSION} --share-builder
   $SCRIPTDIR/dsjava/deploy.sh "$@" --ee jdk${JAVA_VERSION} --share-builder

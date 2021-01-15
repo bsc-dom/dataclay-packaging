@@ -9,7 +9,7 @@ pushd $BUILDDIR
 printMsg "Building image named $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG"
 docker build --rm $DOCKERFILE \
          --build-arg VCS_REF=`git rev-parse --short HEAD` \
-         --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
+         --build-arg BUILD_DATE=`date -u +"%Y-%m-%d"` \
          --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
 			   --build-arg LOGICMODULE_VERSION=$EXECUTION_ENVIRONMENT_TAG \
 			   -t $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG .
