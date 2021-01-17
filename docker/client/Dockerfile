@@ -18,6 +18,9 @@ LABEL org.opencontainers.image.title="dataClay client" \
       org.label-schema.docker.dockerfile="/docker/client/Dockerfile"
 
 ARG DATACLAY_PYVER=3.7
+RUN apt-get update \
+       && apt-get install --no-install-recommends -y --allow-unauthenticated python${DATACLAY_PYVER} \
+       && rm -rf /var/lib/apt/lists/*
 
 # Copy from dspython
 COPY --from=0 ${DATACLAY_HOME}/entrypoints/dataclay-python-entry-point ${DATACLAY_HOME}/entrypoints/dataclay-python-entry-point
@@ -26,9 +29,6 @@ COPY --from=0 ${DATACLAY_HOME}/dataclay_venv ${DATACLAY_VIRTUAL_ENV}
 # TODO: remove this
 COPY --from=0 ${DATACLAY_HOME}/pyclay/ ${DATACLAY_HOME}/pyclay/
 
-RUN apt-get update \
-       && apt-get install --no-install-recommends -y --allow-unauthenticated python${DATACLAY_PYVER} \
-       && rm -rf /var/lib/apt/lists/*
 
 # Extrae
 ENV PYCLAY_EXTRAE_WRAPPER_LIB=${DATACLAY_HOME}/pyextrae/pyclay_extrae_wrapper.so

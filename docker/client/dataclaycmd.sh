@@ -34,6 +34,7 @@ cat << EOF
  RegisterDataClay   <dc_host> <dc_port>
  ImportModelsFromExternalDataClay <dc_host> <dc_port> <namespace>
  WaitForDataClayToBeAlive	<max_retries> <retries_seconds>
+ WaitForBackends    <$SUPPORTEDLANGS> <expected_num>
 
 EOF
 exit 0
@@ -102,6 +103,7 @@ IMPORT_MODELS_FROM_EXT_DATACLAY="$JAVA_OPSBASE es.bsc.dataclay.tool.ImportModels
 
 
 WAIT_DATACLAY_ALIVE="$JAVA_OPSBASE es.bsc.dataclay.tool.WaitForDataClayToBeAlive"
+WAIT_FOR_BACKENDS="$JAVA_OPSBASE es.bsc.dataclay.tool.WaitForBackends"
 
 if [ -z $1 ]; then
 	usage
@@ -186,12 +188,20 @@ case $OPERATION in
 				$ACCESS_NS_MODEL $1 $2 $3
 				if [ $? -ge 0 ]; then
 					$JAVA_GETSTUBS $1 $2 $3 $4
+					if [ ! -z $HOST_USER_ID ] && [ ! -z $HOST_GROUP_ID ]; then
+					  chown $HOST_USER_ID:$HOST_GROUP_ID $4 -R
+					  chmod 755 $4 -R
+					fi
 				fi
 				;;
 			'LANG_PYTHON')
 				CONTRACTID=`$ACCESS_NS_MODEL $1 $2 $3 | tail -1`
 				if [ $? -ge 0 ] && [ ! -z $CONTRACTID ]; then
 					$PY_GETSTUBS $1 $2 $CONTRACTID $4
+					if [ ! -z $HOST_USER_ID ] && [ ! -z $HOST_GROUP_ID ]; then
+					  chown $HOST_USER_ID:$HOST_GROUP_ID $4 -R
+					  chmod 755 $4 -R
+					fi
 				fi
 				;;
 			*)
@@ -213,6 +223,9 @@ case $OPERATION in
     ;;
 	'WaitForDataClayToBeAlive')
 		$WAIT_DATACLAY_ALIVE $PARAMS
+		;;
+	'WaitForBackends')
+		$WAIT_FOR_BACKENDS $PARAMS
 		;;
 	*)
 		errorMsg "[ERROR]: Operation $1 is not supported."

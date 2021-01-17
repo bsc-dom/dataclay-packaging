@@ -31,13 +31,6 @@ for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
 
 done
 $SCRIPTDIR/client/build.sh "$@"
-# Check docker images 
-echo "Generated images:"
-docker images | grep "$REPOSITORY/base" | grep "${TAG_SUFFIX}"
-docker images | grep "$REPOSITORY/logicmodule"  | grep "${TAG_SUFFIX}"
-docker images | grep "$REPOSITORY/dsjava"  | grep "${TAG_SUFFIX}"
-docker images | grep "$REPOSITORY/dspython"  | grep "${TAG_SUFFIX}"
-docker images | grep "$REPOSITORY/client"  | grep "${TAG_SUFFIX}"
 duration=$SECONDS
 echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
 echo "[dataClay build] FINISHED! "

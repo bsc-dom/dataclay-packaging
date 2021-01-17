@@ -7,9 +7,9 @@ if [ -z $EXECUTION_ENVIRONMENT_TAG ]; then echo "ERROR: EXECUTION_ENVIRONMENT_TA
 # DSJAVA
 pushd $BUILDDIR
 printMsg "Building image named $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG"
-docker build --rm $DOCKERFILE \
-         --build-arg VCS_REF=`git rev-parse --short HEAD` \
-         --build-arg BUILD_DATE=`date -u +"%Y-%m-%d"` \
+docker build $DOCKERFILE \
+         --build-arg VCS_REF="abc1234" \
+         --build-arg BUILD_DATE="0000-00-00" \
          --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
 			   --build-arg LOGICMODULE_VERSION=$EXECUTION_ENVIRONMENT_TAG \
 			   -t $REPOSITORY/dsjava:$EXECUTION_ENVIRONMENT_TAG .
