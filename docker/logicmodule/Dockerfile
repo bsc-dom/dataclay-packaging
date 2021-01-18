@@ -1,13 +1,4 @@
 ARG BASE_VERSION
-FROM --platform=linux/amd64 maven:3.6.1-jdk-8-alpine as packager
-WORKDIR /javaclay/
-COPY ./javaclay/pom.xml /javaclay/pom.xml
-RUN mvn -B -DskipTests=true dependency:resolve dependency:resolve-plugins && \
-    mvn de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
-COPY ./javaclay/src /javaclay/src
-COPY ./javaclay/META-INF /javaclay/META-INF
-RUN mvn -o package -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-
 FROM bscdataclay/base:${BASE_VERSION}
 ARG BUILD_DATE
 ARG VCS_REF
@@ -45,7 +36,7 @@ COPY logging/debug.xml ${DATACLAY_LOG_CONFIG}
 
 # Get dataClay JAR
 ARG JAR_VERSION
-COPY --from=packager /javaclay/target/dataclay-${JAR_VERSION}-shaded.jar ${DATACLAY_JAR}
+COPY ./dataclay.jar ${DATACLAY_JAR}
 ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
 
 # Copy entrypoint

@@ -31,38 +31,47 @@ docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08da
 #docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 docker run --rm -t arm64v8/ubuntu uname -m
 
-DOCKER_BUILDER=$(docker buildx create) 
-docker buildx use $DOCKER_BUILDER
+# Check if already exists
+echo "Checking builder dataclay-builderx"
+RESULT=$(docker buildx ls)
+if [[ $RESULT == *"dataclay-builderx"* ]]; then
+  echo "Using already existing builder dataclay-builderx"
+  docker buildx use dataclay-builderx
+else
+  echo "Creating builder $BUILDERX_NAME"
+  docker buildx create --name dataclay-builderx
+  docker buildx use dataclay-builderx
+  echo "Checking buildx with available platforms to simulate..."
+  docker buildx inspect --bootstrap
+  BUILDER_PLATFORMS=$(docker buildx inspect --bootstrap | grep Platforms | awk -F":" '{print $2}')
+  IFS=',' read -ra BUILDER_PLATFORMS_ARRAY <<< "$BUILDER_PLATFORMS"
+  IFS=',' read -ra SUPPORTED_PLATFORMS_ARRAY <<< "$PLATFORMS"
+  echo "Builder created with platforms: ${BUILDER_PLATFORMS_ARRAY[@]}"
 
-echo "Checking buildx with available platforms to simulate..."
-docker buildx inspect --bootstrap
-BUILDER_PLATFORMS=$(docker buildx inspect --bootstrap | grep Platforms | awk -F":" '{print $2}')
-IFS=',' read -ra BUILDER_PLATFORMS_ARRAY <<< "$BUILDER_PLATFORMS"
-IFS=',' read -ra SUPPORTED_PLATFORMS_ARRAY <<< "$PLATFORMS"
-echo "Builder created with platforms: ${BUILDER_PLATFORMS_ARRAY[@]}"	
-	
-#Print the split string
-for i in "${SUPPORTED_PLATFORMS_ARRAY[@]}"
-do
-	FOUND=false
-	SUP_PLATFORM=`echo $i | sed 's/ *$//g'` #remove spaces
-	printf "Checking if platform $i can be simulated by buildx..."
-	   for j in "${BUILDER_PLATFORMS_ARRAY[@]}"
-	   do
-	   	B_PLATFORM=`echo $j | sed 's/ *$//g'` #remove spaces
-		if [ "$SUP_PLATFORM" == "$B_PLATFORM" ]; then
-			FOUND=true
-			break
-		fi
-	done
-	if [ "$FOUND" = false ] ; then
-		echo "ERROR: missing support for $i in buildx builder."
-		echo " Check https://github.com/multiarch/qemu-user-static for more information on how to simulate architectures"
-		return -1
-	fi
-	printf "OK\n"
-		
-done
+  #Print the split string
+  for i in "${SUPPORTED_PLATFORMS_ARRAY[@]}"
+  do
+    FOUND=false
+    SUP_PLATFORM=`echo $i | sed 's/ *$//g'` #remove spaces
+    printf "Checking if platform $i can be simulated by buildx..."
+       for j in "${BUILDER_PLATFORMS_ARRAY[@]}"
+       do
+        B_PLATFORM=`echo $j | sed 's/ *$//g'` #remove spaces
+      if [ "$SUP_PLATFORM" == "$B_PLATFORM" ]; then
+        FOUND=true
+        break
+      fi
+    done
+    if [ "$FOUND" = false ] ; then
+      echo "ERROR: missing support for $i in buildx builder."
+      echo " Check https://github.com/multiarch/qemu-user-static for more information on how to simulate architectures"
+      return -1
+    fi
+    printf "OK\n"
+
+  done
+fi
+
 	
 ### docker buildx 
 #if [ ! -z $EXECUTION_ENVIRONMENT ]; then

@@ -90,7 +90,7 @@ ORCHDIR=$CONFIGDIR/../orchestration/
 DATACLAY_DOCKER_DIR=$CONFIGDIR/../docker/
 export DEV=false
 DONOTPROMPT=false
-SHARE_BUILDERX="false"
+SHARE_BUILDER="false"
 DOCKERFILE=""
 TAG_SUFFIX=""
 BRANCH_TO_CHECK="master"
@@ -115,7 +115,7 @@ do
         	export PACKAGE_JAR="false"
         	;;
         --share-builder)
-          export SHARE_BUILDERX="true"
+          export SHARE_BUILDER="true"
           ;;
         --slim) 
         	export DOCKERFILE="-f slim.Dockerfile" 

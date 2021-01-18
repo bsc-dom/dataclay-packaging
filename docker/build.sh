@@ -22,15 +22,20 @@ else
   source $SCRIPTDIR/../common/PLATFORMS.txt
 fi
 
+# PACKAGE
+pushd $SCRIPTDIR/logicmodule
+docker build -f packager.Dockerfile -t bscdataclay/javaclay .
+popd
+
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
-  $SCRIPTDIR/logicmodule/build.sh "$@" --ee jdk${JAVA_VERSION}
-  $SCRIPTDIR/dsjava/build.sh "$@" --ee jdk${JAVA_VERSION}
+  $SCRIPTDIR/logicmodule/build.sh "$@" --ee jdk${JAVA_VERSION} --share-builder
+  $SCRIPTDIR/dsjava/build.sh "$@" --ee jdk${JAVA_VERSION} --share-builder
 done
 for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
-  $SCRIPTDIR/dspython/build.sh "$@" --ee py${PYTHON_VERSION}
+  $SCRIPTDIR/dspython/build.sh "$@" --ee py${PYTHON_VERSION} --share-builder
 
 done
-$SCRIPTDIR/client/build.sh "$@"
+$SCRIPTDIR/client/build.sh "$@" --share-builder
 duration=$SECONDS
 echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
 echo "[dataClay build] FINISHED! "

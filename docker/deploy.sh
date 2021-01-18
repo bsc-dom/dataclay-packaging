@@ -37,6 +37,10 @@ else
 fi
 
 source $SCRIPTDIR/../common/prepare_docker_builder.sh
+# PACKAGE
+pushd $SCRIPTDIR/logicmodule
+docker build -f packager.Dockerfile -t bscdataclay/javaclay .
+popd
 
 for JAVA_VERSION in ${SUPPORTED_JAVA_VERSIONS[@]}; do
   $SCRIPTDIR/logicmodule/deploy.sh "$@" --ee jdk${JAVA_VERSION} --share-builder
@@ -47,7 +51,6 @@ for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
 done
 
 $SCRIPTDIR/client/deploy.sh "$@" --share-builder
-docker buildx rm $DOCKER_BUILDER
 
 duration=$SECONDS
 echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."

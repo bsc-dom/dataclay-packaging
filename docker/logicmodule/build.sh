@@ -4,8 +4,19 @@ REPOSITORY="bscdataclay"
 source $BUILDDIR/../../common/config.sh
 if [ -z $EXECUTION_ENVIRONMENT_TAG ]; then echo "ERROR: EXECUTION_ENVIRONMENT_TAG not defined. Aborting"; exit 1; fi
 
+
+if [ "$SHARE_BUILDER" = "false" ]; then
+  # PACKAGE
+  docker build -f packager.Dockerfile -t $REPOSITORY/javaclay .
+fi
+
+
 # LOGICMODULE
 pushd $BUILDDIR
+JAVACLAY_CONTAINER=$(docker create --rm $REPOSITORY/javaclay)
+docker cp $JAVACLAY_CONTAINER:/javaclay/target/dataclay-${JAR_VERSION}-shaded.jar ./dataclay.jar
+docker rm $JAVACLAY_CONTAINER
+
 printMsg "Building image named $REPOSITORY/logicmodule:${EXECUTION_ENVIRONMENT_TAG}"
 docker build $DOCKERFILE \
        --build-arg VCS_REF="abc1234" \
@@ -13,7 +24,6 @@ docker build $DOCKERFILE \
        --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
 			 --build-arg BASE_VERSION=$BASE_VERSION_TAG \
 			 --build-arg JDK=$JAVA_VERSION \
-			 --build-arg JAR_VERSION=$JAR_VERSION \
 			 -t $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG .
 printMsg "$REPOSITORY/logicmodule:${EXECUTION_ENVIRONMENT_TAG} IMAGE DONE!"
 popd 

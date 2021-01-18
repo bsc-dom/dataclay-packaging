@@ -5,12 +5,17 @@ REPOSITORY="bscdataclay"
 source $BUILDDIR/../../common/config.sh
 if [ -z $EXECUTION_ENVIRONMENT_TAG ]; then echo "ERROR: EXECUTION_ENVIRONMENT_TAG not defined. Aborting"; exit 1; fi
 
-if [ "$SHARE_BUILDERX" = "false" ]; then
+if [ "$SHARE_BUILDER" = "false" ]; then
   source $BUILDDIR/../../common/prepare_docker_builder.sh
+  # PACKAGE
+  docker build -f packager.Dockerfile -t $REPOSITORY/javaclay .
 fi
 
 # LOGICMODULE
 pushd $BUILDDIR
+JAVACLAY_CONTAINER=$(docker create --rm $REPOSITORY/javaclay)
+docker cp $JAVACLAY_CONTAINER:/javaclay/target/dataclay-${JAR_VERSION}-shaded.jar ./dataclay.jar
+docker rm $JAVACLAY_CONTAINER
 
 deploy docker buildx build $DOCKERFILE -t $REPOSITORY/logicmodule:$EXECUTION_ENVIRONMENT_TAG \
     --build-arg VCS_REF=`git rev-parse --short HEAD` \
@@ -18,7 +23,6 @@ deploy docker buildx build $DOCKERFILE -t $REPOSITORY/logicmodule:$EXECUTION_ENV
     --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
 		--build-arg JDK=$JAVA_VERSION \
 		--build-arg BASE_VERSION=$BASE_VERSION_TAG \
-		--build-arg JAR_VERSION=$JAR_VERSION \
 		--platform $PLATFORMS $DOCKER_PROGRESS \
 		--push .
 popd
@@ -43,8 +47,8 @@ fi
 
 RESULT=$?
 # Remove builder
-if [ "$SHARE_BUILDERX" = "false" ]; then
-  docker buildx rm $DOCKER_BUILDER
+if [ "$SHARE_BUILDER" = "false" ]; then
+  docker buildx rm dataclay-builderx
 fi
 if [ $RESULT -ne 0 ]; then
    exit 1

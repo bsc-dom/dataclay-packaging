@@ -3,7 +3,7 @@ BUILDDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 REPOSITORY="bscdataclay"
 source $BUILDDIR/../../common/config.sh
 if [ -z $EXECUTION_ENVIRONMENT_TAG ]; then echo "ERROR: EXECUTION_ENVIRONMENT_TAG not defined. Aborting"; exit 1; fi
-if [ "$SHARE_BUILDERX" = "false" ]; then
+if [ "$SHARE_BUILDER" = "false" ]; then
   source $BUILDDIR/../../common/prepare_docker_builder.sh
 fi
 
@@ -46,8 +46,8 @@ fi
 
 RESULT=$?
 # Remove builder
-if [ "$SHARE_BUILDERX" = "false" ]; then
-  docker buildx rm $DOCKER_BUILDER
+if [ "$SHARE_BUILDER" = "false" ]; then
+  docker buildx rm dataclay-builderx
 fi
 if [ $RESULT -ne 0 ]; then
    exit 1
