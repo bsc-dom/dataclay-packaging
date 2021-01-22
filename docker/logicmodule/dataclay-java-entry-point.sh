@@ -51,11 +51,11 @@ else
 fi
 
 ### ========================== CLASSPATH ============================= ##
+export THE_CLASSPATH="$DATACLAY_JAR:$CLASSPATH"
 if [ $DEFINED_CLASSPATH_SET = "true" ] ; then
-	export CLASSPATH=${DEFINED_CLASSPATH}
+	export THE_CLASSPATH=${DEFINED_CLASSPATH}
 fi
 
 ### ========================== ENTRYPOINT ============================= ##
 export JDK_JAVA_OPTIONS="--add-opens java.base/java.lang=ALL-UNNAMED"
-
-exec java -Dcom.google.inject.internal.cglib.$experimental_asm7=true $ARGS
+exec java -Dcom.google.inject.internal.cglib.$experimental_asm7=true -cp $THE_CLASSPATH $ARGS

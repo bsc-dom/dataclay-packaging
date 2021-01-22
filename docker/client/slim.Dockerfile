@@ -1,7 +1,8 @@
 ARG DATACLAY_DSPYTHON_DOCKER_TAG
 ARG DATACLAY_LOGICMODULE_DOCKER_TAG
-FROM bscdataclay/dspython:${DATACLAY_DSPYTHON_DOCKER_TAG}
-FROM bscdataclay/logicmodule:${DATACLAY_LOGICMODULE_DOCKER_TAG}
+ARG REGISTRY=""
+FROM ${REGISTRY}bscdataclay/dspython:${DATACLAY_DSPYTHON_DOCKER_TAG}
+FROM ${REGISTRY}bscdataclay/logicmodule:${DATACLAY_LOGICMODULE_DOCKER_TAG}
 FROM ubuntu:18.04
 ARG BUILD_DATE
 ARG VCS_REF
@@ -42,7 +43,6 @@ COPY --from=0 ${DATACLAY_HOME}/dataclay_venv ${DATACLAY_VIRTUAL_ENV}
 COPY --from=1 ${DATACLAY_JAR} ${DATACLAY_JAR}
 COPY --from=1 ${DATACLAY_HOME}/entrypoints/dataclay-java-entry-point ${DATACLAY_HOME}/entrypoints/dataclay-java-entry-point
 COPY --from=1 ${DATACLAY_LOG_CONFIG} ${DATACLAY_LOG_CONFIG}
-ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
 
 # Make sure we use the virtualenv and entrypoints:
 ENV PATH="${DATACLAY_VIRTUAL_ENV}/bin:${DATACLAY_HOME}/entrypoints:$PATH"

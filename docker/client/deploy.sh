@@ -1,15 +1,8 @@
-#!/bin/bash
+#!/bin/bash  -e
 BUILDDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-REPOSITORY="bscdataclay"
 source $BUILDDIR/../../common/config.sh
-if [ "$SHARE_BUILDER" = "false" ]; then
-  source $BUILDDIR/../../common/prepare_docker_builder.sh
-fi
-
-# CLIENT 
 pushd $BUILDDIR
-# client will not have execution environemnt in version, like pypi
-deploy docker buildx build $DOCKERFILE -t $REPOSITORY/client:$CLIENT_TAG \
+deploy docker buildx build $DOCKERFILE -t bscdataclay/client:$CLIENT_TAG \
          --build-arg VCS_REF=`git rev-parse --short HEAD` \
          --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
          --build-arg VERSION=$CLIENT_TAG \
@@ -19,25 +12,13 @@ deploy docker buildx build $DOCKERFILE -t $REPOSITORY/client:$CLIENT_TAG \
 			   --build-arg JDK=$CLIENT_JAVA \
 				 --platform $PLATFORMS $DOCKER_PROGRESS \
 				 --push .
-
 popd
-
 if [ "$DEV" = false ] ; then
-  docker buildx imagetools create --tag $REPOSITORY/client $REPOSITORY/client:$DEFAULT_NORMAL_TAG
-	[[ ! -z "$TAG_SUFFIX" ]] && docker buildx imagetools create --tag $REPOSITORY/client:"${TAG_SUFFIX//-}" $REPOSITORY/client:$DEFAULT_TAG # alpine or slim tags
+  docker buildx imagetools create --tag bscdataclay/client bscdataclay/client:$DEFAULT_NORMAL_TAG
+	[[ ! -z "$TAG_SUFFIX" ]] && docker buildx imagetools create --tag bscdataclay/client:"${TAG_SUFFIX//-}" bscdataclay/client:$DEFAULT_TAG # alpine or slim tags
 else 
-	docker buildx imagetools create --tag $REPOSITORY/client:develop${TAG_SUFFIX} $REPOSITORY/client:$DEFAULT_TAG
+	docker buildx imagetools create --tag bscdataclay/client:develop${TAG_SUFFIX} bscdataclay/client:$DEFAULT_TAG
 fi
-
-RESULT=$?
-# Remove builder
-if [ "$SHARE_BUILDER" = "false" ]; then
-  docker buildx rm dataclay-builderx
-fi
-if [ $RESULT -ne 0 ]; then
-   exit 1
-fi
-printMsg " ===== Done! ===== "
 
 
 

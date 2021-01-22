@@ -35,9 +35,7 @@ ENV DATACLAY_JAR=${DATACLAY_HOME}/dataclay.jar
 COPY logging/debug.xml ${DATACLAY_LOG_CONFIG}
 
 # Get dataClay JAR
-ARG JAR_VERSION
 COPY ./dataclay.jar ${DATACLAY_JAR}
-ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
 
 # Copy entrypoint
 COPY ./dataclay-java-entry-point.sh ${DATACLAY_HOME}/entrypoints/dataclay-java-entry-point

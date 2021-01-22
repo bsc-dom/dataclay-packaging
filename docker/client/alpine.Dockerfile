@@ -1,7 +1,8 @@
 ARG DATACLAY_DSPYTHON_DOCKER_TAG
 ARG DATACLAY_LOGICMODULE_DOCKER_TAG
-FROM bscdataclay/dspython:${DATACLAY_DSPYTHON_DOCKER_TAG}
-FROM bscdataclay/logicmodule:${DATACLAY_LOGICMODULE_DOCKER_TAG}
+ARG REGISTRY=""
+FROM ${REGISTRY}bscdataclay/dspython:${DATACLAY_DSPYTHON_DOCKER_TAG}
+FROM ${REGISTRY}bscdataclay/logicmodule:${DATACLAY_LOGICMODULE_DOCKER_TAG}
 FROM python:3.7-alpine
 ARG BUILD_DATE
 ARG VCS_REF
@@ -41,7 +42,6 @@ RUN python -c "from grpc._cython import cygrpc as _cygrpc"
 COPY --from=1 ${DATACLAY_JAR} ${DATACLAY_JAR}
 COPY --from=1 ${DATACLAY_LOG_CONFIG} ${DATACLAY_LOG_CONFIG}
 COPY --from=1 ${DATACLAY_HOME}/entrypoints/dataclay-java-entry-point ${DATACLAY_HOME}/entrypoints/dataclay-java-entry-point
-ENV CLASSPATH=${DATACLAY_JAR}:${CLASSPATH}
 
 # WARNING: Note that this script must be located among with dataclay pom.xml (see workdir)
 ENV DATACLAYCMD=${DATACLAY_HOME}/entrypoints/dataclaycmd

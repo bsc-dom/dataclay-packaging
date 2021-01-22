@@ -1,13 +1,9 @@
-#!/bin/bash
+#!/bin/bash  -e
 BUILDDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-REPOSITORY="bscdataclay"
 source $BUILDDIR/../../common/config.sh
 if [ -z $EXECUTION_ENVIRONMENT_TAG ]; then echo "ERROR: EXECUTION_ENVIRONMENT_TAG not defined. Aborting"; exit 1; fi
-
-# DSPYTHON
 pushd $BUILDDIR
-printMsg "Building image named $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG python version $PYTHON_VERSION and pip version $PYTHON_PIP_VERSION"
-docker build $DOCKERFILE \
+build docker $DOCKER_BUILDX_COMMAND build $DOCKERFILE \
        --build-arg VCS_REF="abc1234" \
        --build-arg BUILD_DATE="0000-00-00" \
        --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
@@ -15,24 +11,23 @@ docker build $DOCKERFILE \
 			 --build-arg REQUIREMENTS_TAG=${EXECUTION_ENVIRONMENT_TAG}-requirements \
 			 --build-arg DATACLAY_PYVER=$PYTHON_VERSION \
 			 --build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION \
-			 -t $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG .
-printMsg "$REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG DONE!"
-popd 
-	
+			 -t ${REGISTRY}bscdataclay/dspython:$EXECUTION_ENVIRONMENT_TAG \
+			 $BUILD_PLATFORM $DOCKER_COMMAND .
+popd
 ######################################## default tags ############################c###############
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_PY_TAG ]; then
 	## Tag default versions 
-	docker tag $REPOSITORY/dspython:$DEFAULT_PY_TAG $REPOSITORY/dspython:$DEFAULT_TAG
+	docker tag bscdataclay/dspython:$DEFAULT_PY_TAG bscdataclay/dspython:$DEFAULT_TAG
 		
 	# Tag latest
 	if [ "$DEV" = false ] ; then
-		docker tag $REPOSITORY/dspython:$DEFAULT_NORMAL_TAG $REPOSITORY/dspython
-	  docker tag $REPOSITORY/dspython:$DEFAULT_TAG $REPOSITORY/dspython:"${TAG_SUFFIX//-}"
+		docker tag bscdataclay/dspython:$DEFAULT_NORMAL_TAG bscdataclay/dspython
+	  docker tag bscdataclay/dspython:$DEFAULT_TAG bscdataclay/dspython:"${TAG_SUFFIX//-}"
 	else 
-		docker tag $REPOSITORY/dspython:$DEFAULT_TAG $REPOSITORY/dspython:develop${TAG_SUFFIX} #develop-slim, develop-alpine
+		docker tag bscdataclay/dspython:$DEFAULT_TAG bscdataclay/dspython:develop${TAG_SUFFIX} #develop-slim, develop-alpine
 	fi
 fi
 if [ "$DEV" = true ] ; then 
 	DATACLAY_PYTHON_VERSION="${PYTHON_VERSION//./}"
-	docker tag $REPOSITORY/dspython:$EXECUTION_ENVIRONMENT_TAG $REPOSITORY/dspython:develop.py${DATACLAY_PYTHON_VERSION}${TAG_SUFFIX} #develop.py36-slim
+	docker tag bscdataclay/dspython:$EXECUTION_ENVIRONMENT_TAG bscdataclay/dspython:develop.py${DATACLAY_PYTHON_VERSION}${TAG_SUFFIX} #develop.py36-slim
 fi

@@ -142,31 +142,33 @@ case $OPERATION in
 		$GET_NAMESPACES $PARAMS
 		;;
 	'NewModel')
-		FOLDER=$4
 		if [ $# -lt 5 ]; then
 			errorMsg "Missing arguments. Usage: NewModel <user_name> <user_pass> <namespace_name> <class_path> <$SUPPORTEDLANGS>"
 		fi
-		if [ ! -d $FOLDER ]; then
-			errorMsg "Model path $FOLDER is not a valid directory."
+	  USER_NAME=$1
+	  shift
+	  USER_PASS=$1
+	  shift
+	  NAMESPACE=$1
+	  shift
+	  CLASSPATH=$1
+	  shift
+	  LANGUAGE=$1
+	  shift
+		if [ ! -d $CLASSPATH ]; then
+			errorMsg "Model path $CLASSPATH is not a valid directory."
 		fi
-		case $5 in
+		case $LANGUAGE in
 			'java')
-				$NEW_NAMESPACE $1 $2 $3 java
+				$NEW_NAMESPACE $USER_NAME $USER_PASS $NAMESPACE java $@
 				if [ $? -ge 0 ]; then
-					INIT_PARAMS="$1 $2 $3 $4"
-					if [ $# -gt 5 ]; then
-						INIT_PARAMS="$INIT_PARAMS $6"
-					fi
-					$JAVA_NEW_MODEL $INIT_PARAMS
+					$JAVA_NEW_MODEL $USER_NAME $USER_PASS $NAMESPACE $CLASSPATH $@
 				fi
 				;;
 			'python')
-				$NEW_NAMESPACE $1 $2 $3 python
+				$NEW_NAMESPACE $USER_NAME $USER_PASS $NAMESPACE python $@
 				if [ $? -ge 0 ]; then
-					if [ $# -gt 5 ]; then
-						errorMsg "Prefetching is only supported in Java applications."
-					fi
-					$PY_NEW_MODEL $1 $2 $3 $4
+					$PY_NEW_MODEL $USER_NAME $USER_PASS $NAMESPACE $CLASSPATH $@
 				fi
 				;;
 			*)
@@ -175,32 +177,39 @@ case $OPERATION in
 		esac
 		;;
 	'GetStubs')
-		FOLDER=$4
-		if [ $# -ne 4 ]; then
+		if [ $# -lt 4 ]; then
 			errorMsg "Missing arguments. Usage: GetStubs <user_name> <user_pass> <namespace_name> <stubs_path>"
 		fi
-		if [ ! -d $FOLDER ]; then
-			errorMsg "Stubs path $FOLDER is not a valid directory."
+    USER_NAME=$1
+	  shift
+	  USER_PASS=$1
+	  shift
+	  NAMESPACE=$1
+	  shift
+	  STUBSPATH=$1
+	  shift
+		if [ ! -d $STUBSPATH ]; then
+			errorMsg "Stubs path $STUBSPATH is not a valid directory."
 		fi
-		LANG=`$GET_NAMESPACE_LANG $1 $2 $3 | grep ^LANG`
+		LANG=`$GET_NAMESPACE_LANG $USER_NAME $USER_PASS $NAMESPACE | grep ^LANG`
 		case $LANG in
 			'LANG_JAVA')
-				$ACCESS_NS_MODEL $1 $2 $3
+				$ACCESS_NS_MODEL $USER_NAME $USER_PASS $NAMESPACE $@
 				if [ $? -ge 0 ]; then
-					$JAVA_GETSTUBS $1 $2 $3 $4
+					$JAVA_GETSTUBS $USER_NAME $USER_PASS $NAMESPACE $STUBSPATH $@
 					if [ ! -z $HOST_USER_ID ] && [ ! -z $HOST_GROUP_ID ]; then
-					  chown $HOST_USER_ID:$HOST_GROUP_ID $4 -R
-					  chmod 755 $4 -R
+					  chown $HOST_USER_ID:$HOST_GROUP_ID $STUBSPATH -R
+					  chmod 755 $STUBSPATH -R
 					fi
 				fi
 				;;
 			'LANG_PYTHON')
-				CONTRACTID=`$ACCESS_NS_MODEL $1 $2 $3 | tail -1`
+				CONTRACTID=`$ACCESS_NS_MODEL $USER_NAME $USER_PASS $NAMESPACE | tail -1`
 				if [ $? -ge 0 ] && [ ! -z $CONTRACTID ]; then
-					$PY_GETSTUBS $1 $2 $CONTRACTID $4
+					$PY_GETSTUBS $USER_NAME $USER_PASS $CONTRACTID $STUBSPATH $@
 					if [ ! -z $HOST_USER_ID ] && [ ! -z $HOST_GROUP_ID ]; then
-					  chown $HOST_USER_ID:$HOST_GROUP_ID $4 -R
-					  chmod 755 $4 -R
+					  chown $HOST_USER_ID:$HOST_GROUP_ID $STUBSPATH -R
+					  chmod 755 $STUBSPATH -R
 					fi
 				fi
 				;;

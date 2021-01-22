@@ -25,12 +25,6 @@ if [[ "$version" < "$REQUIRED_DOCKER_VERSION" ]]; then
 	exit 1
 fi
 printf "OK\n"
-
-# prepare architectures
-docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
-#docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-docker run --rm -t arm64v8/ubuntu uname -m
-
 # Check if already exists
 echo "Checking builder dataclay-builderx"
 RESULT=$(docker buildx ls)
@@ -39,7 +33,11 @@ if [[ $RESULT == *"dataclay-builderx"* ]]; then
   docker buildx use dataclay-builderx
 else
   echo "Creating builder $BUILDERX_NAME"
-  docker buildx create --name dataclay-builderx
+  # prepare architectures
+  docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
+  #docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+  docker run --rm -t arm64v8/ubuntu uname -m
+  docker buildx create --driver-opt network=host --name dataclay-builderx
   docker buildx use dataclay-builderx
   echo "Checking buildx with available platforms to simulate..."
   docker buildx inspect --bootstrap

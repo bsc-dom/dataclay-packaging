@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration monitorInterval="60" status="off">
+<Configuration status="off">
   <Appenders>
     <Console name="ConsoleAppender" target="SYSTEM_ERR">
     	<PatternLayout pattern="%d{ISO8601} %p [%c] [%t] [%C{1}:%L] %m%n"></PatternLayout>
@@ -28,7 +28,7 @@
         <Logger name="dataclay.util.classloaders.ClassLockers" level="off"/> 
         
         <!--  Garbage collection -->
-        <Logger name="GlobalGC" level="debug"/>
+        <Logger name="GlobalGC" level="off"/>
         <Logger name="heap.HeapManager" level="debug"/>
         <Logger name="ReferenceCounting" level="off"/>
         <Logger name="StorageLocation" level="debug"/>
@@ -45,8 +45,10 @@
         <Logger name="io.netty" level="off"/>
         <Logger name="NettyClientHandler" level="off"/>
         <Logger name="grpc.client" level="off"/>
-        <Logger name="communication.LogicModule.service" level="off"/>
-        <Logger name="grpc.client.logicmodule" level="off"/>
+        <Logger name="communication.LogicModule.service" level="debug"/>
+        <Logger name="communication.DataService.service" level="debug"/>
+        <Logger name="grpc.client.logicmodule" level="debug"/>
+        <Logger name="grpc.client.dataservice" level="debug" />
         
         <!--  Databases -->
         <Logger name="dataclay.dbhandler" level="off"/>
