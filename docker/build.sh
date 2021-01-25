@@ -17,7 +17,12 @@ do
           source $SCRIPTDIR/../common/ALPINE_PLATFORMS.txt
           ;;
         --build-platform)
-          $SCRIPTDIR/../common/prepare_docker_builder.sh
+          shift
+          BUILD_PLATFORM=$1
+          ARGS+="$1 "
+          if [ "$BUILD_PLATFORM" != "linux/amd64" ]; then
+            $SCRIPTDIR/../common/prepare_docker_builder.sh
+          fi
           ;;
         --plaforms-file)
           shift

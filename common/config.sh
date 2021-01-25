@@ -176,7 +176,7 @@ do
           if [ "$PLATFORM_PROVIDED" != "linux/amd64" ]; then
             echo "NOTE: Provided build platform $PLATFORM_PROVIDED: Using buildx"
             echo "WARNING: Make sure to have a local registry running: docker run -d -p 5000:5000 --restart=always --name dataclay_buildx_registry registry:2"
-            echo "WARNING: Make sure to add "insecure-registries" : ["myregistrydomain.com:5000"] to /etc/docker/daemon.json and restart docker"
+            echo "WARNING: Make sure to add "insecure-registries" : ["localhost:5000"] to /etc/docker/daemon.json and restart docker"
             REGISTRY="localhost:5000/"
             DOCKER_COMMAND="--push"
             DOCKER_BUILDX_COMMAND="buildx"
