@@ -3,7 +3,7 @@ BUILDDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 source $BUILDDIR/../../common/config.sh
 if [ -z $EXECUTION_ENVIRONMENT_TAG ]; then echo "ERROR: EXECUTION_ENVIRONMENT_TAG not defined. Aborting"; exit 1; fi
 pushd $BUILDDIR
-build docker $DOCKER_BUILDX_COMMAND build $DOCKERFILE \
+build docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE \
        --build-arg VCS_REF="abc1234" \
        --build-arg BUILD_DATE="0000-00-00" \
        --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \

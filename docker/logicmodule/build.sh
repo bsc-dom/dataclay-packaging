@@ -11,7 +11,7 @@ JAVACLAY_CONTAINER=$(docker create --rm bscdataclay/javaclay)
 docker cp $JAVACLAY_CONTAINER:/javaclay/target/dataclay-${JAR_VERSION}-shaded.jar ./dataclay.jar
 docker rm $JAVACLAY_CONTAINER
 
-build docker $DOCKER_BUILDX_COMMAND build $DOCKERFILE \
+build docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE \
        --build-arg VCS_REF="abc1234" \
        --build-arg BUILD_DATE="0000-00-00" \
        --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \

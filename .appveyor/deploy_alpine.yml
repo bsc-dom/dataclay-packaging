@@ -64,6 +64,12 @@ environment:
       job_depends_on: dspython
       dataclay_image: client
       image_type: alpine
+    # INITIALIZER ALPINE ------------------------------------------------------------------------
+    - job_name: Deploy initializer alpine
+      job_group: initializer
+      job_depends_on: client
+      dataclay_image: initializer
+      image_type: alpine
 # the first failed job cancels other jobs and fails entire build
 matrix:
   fast_finish: true
@@ -135,6 +141,24 @@ for:
         EXIT_CODE=$?
         docker logout
         exit $EXIT_CODE
+
+  -
+    matrix:
+      only:
+        - job_group: initializer
+    build_script:
+      - |
+        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
+          -v ${HOME}/.docker/config.json:/root/.docker/config.json:ro \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -w=$APPVEYOR_BUILD_FOLDER \
+          bscdataclay/continuous-integration:packaging \
+          ./docker/$dataclay_image/deploy.sh -y --dev --plain --$image_type
+        EXIT_CODE=$?
+        docker logout
+        exit $EXIT_CODE
+
 notifications:
   - provider: Email
     to:

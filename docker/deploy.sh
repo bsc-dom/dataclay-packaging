@@ -40,6 +40,7 @@ for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
 done
 
 $SCRIPTDIR/client/deploy.sh "$@" --share-builder
+$SCRIPTDIR/initializer/deploy.sh "$@" --share-builder
 duration=$SECONDS
 echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
 echo "[dataClay deploy] FINISHED! "

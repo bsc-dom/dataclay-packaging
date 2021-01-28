@@ -51,6 +51,7 @@ for PYTHON_VERSION in ${SUPPORTED_PYTHON_VERSIONS[@]}; do
 
 done
 $SCRIPTDIR/client/build.sh $ARGS --share-builder
+$SCRIPTDIR/initializer/build.sh $ARGS --share-builder
 duration=$SECONDS
 echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
 echo "[dataClay build] FINISHED! "

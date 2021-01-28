@@ -15,3 +15,5 @@ javaclay/LICENSE.txt
 javaclay/dataclay-common
 javaclay/checkstyle
 javaclay/state.txt
+build.sh
+deploy.sh

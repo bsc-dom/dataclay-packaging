@@ -13,3 +13,5 @@ pyclay/venv
 **/.idea
 **/.travis
 pyclay/dataclay-common
+build.sh
+deploy.sh

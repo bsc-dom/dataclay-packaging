@@ -1,1 +1,3 @@
 .dockerbuildx
+build.sh
+deploy.sh
