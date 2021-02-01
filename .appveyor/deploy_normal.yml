@@ -66,12 +66,12 @@ environment:
       job_depends_on: dspython
       dataclay_image: client
       image_type: normal
-    # INITIALIZER ALPINE ------------------------------------------------------------------------
-    - job_name: Deploy initializer alpine
+    # INITIALIZER ------------------------------------------------------------------------
+    - job_name: Deploy initializer
       job_group: initializer
       job_depends_on: client
       dataclay_image: initializer
-      image_type: alpine
+      image_type: normal
 # the first failed job cancels other jobs and fails entire build
 matrix:
   fast_finish: true
