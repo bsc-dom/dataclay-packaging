@@ -20,6 +20,7 @@ deploy docker buildx build $DOCKERFILE -t bscdataclay/dspython:$EXECUTION_ENVIRO
 popd
 
 ######################################## tags ###########################################
+CUR_DATE_TAG=$(date -u +"%Y%m%d")
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_PY_TAG ]; then
 	## Tag default versions 
 	docker buildx imagetools create --tag bscdataclay/dspython:$DEFAULT_TAG bscdataclay/dspython:$DEFAULT_PY_TAG	
@@ -29,12 +30,15 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_PY_TAG ]; then
 		[[ ! -z "$TAG_SUFFIX" ]] && docker buildx imagetools create --tag bscdataclay/dspython:"${TAG_SUFFIX//-}" bscdataclay/dspython:$DEFAULT_TAG # alpine or slim tags
 	else 
 		docker buildx imagetools create --tag bscdataclay/dspython:develop${TAG_SUFFIX} bscdataclay/dspython:$DEFAULT_TAG
+		docker buildx imagetools create --tag bscdataclay/dspython:dev${CUR_DATE_TAG}${TAG_SUFFIX} bscdataclay/dspython:$DEFAULT_TAG
+
 	fi
 fi
 if [ "$DEV" = true ] ; then 
 	DATACLAY_PYTHON_VERSION="${PYTHON_VERSION//./}"
 	docker buildx imagetools create --tag bscdataclay/dspython:develop.py${DATACLAY_PYTHON_VERSION}${TAG_SUFFIX} bscdataclay/dspython:$EXECUTION_ENVIRONMENT_TAG
-fi 
+	docker buildx imagetools create --tag bscdataclay/dspython:dev${CUR_DATE_TAG}.py${DATACLAY_PYTHON_VERSION}${TAG_SUFFIX} bscdataclay/dspython:$EXECUTION_ENVIRONMENT_TAG
+fi
 #################################################################################################
 
 

@@ -13,6 +13,7 @@ build docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE \
 			   $BUILD_PLATFORM $DOCKER_COMMAND .
 popd
 ######################################## default tags ###########################################
+CUR_DATE_TAG=$(date -u +"%Y%m%d")
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	## Tag default versions 
 	docker tag bscdataclay/dsjava:$DEFAULT_JDK_TAG bscdataclay/dsjava:$DEFAULT_TAG
@@ -22,8 +23,11 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	  docker tag bscdataclay/dsjava:$DEFAULT_TAG bscdataclay/dsjava:"${TAG_SUFFIX//-}"
 	else 
 		docker tag bscdataclay/dsjava:$DEFAULT_TAG bscdataclay/dsjava:develop${TAG_SUFFIX} #develop-slim, develop-alpine
+		docker tag bscdataclay/dsjava:$DEFAULT_TAG bscdataclay/dsjava:dev${CUR_DATE_TAG}${TAG_SUFFIX} #develop-slim, develop-alpine
+
 	fi
 fi
 if [ "$DEV" = true ] ; then 
 	docker tag bscdataclay/dsjava:$EXECUTION_ENVIRONMENT_TAG bscdataclay/dsjava:develop.jdk${JAVA_VERSION}${TAG_SUFFIX} #develop.jdk11-slim
+	docker tag bscdataclay/dsjava:$EXECUTION_ENVIRONMENT_TAG bscdataclay/dsjava:dev${CUR_DATE_TAG}.jdk${JAVA_VERSION}${TAG_SUFFIX} #develop.jdk11-slim
 fi

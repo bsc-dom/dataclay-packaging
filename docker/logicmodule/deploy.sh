@@ -23,6 +23,7 @@ deploy docker buildx build $DOCKERFILE -t bscdataclay/logicmodule:$EXECUTION_ENV
 popd
 
 ######################################## tags ###########################################
+CUR_DATE_TAG=$(date -u +"%Y%m%d")
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	## Tag default versions 
 	docker buildx imagetools create --tag bscdataclay/logicmodule:$DEFAULT_TAG bscdataclay/logicmodule:$DEFAULT_JDK_TAG
@@ -32,11 +33,14 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 		[[ ! -z "$TAG_SUFFIX" ]] && docker buildx imagetools create --tag bscdataclay/logicmodule:"${TAG_SUFFIX//-}" bscdataclay/logicmodule:$DEFAULT_TAG # alpine or slim tags
 	else 
 		docker buildx imagetools create --tag bscdataclay/logicmodule:develop${TAG_SUFFIX} bscdataclay/logicmodule:$DEFAULT_TAG
+		docker buildx imagetools create --tag bscdataclay/logicmodule:dev${CUR_DATE_TAG}${TAG_SUFFIX} bscdataclay/logicmodule:$DEFAULT_TAG
+
 	fi
 fi
-if [ "$DEV" = true ] ; then 
+if [ "$DEV" = true ] ; then
 	docker buildx imagetools create --tag bscdataclay/logicmodule:develop.jdk${JAVA_VERSION}${TAG_SUFFIX} bscdataclay/logicmodule:$EXECUTION_ENVIRONMENT_TAG
-fi 
+	docker buildx imagetools create --tag bscdataclay/logicmodule:dev${CUR_DATE_TAG}.jdk${JAVA_VERSION}${TAG_SUFFIX} bscdataclay/logicmodule:$EXECUTION_ENVIRONMENT_TAG
+fi
 #################################################################################################
 printMsg " ===== Done! ===== "
 

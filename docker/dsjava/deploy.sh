@@ -12,6 +12,7 @@ deploy docker buildx build $DOCKERFILE -t bscdataclay/dsjava:$EXECUTION_ENVIRONM
 		     --push .
 popd
 ######################################## tags ###########################################
+CUR_DATE_TAG=$(date -u +"%Y%m%d")
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	## Tag default versions 
 	docker buildx imagetools create --tag bscdataclay/dsjava:$DEFAULT_TAG bscdataclay/dsjava:$DEFAULT_JDK_TAG
@@ -22,11 +23,15 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 		[[ ! -z "$TAG_SUFFIX" ]] && docker buildx imagetools create --tag bscdataclay/dsjava:"${TAG_SUFFIX//-}" bscdataclay/dsjava:$DEFAULT_TAG # alpine or slim tags
 	else 
 		docker buildx imagetools create --tag bscdataclay/dsjava:develop${TAG_SUFFIX} bscdataclay/dsjava:$DEFAULT_TAG
+		docker buildx imagetools create --tag bscdataclay/dsjava:dev${CUR_DATE_TAG}${TAG_SUFFIX} bscdataclay/dsjava:$DEFAULT_TAG
+
 	fi
 fi
 if [ "$DEV" = true ] ; then 
 	docker buildx imagetools create --tag bscdataclay/dsjava:develop.jdk${JAVA_VERSION}${TAG_SUFFIX} bscdataclay/dsjava:$EXECUTION_ENVIRONMENT_TAG
-fi 
+	docker buildx imagetools create --tag bscdataclay/dsjava:dev${CUR_DATE_TAG}.jdk${JAVA_VERSION}${TAG_SUFFIX} bscdataclay/dsjava:$EXECUTION_ENVIRONMENT_TAG
+
+fi
 #################################################################################################
 
 

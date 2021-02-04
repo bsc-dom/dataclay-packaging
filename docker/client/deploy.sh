@@ -16,8 +16,10 @@ popd
 if [ "$DEV" = false ] ; then
   docker buildx imagetools create --tag bscdataclay/client bscdataclay/client:$DEFAULT_NORMAL_TAG
 	[[ ! -z "$TAG_SUFFIX" ]] && docker buildx imagetools create --tag bscdataclay/client:"${TAG_SUFFIX//-}" bscdataclay/client:$DEFAULT_TAG # alpine or slim tags
-else 
+else
+  CUR_DATE_TAG=$(date -u +"%Y%m%d")
 	docker buildx imagetools create --tag bscdataclay/client:develop${TAG_SUFFIX} bscdataclay/client:$DEFAULT_TAG
+	docker buildx imagetools create --tag bscdataclay/client:dev${CUR_DATE_TAG}${TAG_SUFFIX} bscdataclay/client:$DEFAULT_TAG
 fi
 
 

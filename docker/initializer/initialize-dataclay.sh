@@ -1,23 +1,6 @@
 #!/bin/sh
 set -x
 set -e
-
-# Variables that are picked up from env
-# - $DATACLAY_JAR
-# - $USER
-# - $PASS
-# - $DATASET
-# - $DC_SHARED_VOLUME
-# - $LOGICMODULE_PORT_TCP
-# - $LOGICMODULE_HOST
-# - $JAVA_NAMESPACES
-# - $PYTHON_NAMESPACES
-# - $JAVA_MODELS_PATH
-# - $PYTHON_MODELS_PATH
-# - $IMPORT_MODELS_FROM_EXTERNAL_DC_HOSTS
-# - $IMPORT_MODELS_FROM_EXTERNAL_DC_PORTS
-# - $IMPORT_MODELS_FROM_EXTERNAL_DC_NAMESPACES
-
 ########################### create cfgfiles ###########################
 
 printf "HOST=${LOGICMODULE_HOST}\nTCPPORT=${LOGICMODULE_PORT_TCP}" > ${DATACLAYCLIENTCONFIG}
@@ -32,6 +15,42 @@ dataclaycmd NewAccount ${USER} ${PASS}
 
 # Register datacontract
 dataclaycmd NewDataContract ${USER} ${PASS} ${DATASET} ${USER}
+
+########################### prepare git ###########################
+
+mkdir -p ${DC_SHARED_VOLUME}/models
+if [ ! -z $GIT_JAVA_MODELS_URLS ] || [ ! -z $GIT_PYTHON_MODELS_URLS ]; then
+    # install git if needed
+  if ! command -v git &> /dev/null
+  then
+      if ! command -v apk &> /dev/null
+      then
+        apt-get update && apt-get install --no-install-recommends -y --allow-unauthenticated git
+      else
+        apk --update add git
+      fi
+  fi
+fi
+
+########################### java git models ###########################
+
+i=1
+for GIT_JAVA_MODEL in $GIT_JAVA_MODELS_URLS; do
+  GIT_JAVA_MODEL_PATH=$(echo "$GIT_JAVA_MODELS_PATHS" | cut -d\  -f${i})
+  git clone $GIT_JAVA_MODEL ${DC_SHARED_VOLUME}/models/model${i}/${GIT_JAVA_MODEL_PATH}
+  JAVA_MODELS_PATH=$JAVA_MODELS_PATH ${DC_SHARED_VOLUME}/models/model${i}/${GIT_JAVA_MODEL_PATH}
+  i=$(expr ${i} + 1)
+done
+
+########################### python git models ###########################
+
+i=1
+for GIT_PYTHON_MODEL in $GIT_PYTHON_MODELS_URLS; do
+  GIT_PYTHON_MODEL_PATH=$(echo "$GIT_PYTHON_MODELS_PATHS" | cut -d\  -f${i})
+  git clone $GIT_PYTHON_MODEL ${DC_SHARED_VOLUME}/models/model${i}/${GIT_PYTHON_MODEL_PATH}
+  PYTHON_MODELS_PATH=$PYTHON_MODELS_PATH ${DC_SHARED_VOLUME}/models/model${i}/${GIT_PYTHON_MODEL_PATH}
+  i=$(expr ${i} + 1)
+done
 
 ########################### java model ###########################
 

@@ -18,6 +18,9 @@ popd
 if [ "$DEV" = false ] ; then
 	docker tag bscdataclay/client:$DEFAULT_NORMAL_TAG bscdataclay/client
 	docker tag bscdataclay/client:$CLIENT_TAG bscdataclay/client:"${TAG_SUFFIX//-}"
-else 
+else
+  CUR_DATE_TAG=$(date -u +"%Y%m%d")
 	docker tag bscdataclay/client:$CLIENT_TAG bscdataclay/client:develop${TAG_SUFFIX}
+	docker tag bscdataclay/client:$CLIENT_TAG bscdataclay/client:dev${CUR_DATE_TAG}${TAG_SUFFIX}
+
 fi

@@ -22,6 +22,7 @@ build docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE \
 popd
 	
 ######################################## default tags ###########################################
+CUR_DATE_TAG=$(date -u +"%Y%m%d")
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	## Tag default versions
 	docker tag bscdataclay/logicmodule:$DEFAULT_JDK_TAG bscdataclay/logicmodule:$DEFAULT_TAG
@@ -32,9 +33,12 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 	  docker tag bscdataclay/logicmodule:$DEFAULT_TAG bscdataclay/logicmodule:"${TAG_SUFFIX//-}"
 	else
 		docker tag bscdataclay/logicmodule:$DEFAULT_TAG bscdataclay/logicmodule:develop${TAG_SUFFIX} #develop-slim, develop-alpine
+		docker tag bscdataclay/logicmodule:$DEFAULT_TAG bscdataclay/logicmodule:dev${CUR_DATE_TAG}${TAG_SUFFIX} #develop-slim, develop-alpine
+
 	fi
 fi
 if [ "$DEV" = true ] ; then
-  echo "docker tag ${REGISTRY}bscdataclay/logicmodule:$EXECUTION_ENVIRONMENT_TAG bscdataclay/logicmodule:develop.jdk${JAVA_VERSION}${TAG_SUFFIX}"
 	docker tag bscdataclay/logicmodule:$EXECUTION_ENVIRONMENT_TAG bscdataclay/logicmodule:develop.jdk${JAVA_VERSION}${TAG_SUFFIX} #develop.jdk8-slim
+	docker tag bscdataclay/logicmodule:$EXECUTION_ENVIRONMENT_TAG bscdataclay/logicmodule:dev${CUR_DATE_TAG}.jdk${JAVA_VERSION}${TAG_SUFFIX} #develop.jdk8-slim
+
 fi

@@ -15,6 +15,7 @@ build docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE \
 			 $BUILD_PLATFORM $DOCKER_COMMAND .
 popd
 ######################################## default tags ############################c###############
+CUR_DATE_TAG=$(date -u +"%Y%m%d")
 if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_PY_TAG ]; then
 	## Tag default versions 
 	docker tag bscdataclay/dspython:$DEFAULT_PY_TAG bscdataclay/dspython:$DEFAULT_TAG
@@ -25,9 +26,13 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_PY_TAG ]; then
 	  docker tag bscdataclay/dspython:$DEFAULT_TAG bscdataclay/dspython:"${TAG_SUFFIX//-}"
 	else 
 		docker tag bscdataclay/dspython:$DEFAULT_TAG bscdataclay/dspython:develop${TAG_SUFFIX} #develop-slim, develop-alpine
+		docker tag bscdataclay/dspython:$DEFAULT_TAG bscdataclay/dspython:dev${CUR_DATE_TAG}${TAG_SUFFIX} #develop-slim, develop-alpine
+
 	fi
 fi
 if [ "$DEV" = true ] ; then 
 	DATACLAY_PYTHON_VERSION="${PYTHON_VERSION//./}"
 	docker tag bscdataclay/dspython:$EXECUTION_ENVIRONMENT_TAG bscdataclay/dspython:develop.py${DATACLAY_PYTHON_VERSION}${TAG_SUFFIX} #develop.py36-slim
+	docker tag bscdataclay/dspython:$EXECUTION_ENVIRONMENT_TAG bscdataclay/dspython:dev${CUR_DATE_TAG}.py${DATACLAY_PYTHON_VERSION}${TAG_SUFFIX} #develop.py36-slim
+
 fi
