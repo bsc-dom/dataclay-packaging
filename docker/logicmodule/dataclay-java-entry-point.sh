@@ -58,4 +58,4 @@ fi
 
 ### ========================== ENTRYPOINT ============================= ##
 export JDK_JAVA_OPTIONS="--add-opens java.base/java.lang=ALL-UNNAMED"
-exec java -Dcom.google.inject.internal.cglib.$experimental_asm7=true -cp $THE_CLASSPATH $ARGS
+exec java -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap $DATACLAY_JVM_OPTIONS -Dcom.google.inject.internal.cglib.$experimental_asm7=true -cp $THE_CLASSPATH $ARGS
