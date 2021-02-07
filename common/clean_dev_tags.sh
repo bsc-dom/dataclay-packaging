@@ -1,5 +1,4 @@
-#!/bin/bash -e
-
+#!/bin/bash
 #=== FUNCTION ================================================================
 # NAME: remove_tag
 # DESCRIPTION: Remove tag from DockerHub
@@ -7,11 +6,12 @@
 function remove_dev_tags {
   IMAGE=$1
   YEAR=$(date -u +"%Y")
-  if [ -z $EXCEPTIONS_PATTERN ]; then
+  if [ -z "$EXCEPTIONS_PATTERN" ]; then
     TAGS_TO_DELETE=$(./get_all_tags.sh "${ORGANIZATION}/$IMAGE" | grep $YEAR)
   else
     TAGS_TO_DELETE=$(./get_all_tags.sh "${ORGANIZATION}/$IMAGE" | grep $YEAR | grep -v $EXCEPTIONS_PATTERN)
   fi
+  echo "Tags to delete for image $IMAGE: ${TAGS_TO_DELETE[@]}"
   for TAG in ${TAGS_TO_DELETE[@]}; do
     echo "****** Removing tag ${ORGANIZATION}/${IMAGE}/tags/${TAG}/ *******"
     TOKEN=`curl -s -H "Content-Type: application/json" -X POST -d "$(login_data)" "https://hub.docker.com/v2/users/login/" | jq -r .token`
