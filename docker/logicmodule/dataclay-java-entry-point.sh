@@ -4,7 +4,7 @@ DEBUG="false"
 ARGS=""
 DEFINED_CLASSPATH_SET="false"
 DEFINED_CLASSPATH=""
-
+VISUALVM="false"
 ################################## OPTIONS #############################################
 while [ $# -gt 0 ]; do
     key="$1"
@@ -17,6 +17,10 @@ while [ $# -gt 0 ]; do
       DEBUG="true"
       shift
         ;;
+    --visualvm)
+      VISUALVM="true"
+      shift
+      ;;
     --classpath)
     	shift
     	DEFINED_CLASSPATH_SET="true"
@@ -50,6 +54,10 @@ else
 	ARGS="-Dorg.apache.logging.log4j.simplelog.StatusLogger.level=OFF $ARGS"	
 fi
 
+
+if [ $VISUALVM = "true" ] ; then
+  ARGS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9010 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false $ARGS"
+fi
 ### ========================== CLASSPATH ============================= ##
 export THE_CLASSPATH="$DATACLAY_JAR:$CLASSPATH"
 if [ $DEFINED_CLASSPATH_SET = "true" ] ; then
