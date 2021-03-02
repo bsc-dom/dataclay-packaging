@@ -13,10 +13,11 @@ if [ "$DEV" = false ] ; then
   docker buildx imagetools create --tag bscdataclay/initializer bscdataclay/initializer:$DEFAULT_NORMAL_TAG
 	[[ ! -z "$TAG_SUFFIX" ]] && docker buildx imagetools create --tag bscdataclay/initializer:"${TAG_SUFFIX//-}" bscdataclay/initializer:$DEFAULT_TAG # alpine or slim tags
 else
-  CUR_DATE_TAG=$(date -u +"%Y%m%d")
 	docker buildx imagetools create --tag bscdataclay/initializer:develop${TAG_SUFFIX} bscdataclay/initializer:$DEFAULT_TAG
-	docker buildx imagetools create --tag bscdataclay/initializer:dev${CUR_DATE_TAG}${TAG_SUFFIX} bscdataclay/initializer:$DEFAULT_TAG
-
+	if [ "$ADD_DATE_TAG" = true ] ; then
+	  CUR_DATE_TAG=$(date -u +"%Y%m%d")
+	  docker buildx imagetools create --tag bscdataclay/initializer:dev${CUR_DATE_TAG}${TAG_SUFFIX} bscdataclay/initializer:$DEFAULT_TAG
+  fi
 fi
 
 

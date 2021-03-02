@@ -2,7 +2,7 @@
 <Configuration status="off">
   <Appenders>
     <Console name="ConsoleAppender" target="SYSTEM_ERR">
-    	<PatternLayout pattern="%d{ISO8601} %p [%c] [%t] [%C{1}:%L] %m%n"></PatternLayout>
+    	<PatternLayout pattern="%d{ISO8601} %p [%t:%C{1}:%L] %m%n"></PatternLayout>
     </Console>
   </Appenders>
 
@@ -37,7 +37,8 @@
         <Logger name="LogicModule" level="debug"/>
         <Logger name="LMDB" level="off"/>
         <Logger name="managers" level="off" />
-        <Logger name="managers.ClassManager" level="off" />
+        <Logger name="managers.ClassManager" level="info" />
+        <Logger name="managers.ClassManager.DB" level="off" />
         <Logger name="MetaDataService.db" level="off" />
         <Logger name="MetaDataService" level="debug" />
         

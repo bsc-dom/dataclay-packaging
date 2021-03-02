@@ -144,7 +144,7 @@ PLATFORMS_FILE=$CONFIGDIR/PLATFORMS.txt
 DOCKER_COMMAND=""
 DOCKER_BUILDX_COMMAND=""
 BUILD_PLATFORM=""
-
+ADD_DATE_TAG=false
 export PACKAGE_JAR="true"
 while test $# -gt 0
 do
@@ -160,6 +160,9 @@ do
         -y)
         	DONOTPROMPT=true
         	;;
+        --add-date-tag)
+          export ADD_DATE_TAG=true
+          ;;
         --do-not-package)
         	export PACKAGE_JAR="false"
         	;;

@@ -23,14 +23,16 @@ if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
 		[[ ! -z "$TAG_SUFFIX" ]] && docker buildx imagetools create --tag bscdataclay/dsjava:"${TAG_SUFFIX//-}" bscdataclay/dsjava:$DEFAULT_TAG # alpine or slim tags
 	else 
 		docker buildx imagetools create --tag bscdataclay/dsjava:develop${TAG_SUFFIX} bscdataclay/dsjava:$DEFAULT_TAG
-		docker buildx imagetools create --tag bscdataclay/dsjava:dev${CUR_DATE_TAG}${TAG_SUFFIX} bscdataclay/dsjava:$DEFAULT_TAG
-
+		if [ "$ADD_DATE_TAG" = true ] ; then
+		  docker buildx imagetools create --tag bscdataclay/dsjava:dev${CUR_DATE_TAG}${TAG_SUFFIX} bscdataclay/dsjava:$DEFAULT_TAG
+    fi
 	fi
 fi
 if [ "$DEV" = true ] ; then 
 	docker buildx imagetools create --tag bscdataclay/dsjava:develop.jdk${JAVA_VERSION}${TAG_SUFFIX} bscdataclay/dsjava:$EXECUTION_ENVIRONMENT_TAG
-	docker buildx imagetools create --tag bscdataclay/dsjava:dev${CUR_DATE_TAG}.jdk${JAVA_VERSION}${TAG_SUFFIX} bscdataclay/dsjava:$EXECUTION_ENVIRONMENT_TAG
-
+	if [ "$ADD_DATE_TAG" = true ] ; then
+	  docker buildx imagetools create --tag bscdataclay/dsjava:dev${CUR_DATE_TAG}.jdk${JAVA_VERSION}${TAG_SUFFIX} bscdataclay/dsjava:$EXECUTION_ENVIRONMENT_TAG
+  fi
 fi
 #################################################################################################
 

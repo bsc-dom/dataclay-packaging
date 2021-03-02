@@ -24,10 +24,12 @@ ENV PATH="$DATACLAY_VIRTUAL_ENV/bin:$PATH"
 COPY ./alpine.requirements.txt requirements.txt
 RUN python -m pip install --default-timeout=$PIP_TIMEOUT --upgrade pip
 RUN apk add --update --no-cache build-base linux-headers \
-	&& python -m pip install --default-timeout=$PIP_TIMEOUT -r requirements.txt \
+    && export GRPC_PYTHON_DISABLE_LIBC_COMPATIBILITY=1 \
+	&& python -m pip install --no-binary=:all: --default-timeout=$PIP_TIMEOUT -r requirements.txt \
 	&& apk del build-base linux-headers && \
     rm -rf /var/cache/apk/*
 RUN apk add libstdc++
+#RUN apk add libc6-compat --no-binary=:all:
 RUN python -c "from grpc._cython import cygrpc as _cygrpc"
 
 ENTRYPOINT ["Nothing to do here"]
