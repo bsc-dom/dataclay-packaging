@@ -26,7 +26,7 @@ RUN apk add --no-cache --update libstdc++
 #ENV PATH="$PATH:$JAVA_MINIMAL/bin"
 #COPY --from=1 "$JAVA_MINIMAL" "$JAVA_MINIMAL"
 #ENV JAVA_HOME=${JAVA_MINIMAL}
-RUN apk --no-cache --update add openjdk8-jre-base
+RUN apk --no-cache --update add openjdk8
 RUN java -version
 
 ENV DATACLAY_HOME=/home/dataclayusr/dataclay

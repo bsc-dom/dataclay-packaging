@@ -52,23 +52,23 @@ if [ ! -z $GIT_JAVA_MODELS_URLS ] || [ ! -z $GIT_PYTHON_MODELS_URLS ]; then
 fi
 
 ########################### java git models ###########################
-
 i=1
+num_model=1
 for GIT_JAVA_MODEL in $GIT_JAVA_MODELS_URLS; do
   GIT_JAVA_MODEL_PATH=$(echo "$GIT_JAVA_MODELS_PATHS" | cut -d\  -f${i})
-  git clone $GIT_JAVA_MODEL ${DC_SHARED_VOLUME}/models/model${i}/
-  JAVA_MODELS_PATH=$JAVA_MODELS_PATH ${DC_SHARED_VOLUME}/models/model${i}/${GIT_JAVA_MODEL_PATH}
+  git clone $GIT_JAVA_MODEL ${DC_SHARED_VOLUME}/models/model${num_model}/
+  JAVA_MODELS_PATH="$JAVA_MODELS_PATH ${DC_SHARED_VOLUME}/models/model${num_model}/${GIT_JAVA_MODEL_PATH}"
   i=$(expr ${i} + 1)
+  num_model=$(expr ${num_model} + 1)
 done
-
 ########################### python git models ###########################
-
 i=1
 for GIT_PYTHON_MODEL in $GIT_PYTHON_MODELS_URLS; do
   GIT_PYTHON_MODEL_PATH=$(echo "$GIT_PYTHON_MODELS_PATHS" | cut -d\  -f${i})
-  git clone $GIT_PYTHON_MODEL ${DC_SHARED_VOLUME}/models/model${i}/
-  PYTHON_MODELS_PATH=$PYTHON_MODELS_PATH ${DC_SHARED_VOLUME}/models/model${i}/${GIT_PYTHON_MODEL_PATH}
+  git clone $GIT_PYTHON_MODEL ${DC_SHARED_VOLUME}/models/model${num_model}/
+  PYTHON_MODELS_PATH="$PYTHON_MODELS_PATH ${DC_SHARED_VOLUME}/models/model${num_model}/${GIT_PYTHON_MODEL_PATH}"
   i=$(expr ${i} + 1)
+  num_model=$(expr ${num_model} + 1)
 done
 
 ########################### java model ###########################
@@ -104,7 +104,6 @@ done
 ########################### python models ###########################
 
 i=1
-
 # Register python models
 for PYTHON_MODEL in $PYTHON_MODELS_PATH; do
 
