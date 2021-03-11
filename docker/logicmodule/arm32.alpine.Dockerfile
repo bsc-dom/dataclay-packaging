@@ -31,9 +31,10 @@ LABEL org.opencontainers.image.title="dataClay logicmodule" \
       org.label-schema.docker.dockerfile="/docker/logicmodule/alpine.Dockerfile"
 
 # Install packages:
-ENV JAVA_MINIMAL="/opt/java-minimal"
-ENV PATH="$PATH:$JAVA_MINIMAL/bin"
-COPY --from=minijdk "$JAVA_MINIMAL" "$JAVA_MINIMAL"
+#ENV JAVA_MINIMAL="/opt/java-minimal"
+#ENV PATH="$PATH:$JAVA_MINIMAL/bin"
+#COPY --from=minijdk "$JAVA_MINIMAL" "$JAVA_MINIMAL"
+RUN apk --no-cache --update add openjdk8-jre-base
 RUN java -version
 RUN apk --no-cache --update add sqlite
 

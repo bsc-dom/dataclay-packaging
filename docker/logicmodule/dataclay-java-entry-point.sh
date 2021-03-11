@@ -5,6 +5,7 @@ ARGS=""
 DEFINED_CLASSPATH_SET="false"
 DEFINED_CLASSPATH=""
 VISUALVM="false"
+JVM_ARGS=""
 ################################## OPTIONS #############################################
 while [ $# -gt 0 ]; do
     key="$1"
@@ -17,6 +18,14 @@ while [ $# -gt 0 ]; do
       DEBUG="true"
       shift
         ;;
+    "-X"*)
+      JVM_ARGS="$JVM_ARGS $key"
+      shift
+      ;;
+    "-D"*)
+      JVM_ARGS="$JVM_ARGS $key"
+      shift
+      ;;
     --visualvm)
       VISUALVM="true"
       shift
@@ -67,4 +76,4 @@ fi
 ### ========================== ENTRYPOINT ============================= ##
 export JDK_JAVA_OPTIONS="--add-opens java.base/java.lang=ALL-UNNAMED"
 # -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap $DATACLAY_JVM_OPTIONS
-exec java -Dcom.google.inject.internal.cglib.$experimental_asm7=true -cp $THE_CLASSPATH $ARGS
+exec java -Dcom.google.inject.internal.cglib.$experimental_asm7=true $JVM_ARGS -cp $THE_CLASSPATH $ARGS

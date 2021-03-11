@@ -22,11 +22,11 @@ LABEL org.opencontainers.image.title="dataClay client" \
 # Install packages:
 RUN apk add --no-cache --update libstdc++
 # Install java:
-ENV JAVA_MINIMAL="/opt/java-minimal"
-ENV PATH="$PATH:$JAVA_MINIMAL/bin"
-COPY --from=1 "$JAVA_MINIMAL" "$JAVA_MINIMAL"
-ENV JAVA_HOME=${JAVA_MINIMAL}
-#RUN apk --no-cache --update add openjdk8-jre-base
+#ENV JAVA_MINIMAL="/opt/java-minimal"
+#ENV PATH="$PATH:$JAVA_MINIMAL/bin"
+#COPY --from=1 "$JAVA_MINIMAL" "$JAVA_MINIMAL"
+#ENV JAVA_HOME=${JAVA_MINIMAL}
+RUN apk --no-cache --update add openjdk8-jre-base
 RUN java -version
 
 ENV DATACLAY_HOME=/home/dataclayusr/dataclay

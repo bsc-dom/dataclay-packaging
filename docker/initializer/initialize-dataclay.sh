@@ -1,20 +1,39 @@
 #!/bin/sh
 set -x
 set -e
+DEBUG="false"
+ARGS=""
+################################## OPTIONS #############################################
+while [ $# -gt 0 ]; do
+    key="$1"
+	case $key in
+    --debug)
+      ARGS="$ARGS $key"
+      DEBUG="true"
+      shift
+        ;;
+    *)
+    	ARGS="$ARGS $key"
+ 		  shift
+      ;;
+    esac
+done
+
 ########################### create cfgfiles ###########################
+echo "ARGS=$ARGS"
 
 printf "HOST=${LOGICMODULE_HOST}\nTCPPORT=${LOGICMODULE_PORT_TCP}" > ${DATACLAYCLIENTCONFIG}
 
 ######################################################
 
 # Wait for dataclay to be alive (max retries 10 and 5 seconds per retry)
-dataclaycmd WaitForDataClayToBeAlive 10 5
+dataclaycmd WaitForDataClayToBeAlive 10 5 ${ARGS}
 
 # Register account
-dataclaycmd NewAccount ${USER} ${PASS}
+dataclaycmd NewAccount ${USER} ${PASS} ${ARGS}
 
 # Register datacontract
-dataclaycmd NewDataContract ${USER} ${PASS} ${DATASET} ${USER}
+dataclaycmd NewDataContract ${USER} ${PASS} ${DATASET} ${USER} ${ARGS}
 
 ########################### prepare git ###########################
 
@@ -37,7 +56,7 @@ fi
 i=1
 for GIT_JAVA_MODEL in $GIT_JAVA_MODELS_URLS; do
   GIT_JAVA_MODEL_PATH=$(echo "$GIT_JAVA_MODELS_PATHS" | cut -d\  -f${i})
-  git clone $GIT_JAVA_MODEL ${DC_SHARED_VOLUME}/models/model${i}/${GIT_JAVA_MODEL_PATH}
+  git clone $GIT_JAVA_MODEL ${DC_SHARED_VOLUME}/models/model${i}/
   JAVA_MODELS_PATH=$JAVA_MODELS_PATH ${DC_SHARED_VOLUME}/models/model${i}/${GIT_JAVA_MODEL_PATH}
   i=$(expr ${i} + 1)
 done
@@ -47,7 +66,7 @@ done
 i=1
 for GIT_PYTHON_MODEL in $GIT_PYTHON_MODELS_URLS; do
   GIT_PYTHON_MODEL_PATH=$(echo "$GIT_PYTHON_MODELS_PATHS" | cut -d\  -f${i})
-  git clone $GIT_PYTHON_MODEL ${DC_SHARED_VOLUME}/models/model${i}/${GIT_PYTHON_MODEL_PATH}
+  git clone $GIT_PYTHON_MODEL ${DC_SHARED_VOLUME}/models/model${i}/
   PYTHON_MODELS_PATH=$PYTHON_MODELS_PATH ${DC_SHARED_VOLUME}/models/model${i}/${GIT_PYTHON_MODEL_PATH}
   i=$(expr ${i} + 1)
 done
@@ -72,7 +91,7 @@ for JAVA_MODEL in $JAVA_MODELS_PATH; do
 
   # Register model
   cd ${JAVA_MODEL} && mvn package
-  dataclaycmd NewModel ${USER} ${PASS} ${JAVA_NAMESPACE} ${JAVA_MODEL}/target/classes java
+  dataclaycmd NewModel ${USER} ${PASS} ${JAVA_NAMESPACE} ${JAVA_MODEL}/target/classes java ${ARGS}
 
   # Get contract ID for Java namespace
   CONTRACTID=`java -cp $DATACLAY_JAR es.bsc.dataclay.tool.AccessNamespace ${USER} ${PASS} ${JAVA_NAMESPACE} | tail -1`
@@ -93,7 +112,7 @@ for PYTHON_MODEL in $PYTHON_MODELS_PATH; do
   PYTHON_NAMESPACE=$(echo "$PYTHON_NAMESPACES" | cut -d\  -f${i})
 
   # Register model
-  dataclaycmd NewModel ${USER} ${PASS} ${PYTHON_NAMESPACE} ${PYTHON_MODEL} python
+  dataclaycmd NewModel ${USER} ${PASS} ${PYTHON_NAMESPACE} ${PYTHON_MODEL} python ${ARGS}
 
   # Get contract ID for Python namespace
   CONTRACTID=`java -cp $DATACLAY_JAR es.bsc.dataclay.tool.AccessNamespace ${USER} ${PASS} ${PYTHON_NAMESPACE} | tail -1`
@@ -112,7 +131,7 @@ for IMPORT_MODELS_FROM_EXTERNAL_DC_HOST in $IMPORT_MODELS_FROM_EXTERNAL_DC_HOSTS
   IMPORT_MODELS_FROM_EXTERNAL_DC_NAMESPACE=$(echo "$IMPORT_MODELS_FROM_EXTERNAL_DC_NAMESPACES" | cut -d\  -f${i})
 
   dataclaycmd ImportModelsFromExternalDataClay ${IMPORT_MODELS_FROM_EXTERNAL_DC_HOST} \
-    ${IMPORT_MODELS_FROM_EXTERNAL_DC_PORT} ${IMPORT_MODELS_FROM_EXTERNAL_DC_NAMESPACE}
+    ${IMPORT_MODELS_FROM_EXTERNAL_DC_PORT} ${IMPORT_MODELS_FROM_EXTERNAL_DC_NAMESPACE} ${ARGS}
 
   # Get contract ID for imported namespace
   CONTRACTID=`java -cp $DATACLAY_JAR es.bsc.dataclay.tool.AccessNamespace ${USER} ${PASS} ${IMPORT_MODELS_FROM_EXTERNAL_DC_NAMESPACE} | tail -1`

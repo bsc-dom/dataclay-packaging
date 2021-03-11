@@ -11,7 +11,7 @@ deploy docker buildx build $DOCKERFILE -t bscdataclay/dspython:$EXECUTION_ENVIRO
     --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
     --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
 		--build-arg BASE_VERSION=$BASE_VERSION_TAG \
-		--build-arg REQUIREMENTS_TAG=${EXECUTION_ENVIRONMENT_TAG}-requirements \
+		--build-arg REQUIREMENTS_TAG=${REQUIREMENTS_TAG} \
 		--build-arg DATACLAY_PYVER=$PYTHON_VERSION \
 		--build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION \
 		--platform $PLATFORMS $DOCKER_PROGRESS \

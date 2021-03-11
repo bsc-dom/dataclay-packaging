@@ -21,8 +21,9 @@ SECONDS=0
 if [[ "$*" == *--slim* ]]; then
   source $SCRIPTDIR/../common/SLIM_PLATFORMS.txt
 elif [[ "$*" == *--alpine* ]]; then
-  IS_ALPINE="true"
   source $SCRIPTDIR/../common/ALPINE_PLATFORMS.txt
+elif [[ "$*" == *--arm32* ]]; then
+  source $SCRIPTDIR/../common/ARM32_PLATFORMS.txt
 else
   source $SCRIPTDIR/../common/PLATFORMS.txt
 fi

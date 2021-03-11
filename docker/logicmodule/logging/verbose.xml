@@ -47,15 +47,17 @@
         <Logger name="io.netty" level="off"/>
         <Logger name="NettyClientHandler" level="off"/>
         <Logger name="grpc.client" level="off"/>
-        <Logger name="communication.LogicModule.service" level="off"/>
-        <Logger name="communication.DataService.service" level="off"/>
+        <Logger name="communication.LogicModule.service" level="debug"/>
+        <Logger name="communication.DataService.service" level="debug"/>
         <Logger name="grpc.client.logicmodule" level="debug"/>
         <Logger name="grpc.client.dataservice" level="debug" />
-
+        
         <!--  Databases -->
         <Logger name="dataclay.dbhandler" level="off"/>
+        <Logger name="dbhandler.PostgresConnection" level="off" />
+        <Logger name="org.apache.commons.dbcp2" level="off"/>
+        <Logger name="PostgresHandler" level="off"/>
         <Logger name="SQLHandler" level="off"/>
-        <Logger name="SQLiteHandler" level="off"/>
 
         <!--  Misc -->
         <Logger name="util" level="debug" />

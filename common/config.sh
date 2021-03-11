@@ -22,7 +22,7 @@ CONFIGDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 # DESCRIPTION: Get container version
 # PARAMETER 1: Execution environment version i.e. can be python py3.6 or jdk8
 #===============================================================================
-function get_container_version { 
+function get_container_version {
 	if [ $# -gt 0 ]; then 
 		EE_VERSION=$1 
 		DATACLAY_EE_VERSION="${EE_VERSION//./}"
@@ -78,9 +78,9 @@ function build {
   printMsg "************* $IMAGE IMAGE BUILD! (in $n retries) *************"
 
   if [ ! -z $REGISTRY ] && [ $REGISTRY != "" ]; then
-    echo "Pulling from local registry for platform $BUILD_PLATFORM"
-    docker pull $BUILD_PLATFORM $IMAGE
-    docker tag $IMAGE ${IMAGE/localhost:5000\//}
+    echo "Pulling from registry for platform $DEFAULT_BUILD_PLATFORM"
+    docker pull $DEFAULT_BUILD_PLATFORM $IMAGE
+    docker tag $IMAGE ${IMAGE/dom-ci.bsc.es\//}
   fi
 
   echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
@@ -144,6 +144,7 @@ PLATFORMS_FILE=$CONFIGDIR/PLATFORMS.txt
 DOCKER_COMMAND=""
 DOCKER_BUILDX_COMMAND=""
 BUILD_PLATFORM=""
+DEFAULT_BUILD_PLATFORM="--platform linux/amd64"
 ADD_DATE_TAG=false
 export PACKAGE_JAR="true"
 while test $# -gt 0
@@ -177,14 +178,16 @@ do
           shift
           PLATFORM_PROVIDED=$1
           if [ "$PLATFORM_PROVIDED" != "linux/amd64" ]; then
-            echo "NOTE: Provided build platform $PLATFORM_PROVIDED: Using buildx"
-            echo "WARNING: Make sure to have a local registry running: docker run -d -p 5000:5000 --restart=always --name dataclay_buildx_registry registry:2"
-            echo "WARNING: Make sure to add "insecure-registries" : ["localhost:5000"] to /etc/docker/daemon.json and restart docker"
-            REGISTRY="localhost:5000/"
+            echo "NOTE: Provided build platform $PLATFORM_PROVIDED: Using buildx and pushing to dom-ci.bsc.es"
+            REGISTRY="dom-ci.bsc.es/"
             DOCKER_COMMAND="--push"
             DOCKER_BUILDX_COMMAND="buildx"
             BUILD_PLATFORM="--platform $PLATFORM_PROVIDED "
           fi
+          ;;
+        --default-build-platform)
+          shift
+          DEFAULT_BUILD_PLATFORM="--platform $1"
           ;;
         --slim) 
         	export DOCKERFILE="-f slim.Dockerfile" 
@@ -198,6 +201,10 @@ do
         	export DOCKERFILE="-f alpine.Dockerfile" 
         	export TAG_SUFFIX="-alpine"
         	PLATFORMS_FILE=$CONFIGDIR/ALPINE_PLATFORMS.txt
+        	;;
+        --arm32)
+        	export TAG_SUFFIX="-arm32"
+        	PLATFORMS_FILE=$CONFIGDIR/ARM32_PLATFORMS.txt
         	;;
         --singularityimg)
           shift
@@ -213,7 +220,22 @@ do
     shift
 done
 ###############################################################################
-if [ ! -z $PROVIDED_PLATFORMS_FILE ]; then
+
+if [[ "$TAG_SUFFIX" == "-arm32" ]]; then
+    # just one platform is allowed, the one in ARM32_PLATFORMS
+    ## if dspython, then just use alpine.Dockerfile
+    export DOCKERFILE="-f arm32.alpine.Dockerfile"
+    if [ ! -z $EXECUTION_ENVIRONMENT ]; then
+        PREFIX=$(sed -e 's/[0-9]*\.*//g' <<< "$EXECUTION_ENVIRONMENT")
+        if [ "$PREFIX" == "py" ]; then
+          export DOCKERFILE="-f alpine.Dockerfile"
+        fi
+    fi
+    PLATFORM_PROVIDED=""
+    BUILD_PLATFORM="--platform linux/arm/v7"
+    DEFAULT_BUILD_PLATFORM="--platform linux/arm/v7"
+    source $PLATFORMS_FILE
+elif [ ! -z $PROVIDED_PLATFORMS_FILE ]; then
   source $PROVIDED_PLATFORMS_FILE
 else
   source $PLATFORMS_FILE
@@ -231,6 +253,7 @@ if [ ! -z $PLATFORM_PROVIDED ]; then
     exit 0
   fi
 fi
+
 DATACLAY_VERSION=$(cat $ORCHDIR/VERSION.txt)
 export DATACLAY_VERSION="${DATACLAY_VERSION//.dev/}"
 export DEFAULT_NORMAL_TAG="$(get_container_version)"
@@ -250,10 +273,16 @@ if [[ $EXECUTION_ENVIRONMENT == jdk* ]]; then
 	export JAR_VERSION=$(grep version $DATACLAY_DOCKER_DIR/logicmodule/javaclay/pom.xml | grep -v -e '<?xml|~'| head -n 1 | sed 's/[[:space:]]//g' | sed -E 's/<.{0,1}version>//g' | awk '{print $1}')
 	export JAVA_VERSION=${EXECUTION_ENVIRONMENT#"jdk"}
 elif [[ $EXECUTION_ENVIRONMENT == py* ]]; then
+  export REQUIREMENTS_TAG=${EXECUTION_ENVIRONMENT_TAG}-requirements
 	export PYTHON_VERSION=${EXECUTION_ENVIRONMENT#"py"}
 	# Get python version without subversion to install it in some packages
 	export PYTHON_PIP_VERSION=$(echo $PYTHON_VERSION | awk -F '.' '{print $1}')
 	setuppy_version=`cat $DATACLAY_DOCKER_DIR/dspython/pyclay/VERSION.txt`
+	if [[ "$TAG_SUFFIX" == "-arm32" ]]; then
+    REQUIREMENTS_TAG=$(get_container_version $EXECUTION_ENVIRONMENT)-alpine-requirements
+  fi
+
+
 else 
 	printWarn "WARNING: Execution environment not specified. Using default ones."
 fi

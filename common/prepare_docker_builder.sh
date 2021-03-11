@@ -41,6 +41,15 @@ else
   docker buildx use dataclay-builderx
   echo "Checking buildx with available platforms to simulate..."
   docker buildx inspect --bootstrap
+
+  if [ -f "/usr/local/share/ca-certificates/dom-ci.bsc.es.crt" ]; then
+    echo "Copying certificate /usr/local/share/ca-certificates/dom-ci.bsc.es.crt to docker buildx"
+    BUILDER=$(docker ps | grep buildkitd | cut -f1 -d' ')
+    docker cp /usr/local/share/ca-certificates/dom-ci.bsc.es.crt $BUILDER:/usr/local/share/ca-certificates/
+    docker exec $BUILDER update-ca-certificates
+    docker restart $BUILDER
+  fi
+
   BUILDER_PLATFORMS=$(docker buildx inspect --bootstrap | grep Platforms | awk -F":" '{print $2}')
   IFS=',' read -ra BUILDER_PLATFORMS_ARRAY <<< "$BUILDER_PLATFORMS"
   IFS=',' read -ra SUPPORTED_PLATFORMS_ARRAY <<< "$PLATFORMS"
