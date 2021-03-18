@@ -7,25 +7,7 @@ skip_tags: true
 skip_branch_with_pr: true
 image: Ubuntu1804
 max_jobs: 1
-environment:
-  DOCKER_USERNAME:
-    secure: BjCQHIN21F+sOx1mQICY5Q==
-  DOCKER_PASSWORD:
-    secure: 4tDbnFmVNXL6+VAwzvb61w==
-  DOCKER_CLI_EXPERIMENTAL: enabled
-deploy_script:
-  - |
-      echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
-        -v ${HOME}/.docker/config.json:/root/.docker/config.json:ro \
-        -v /var/run/docker.sock:/var/run/docker.sock \
-        -w=$APPVEYOR_BUILD_FOLDER \
-        bscdataclay/continuous-integration:packaging \
-        ./docker/deploy.sh --plain
-      EXIT_CODE=$?
-      docker logout
-      exit $EXIT_CODE
-
+deploy_script: ./docker/deploy.sh --plain
 notifications:
   - provider: Email
     to:
