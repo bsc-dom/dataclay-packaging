@@ -21,7 +21,7 @@ deploy_script:
         -v /var/run/docker.sock:/var/run/docker.sock \
         -w=$APPVEYOR_BUILD_FOLDER \
         bscdataclay/continuous-integration:packaging \
-        ./docker/deploy.sh -y --dev --plain
+        ./docker/deploy.sh --plain
       EXIT_CODE=$?
       docker logout
       exit $EXIT_CODE

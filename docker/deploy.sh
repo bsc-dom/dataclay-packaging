@@ -178,21 +178,20 @@ function prepare_docker_buildx {
 #=============================================================================
 function deploy_base {
   IMAGE=base
-  BASE_TAG="${DEFAULT_TAG}"
   pushd $SCRIPTDIR/$IMAGE
-  deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/$IMAGE:$BASE_TAG \
+  deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/$IMAGE:$BASE_VERSION_TAG \
          --build-arg VCS_REF=$VCS_REF \
          --build-arg BUILD_DATE=$BUILD_DATE \
 				 $PLATFORMS_COMMAND $DOCKER_PROGRESS \
 				 $DOCKER_COMMAND .
   popd
   if [ "$DEV" = false ] ; then
-    tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/$IMAGE:$DATACLAY_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/$IMAGE
-    [[ ! -z "$TAG_SUFFIX" ]] && tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/$IMAGE:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/$IMAGE:"${TAG_SUFFIX//-}" # alpine or slim tags
+    tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/$IMAGE:$BASE_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/$IMAGE
+    [[ ! -z "$TAG_SUFFIX" ]] && tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/$IMAGE:$BASE_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/$IMAGE:"${TAG_SUFFIX//-}" # alpine or slim tags
   else
-    tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/$IMAGE:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/$IMAGE:develop${TAG_SUFFIX}
+    tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/$IMAGE:$BASE_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/$IMAGE:develop${TAG_SUFFIX}
     if [ "$ADD_DATE_TAG" = true ] ; then
-      tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/$IMAGE:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/$IMAGE:dev${CUR_DATE_TAG}${TAG_SUFFIX}
+      tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/$IMAGE:$BASE_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/$IMAGE:dev${CUR_DATE_TAG}${TAG_SUFFIX}
     fi
   fi
 }
@@ -213,14 +212,9 @@ function deploy_python_requirements {
            $PLATFORMS_COMMAND $DOCKER_PROGRESS \
            $DOCKER_COMMAND .
     popd
-    if [ "$DEV" = false ] ; then
-      tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/$IMAGE:$DATACLAY_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/$IMAGE
-      [[ ! -z "$TAG_SUFFIX" ]] && tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/$IMAGE:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/$IMAGE:"${TAG_SUFFIX//-}" # alpine or slim tags
-    else
-      tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/$IMAGE:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/$IMAGE:develop${TAG_SUFFIX}
-      if [ "$ADD_DATE_TAG" = true ] ; then
-        tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/$IMAGE:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/$IMAGE:dev${CUR_DATE_TAG}${TAG_SUFFIX}
-      fi
+    if [ "$DEV" = true ] ; then
+      DATACLAY_PYTHON_VERSION="${PYTHON_VERSION//./}"
+      tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/dspython:$REQUIREMENTS_TAG --tag bscdataclay/dspython:develop.py${DATACLAY_PYTHON_VERSION}${TAG_SUFFIX}-requirements
     fi
   done
 }
@@ -394,12 +388,12 @@ function deploy_client {
 				 $DOCKER_COMMAND .
   popd
   if [ "$DEV" = false ] ; then
-    tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/client:$DATACLAY_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/client
-    [[ ! -z "$TAG_SUFFIX" ]] && tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/client:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/client:"${TAG_SUFFIX//-}" # alpine or slim tags
+    tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/client:$CLIENT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/client
+    [[ ! -z "$TAG_SUFFIX" ]] && tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/client:$CLIENT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/client:"${TAG_SUFFIX//-}" # alpine or slim tags
   else
-    tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/client:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/client:develop${TAG_SUFFIX}
+    tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/client:$CLIENT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/client:develop${TAG_SUFFIX}
     if [ "$ADD_DATE_TAG" = true ] ; then
-      tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/client:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/client:dev${CUR_DATE_TAG}${TAG_SUFFIX}
+      tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/client:$CLIENT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/client:dev${CUR_DATE_TAG}${TAG_SUFFIX}
     fi
   fi
 }
@@ -432,9 +426,7 @@ function deploy_initializer {
 set -e
 SCRIPTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 echo " Welcome to dataClay release script!"
-
-DEV=false
-LOCAL=false
+DATACLAY_CUR_VERSION=$(cat $SCRIPTDIR/VERSION.txt)
 DONOTPROMPT=false
 DOCKERFILE=""
 TAG_SUFFIX=""
@@ -451,33 +443,31 @@ CUR_DATE_TAG=$(date -u +"%Y%m%d")
 IMAGE_TYPES=(alpine slim arm32 normal)
 IMAGES=(logicmodule dsjava dspython client initializer)
 REGISTRY=bscdataclay
+DEV=false
+if [[ $DATACLAY_CUR_VERSION == *"dev"* ]]; then
+  DEV=true
+  BRANCH_TO_CHECK="develop"
+  VCS_REF="abc1234"
+  BUILD_DATE="0000-00-00"
+  REGISTRY=dom-ci.bsc.es/bscdataclay
+fi
+LOCAL=false
 while test $# -gt 0; do
   case "$1" in
   --build)
     # local build
-    DEV=true
     LOCAL=true
-    VCS_REF="abc1234"
-    BUILD_DATE="0000-00-00"
     DOCKER_BUILDX_COMMAND=""
     DOCKER_COMMAND=""
     DOCKER_TAG_COMMAND="tag"
     DOCKER_TAG_SUFFIX=""
+    REGISTRY=bscdataclay
     printWarn "Build in local docker"
     ;;
   --dev-release)
-    DEV=true
-    BRANCH_TO_CHECK="develop"
     ADD_DATE_TAG=true
+    REGISTRY=bscdataclay
     printWarn "Deploying development version to DockerHub"
-    ;;
-  --dev)
-    DEV=true
-    BRANCH_TO_CHECK="develop"
-    VCS_REF="abc1234"
-    BUILD_DATE="0000-00-00"
-    REGISTRY=dom-ci.bsc.es/bscdataclay
-    printWarn "Deploying to dom-ci.bsc.es registry"
     ;;
   --image-types)
     shift
@@ -515,9 +505,7 @@ done
 #  printError "Branch is not $BRANCH_TO_CHECK. Found $GIT_BRANCH. Aborting script"
 #  exit 1
 #fi
-
-DATACLAY_VERSION=$(cat $SCRIPTDIR/VERSION.txt)
-DATACLAY_VERSION="${DATACLAY_VERSION//.dev/}"
+DATACLAY_VERSION="${DATACLAY_CUR_VERSION//.dev/}"
 DATACLAY_VERSION_TAG="$(get_container_version)"
 IMAGES_STR=""
 for element in "${IMAGES[@]}"; do
@@ -530,6 +518,7 @@ done
 
 SECONDS=0
 printInfo "Deploying $DATACLAY_VERSION_TAG version"
+printInfo "Deploying $REGISTRY registry"
 printInfo "Images being deployed: $IMAGES_STR"
 printInfo "Image types deployed: $IMAGES_TYPES_STR"
 SECONDS=0
@@ -552,6 +541,7 @@ for IMAGE_TYPE in "${IMAGE_TYPES[@]}"; do
   DEFAULT_TAG="${DATACLAY_VERSION_TAG}${TAG_SUFFIX}"
   DEFAULT_JDK_TAG="$(get_container_version jdk$DEFAULT_JAVA)${TAG_SUFFIX}"
   DEFAULT_PY_TAG="$(get_container_version py$DEFAULT_PYTHON)${TAG_SUFFIX}"
+  BASE_VERSION_TAG="${DEFAULT_TAG}"
 
   PLATFORMS_COMMAND="--platform $PLATFORMS"
   if [ $LOCAL == true ]; then
