@@ -56,7 +56,12 @@ i=1
 num_model=1
 for GIT_JAVA_MODEL in $GIT_JAVA_MODELS_URLS; do
   GIT_JAVA_MODEL_PATH=$(echo "$GIT_JAVA_MODELS_PATHS" | cut -d\  -f${i})
-  git clone $GIT_JAVA_MODEL ${DC_SHARED_VOLUME}/models/model${num_model}/
+  MODEL_DIR=${DC_SHARED_VOLUME}/models/model${num_model}/
+  if [ ! -d "$MODEL_DIR" ]; then
+    git clone $GIT_JAVA_MODEL ${DC_SHARED_VOLUME}/models/model${num_model}/
+  else
+    echo "!! WARNING: Model already found at ${DC_SHARED_VOLUME}/models/model${num_model}/. Using already cloned model"
+  fi
   JAVA_MODELS_PATH="$JAVA_MODELS_PATH ${DC_SHARED_VOLUME}/models/model${num_model}/${GIT_JAVA_MODEL_PATH}"
   i=$(expr ${i} + 1)
   num_model=$(expr ${num_model} + 1)
@@ -65,7 +70,12 @@ done
 i=1
 for GIT_PYTHON_MODEL in $GIT_PYTHON_MODELS_URLS; do
   GIT_PYTHON_MODEL_PATH=$(echo "$GIT_PYTHON_MODELS_PATHS" | cut -d\  -f${i})
-  git clone $GIT_PYTHON_MODEL ${DC_SHARED_VOLUME}/models/model${num_model}/
+  MODEL_DIR=${DC_SHARED_VOLUME}/models/model${num_model}/
+  if [ ! -d "$MODEL_DIR" ]; then
+    git clone $GIT_PYTHON_MODEL ${DC_SHARED_VOLUME}/models/model${num_model}/
+  else
+    echo "!! WARNING: Model already found at ${DC_SHARED_VOLUME}/models/model${num_model}/. Using already cloned model"
+  fi
   PYTHON_MODELS_PATH="$PYTHON_MODELS_PATH ${DC_SHARED_VOLUME}/models/model${num_model}/${GIT_PYTHON_MODEL_PATH}"
   i=$(expr ${i} + 1)
   num_model=$(expr ${num_model} + 1)

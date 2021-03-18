@@ -1,18 +1,3 @@
-FROM alpine:3 as minijdk
-RUN apk --no-cache add openjdk11-jdk openjdk11-jmods maven
-ENV JAVA_MINIMAL="/opt/java-minimal"
-# build minimal JRE
-RUN /usr/lib/jvm/java-11-openjdk/bin/jlink \
-    --verbose \
-    --add-modules java.base,java.logging,java.transaction.xa,java.compiler,\
-java.sql,java.naming,java.desktop,java.management,java.security.jgss,jdk.crypto.ec,java.instrument,\
-jdk.unsupported,jdk.jdi,java.net.http \
-    --compress 2 --strip-debug --no-header-files --no-man-pages \
-    --release-info="add:IMPLEMENTOR=bsc:IMPLEMENTOR_VERSION=dataclay_JRE" \
-    --output "$JAVA_MINIMAL"
-
-
-# ============================================================ #
 # Add only our minimal "JRE" distr and our app
 FROM alpine:3
 ARG BUILD_DATE
@@ -31,9 +16,6 @@ LABEL org.opencontainers.image.title="dataClay logicmodule" \
       org.label-schema.docker.dockerfile="/docker/logicmodule/alpine.Dockerfile"
 
 # Install packages:
-#ENV JAVA_MINIMAL="/opt/java-minimal"
-#ENV PATH="$PATH:$JAVA_MINIMAL/bin"
-#COPY --from=minijdk "$JAVA_MINIMAL" "$JAVA_MINIMAL"
 RUN apk --no-cache --update add openjdk8-jre-base
 RUN java -version
 RUN apk --no-cache --update add sqlite

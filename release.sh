@@ -60,10 +60,8 @@ fi
 cd $SCRIPTDIR/docker
 # TODO: make sure dspython requirements are pushed
 ./deploy.sh $DEV_ARG $PROMPT_ARG
-./deploy.sh $DEV_ARG $PROMPT_ARG --slim
-./deploy.sh $DEV_ARG $PROMPT_ARG --alpine
 
-cd $SCRIPTDIR/supercomputers/marenostrum
+cd $SCRIPTDIR/hpc/mn
 ./deploy.sh $DEV_ARG $PROMPT_ARG
 
 if [ "$DEV" = false ] ; then

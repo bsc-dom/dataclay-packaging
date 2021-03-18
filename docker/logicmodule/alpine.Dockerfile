@@ -1,10 +1,10 @@
 FROM alpine:3 as minijdk
-RUN apk --no-cache add openjdk11-jdk openjdk11-jmods maven
+RUN apk --no-cache add openjdk11-jdk openjdk11-jmods
 ENV JAVA_MINIMAL="/opt/java-minimal"
 # build minimal JRE
 RUN /usr/lib/jvm/java-11-openjdk/bin/jlink \
     --verbose \
-    --add-modules java.base,java.logging,java.transaction.xa,java.compiler,\
+    --add-modules java.base,java.logging,java.transaction.xa,jdk.compiler,jdk.jartool,jdk.zipfs,\
 java.sql,java.naming,java.desktop,java.management,java.security.jgss,jdk.crypto.ec,java.instrument,\
 jdk.unsupported,jdk.jdi,java.net.http \
     --compress 2 --strip-debug --no-header-files --no-man-pages \
