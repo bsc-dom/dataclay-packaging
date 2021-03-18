@@ -7,7 +7,12 @@ skip_tags: true
 skip_branch_with_pr: true
 image: Ubuntu1804
 max_jobs: 1
-deploy_script: ./docker/deploy.sh --plain
+deploy_script:
+  - |
+      git submodule init
+      git submodule update
+      ./docker/deploy.sh --plain
+
 notifications:
   - provider: Email
     to:
