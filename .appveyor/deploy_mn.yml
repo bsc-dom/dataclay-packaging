@@ -7,25 +7,11 @@ skip_tags: true
 skip_branch_with_pr: true
 image: Ubuntu1804
 max_jobs: 1
-environment:
-  MN_SALT:
-    secure: y0lD3CmSDZQx7zsNkyqUQyFtiV2eoewZ94bxSk9yoUrc6Mfgto18k7hzAitfVxs124Pai3GGvBpDZppuXikFPQ==
-  MN_SECRET:
-    secure: +ZRoLZnCowoJI/RvYao/XzgDz4usFDcZRX5aRoTBHUY=
 deploy_script:
   - |
-    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    docker run -v $APPVEYOR_BUILD_FOLDER:$APPVEYOR_BUILD_FOLDER \
-          -v ${HOME}/.docker/config.json:/root/.docker/config.json:ro \
-          -v /var/run/docker.sock:/var/run/docker.sock \
-          -e MN_SALT=$MN_SALT \
-          -e MN_SECRET=$MN_SECRET \
-          -w=$APPVEYOR_BUILD_FOLDER \
-          bscdataclay/continuous-integration:packaging-mn \
-          ./hpc/mn/deploy.sh
-    EXIT_CODE=$?
-    docker logout
-    exit $EXIT_CODE
+    git submodule init
+    git submodule update
+    ./hpc/mn/deploy.sh
 notifications:
   - provider: Email
     to:
