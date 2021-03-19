@@ -164,7 +164,7 @@ for IMAGE in "${IMAGES[@]}"; do
   echo "[marenostrum-deploy] Deploying $IMAGE image to MN..."
   deploy_$IMAGE
 done
-
+rm $DEPLOYSCRIPTDIR/*.sif
 duration=$SECONDS
 echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
 echo "MN deployment successfully finished!"
