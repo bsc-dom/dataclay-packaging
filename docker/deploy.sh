@@ -1,11 +1,11 @@
 #!/bin/bash -e
 #===================================================================================
 #
-# FILE: release.sh
+# FILE: deploy.sh
 #
-# USAGE: release.sh [--dev]
+# USAGE: deploy.sh
 #
-# DESCRIPTION: Release dataClay dockers into DockerHub
+# DESCRIPTION: Deploy and build dataClay dockers
 #
 # OPTIONS: ---
 # REQUIREMENTS: ---
@@ -461,7 +461,7 @@ while test $# -gt 0; do
     DOCKER_COMMAND=""
     DOCKER_TAG_COMMAND="tag"
     DOCKER_TAG_SUFFIX=""
-    REGISTRY=bscdataclay
+    REGISTRY=dom-ci.bsc.es/bscdataclay
     printWarn "Build in local docker"
     ;;
   --dev-release)

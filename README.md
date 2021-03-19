@@ -1,8 +1,5 @@
 [![License](https://img.shields.io/github/license/bsc-dom/dataclay-packaging)](https://github.com/bsc-dom/dataclay-packaging/blob/develop/LICENSE.txt)
-
-[![Build status](https://ci.appveyor.com/api/projects/status/5iu3kf6xawtrdyrq/branch/develop?svg=true&passingText=Passing+normal+Images&pendingText=Building+normal+images)](https://ci.appveyor.com/project/support-dataclay/dataclay-packaging/branch/develop)
-[![Build status](https://ci.appveyor.com/api/projects/status/8dsn2hgipw42ramb/branch/develop?svg=true&passingText=Passing+slim+Images&pendingText=Building+slim+images)](https://ci.appveyor.com/project/support-dataclay/dataclay-packaging-slim/branch/develop)
-[![Build status](https://ci.appveyor.com/api/projects/status/ykjbjky0mvolotmp/branch/develop?svg=true&passingText=Passing+alpine+Images&pendingText=Building+alpine+images)](https://ci.appveyor.com/project/support-dataclay/dataclay-packaging-alpine/branch/develop)
+[![Build status](https://ci.appveyor.com/api/projects/status/kugl74xd5aq6pubr/branch/develop?svg=true)](https://ci.appveyor.com/project/support-dataclay/dataclay-packaging-as6o1/branch/develop)
 
 
 # dataClay packaging

@@ -1,4 +1,14 @@
 #!/bin/bash
+#===============================================================================
+grn=$'\e[1;32m'
+blu=$'\e[1;34m'
+red=$'\e[1;91m'
+yellow=$'\e[1;33m'
+end=$'\e[0m'
+function printMsg() { echo "${blu}$1${end}"; }
+function printInfo() { echo "${yellow}$1${end}"; }
+function printWarn() { echo "${yellow}WARNING: $1${end}"; }
+function printError() { echo "${red}======== $1 ========${end}"; }
 #=== FUNCTION ================================================================
 # NAME: get_container_version
 # DESCRIPTION: Get container version
@@ -75,7 +85,6 @@ function deploy_client {
 # DESCRIPTION: Deploy orchestration scripts
 #=============================================================================
 function deploy_orchestrator {
-  echo "[marenostrum-deploy] Deploying $DEFAULT_TAG to MN..."
   # Prepare module definition
   sed "s/SET_VERSION_HERE/${DEFAULT_TAG}/g" $DEPLOYSCRIPTDIR/module.lua > /tmp/${DEFAULT_TAG}.lua
   # Deploy singularity and orchestration scripts to Marenostrum
@@ -89,7 +98,9 @@ function deploy_orchestrator {
 
   # Send orchestration script and images
   echo "[marenostrum-deploy] Deploying dataclay orchestrator and singularity images..."
-  rsync -av -e ssh $PACKAGING_DIR/orchestration/* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG
+  pushd $PACKAGING_DIR/orchestration
+  rsync -av -e ssh --filter="merge ./.rsync-filter" ./* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG
+  popd
 
   # Send javaclay and pyclay
   echo "[marenostrum-deploy] Deploying javaclay..."
@@ -98,7 +109,9 @@ function deploy_orchestrator {
   scp target/*-jar-with-dependencies.jar dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/javaclay/dataclay.jar
   popd
   echo "[marenostrum-deploy] Deploying pyclay..."
-  rsync -av -e ssh --progress $PACKAGING_DIR/docker/dspython/pyclay/* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/pyclay/
+  pushd $PACKAGING_DIR/docker/dspython/pyclay
+  rsync -av -e ssh --filter="merge ./.rsync-filter" --progress ./* dataclay@dt01.bsc.es:/gpfs/apps/MN4/DATACLAY/$DEFAULT_TAG/pyclay/
+  popd
 
   # Changing permissions in pyclay folder
   ssh dataclay@mn2.bsc.es "chmod -R g-w /apps/DATACLAY/$DEFAULT_TAG/pyclay/"
@@ -112,16 +125,19 @@ function deploy_orchestrator {
   fi
   ssh dataclay@mn2.bsc.es "rm /apps/DATACLAY/modules/${MODULE_LINK}.lua && ln -s /apps/DATACLAY/modules/${DEFAULT_TAG}.lua /apps/DATACLAY/modules/${MODULE_LINK}.lua"
 
-
 }
-
+set -e
 DEPLOYSCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-source $DEPLOYSCRIPTDIR/common.sh
 PACKAGING_DIR=$DEPLOYSCRIPTDIR/../..
 ORCHESTRATION_DIR=$PACKAGING_DIR/orchestration
 DEFAULT_TAG=$(cat $ORCHESTRATION_DIR/VERSION.txt)
+DATACLAY_VERSION="${DEFAULT_TAG//.dev/}"
 IMAGES=(logicmodule dsjava dspython client)
 CONFIG_FILE=$PACKAGING_DIR/docker/common/normal.config
+if [[ $DEFAULT_TAG == *"dev"* ]]; then
+  DEV=true
+  printWarn "Deploying development version"
+fi
 while test $# -gt 0; do
   case "$1" in
   --images)
@@ -141,8 +157,8 @@ while test $# -gt 0; do
   shift
 done
 source $CONFIG_FILE
-
 SECONDS=0
+echo "[marenostrum-deploy] Deploying $DEFAULT_TAG to MN..."
 deploy_orchestrator
 for IMAGE in "${IMAGES[@]}"; do
   echo "[marenostrum-deploy] Deploying $IMAGE image to MN..."
