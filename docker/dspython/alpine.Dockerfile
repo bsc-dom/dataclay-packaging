@@ -41,6 +41,8 @@ ENV DATACLAY_VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
 COPY --from=pyclay-installer ${DATACLAY_HOME}/dataclay_venv ${DATACLAY_VIRTUAL_ENV}
 ENV PATH="$DATACLAY_VIRTUAL_ENV/bin:$PATH"
 RUN python -c "import dataclay; print('import ok')"
+# prepare storage dir
+RUN mkdir -p /dataclay/storage
 
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
 

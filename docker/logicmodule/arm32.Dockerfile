@@ -31,6 +31,8 @@ WORKDIR ${DATACLAY_HOME}
 
 # Get dataClay JAR
 COPY ./dataclay.jar ${DATACLAY_JAR}
+# prepare storage dir
+RUN mkdir -p /dataclay/storage
 
 # Copy entrypoint
 COPY ./dataclay-java-entry-point.sh ${DATACLAY_HOME}/entrypoints/dataclay-java-entry-point

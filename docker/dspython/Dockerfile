@@ -45,6 +45,9 @@ RUN python -c "import dataclay; print('import ok')"
 # TODO: remove this
 COPY ./pyclay/ ${DATACLAY_HOME}/pyclay/
 
+# prepare storage dir
+RUN mkdir -p /dataclay/storage
+
 # Create source
 RUN mkdir -p ${DATACLAY_HOME}/deploy/source
 
