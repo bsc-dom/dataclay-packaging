@@ -11,7 +11,17 @@ while [ $# -gt 0 ]; do
       ARGS="$ARGS $key"
       DEBUG="true"
       shift
-        ;;
+      ;;
+    --wait-for-python-ds)
+      shift
+      NUM_PYTHON_DS=$1
+      shift
+      ;;
+    --wait-for-java-ds)
+      shift
+      NUM_JAVA_DS=$1
+      shift
+      ;;
     *)
     	ARGS="$ARGS $key"
  		  shift
@@ -28,6 +38,12 @@ printf "HOST=${LOGICMODULE_HOST}\nTCPPORT=${LOGICMODULE_PORT_TCP}" > ${DATACLAYC
 
 # Wait for dataclay to be alive (max retries 10 and 5 seconds per retry)
 dataclaycmd WaitForDataClayToBeAlive 10 5 ${ARGS}
+if [ ! -z $NUM_JAVA_DS ]; then
+  dataclaycmd WaitForBackends java $NUM_JAVA_DSç
+fi
+if [ ! -z $NUM_PYTHON_DS ]; then
+  dataclaycmd WaitForBackends python $NUM_PYTHON_DS
+fi
 
 # Register account
 dataclaycmd NewAccount ${USER} ${PASS} ${ARGS}

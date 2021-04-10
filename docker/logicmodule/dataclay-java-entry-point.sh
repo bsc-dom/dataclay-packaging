@@ -5,7 +5,6 @@ ARGS=""
 DEFINED_CLASSPATH_SET="false"
 DEFINED_CLASSPATH=""
 VISUALVM="false"
-JVM_ARGS=""
 ################################## OPTIONS #############################################
 while [ $# -gt 0 ]; do
     key="$1"
@@ -18,15 +17,9 @@ while [ $# -gt 0 ]; do
       DEBUG="true"
       shift
         ;;
-    "-X"*)
-      JVM_ARGS="$JVM_ARGS $key"
-      shift
-      ;;
-    "-D"*)
-      JVM_ARGS="$JVM_ARGS $key"
-      shift
-      ;;
     --visualvm)
+      shift
+      VISUALVM_PORT=$1
       VISUALVM="true"
       shift
       ;;
@@ -65,7 +58,7 @@ fi
 
 
 if [ $VISUALVM = "true" ] ; then
-  ARGS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9010 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false $ARGS"
+  ARGS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=$VISUALVM_PORT -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false $ARGS"
 fi
 ### ========================== CLASSPATH ============================= ##
 export THE_CLASSPATH="$DATACLAY_JAR:$CLASSPATH"
@@ -75,5 +68,7 @@ fi
 
 ### ========================== ENTRYPOINT ============================= ##
 export JDK_JAVA_OPTIONS="--add-opens java.base/java.lang=ALL-UNNAMED"
-# -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap $DATACLAY_JVM_OPTIONS
+if [ ! -z ${JVM_ARGS+x} ]; then
+  echo "JVM_ARGS = $JVM_ARGS"
+fi
 exec java -Dcom.google.inject.internal.cglib.$experimental_asm7=true $JVM_ARGS -cp $THE_CLASSPATH $ARGS

@@ -241,6 +241,7 @@ function deploy_logicmodule {
       --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
       --build-arg JDK=$JAVA_VERSION \
       --build-arg BASE_VERSION=$BASE_VERSION_TAG \
+      --build-arg REGISTRY=$REGISTRY \
       $PLATFORMS_COMMAND $DOCKER_PROGRESS \
       $DOCKER_COMMAND .
     popd
@@ -281,6 +282,7 @@ function deploy_dsjava {
 
     deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/dsjava:$EXECUTION_ENVIRONMENT_TAG \
              --build-arg VCS_REF=$VCS_REF \
+             --build-arg REGISTRY=$REGISTRY \
              --build-arg BUILD_DATE=$BUILD_DATE \
              --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
              --build-arg LOGICMODULE_VERSION=$EXECUTION_ENVIRONMENT_TAG \
@@ -338,6 +340,7 @@ function deploy_dspython {
         --build-arg REQUIREMENTS_TAG=${REQUIREMENTS_TAG} \
         --build-arg DATACLAY_PYVER=$PYTHON_VERSION \
         --build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION \
+        --build-arg REGISTRY=$REGISTRY \
         $PLATFORMS_COMMAND $DOCKER_PROGRESS \
         $DOCKER_COMMAND .
 
@@ -378,6 +381,7 @@ function deploy_client {
   pushd $SCRIPTDIR/$IMAGE
   deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/client:$CLIENT_TAG \
          --build-arg VCS_REF=$VCS_REF \
+         --build-arg REGISTRY=$REGISTRY \
          --build-arg BUILD_DATE=$BUILD_DATE \
          --build-arg VERSION=$CLIENT_TAG \
 				 --build-arg DATACLAY_DSPYTHON_DOCKER_TAG=$DEFAULT_PY_CLIENT_TAG \
@@ -405,6 +409,7 @@ function deploy_initializer {
   IMAGE=initializer
   pushd $SCRIPTDIR/$IMAGE
   deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/initializer:$DEFAULT_TAG \
+           --build-arg REGISTRY=$REGISTRY \
            --build-arg VCS_REF=$VCS_REF \
            --build-arg BUILD_DATE=$BUILD_DATE \
            --build-arg CLIENT_TAG=$CLIENT_TAG \
@@ -557,7 +562,7 @@ for IMAGE_TYPE in "${IMAGE_TYPES[@]}"; do
   done
 done
 
-
+docker buildx stop dataclay-builderx
 duration=$SECONDS
 echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
 echo "dataClay deployment FINISHED! "

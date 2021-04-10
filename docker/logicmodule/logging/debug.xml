@@ -15,7 +15,7 @@
         <Logger name="DataServiceRuntime" level="debug"/>
         
         <Logger name="DataClayObjectLoader" level="debug"/>
-        <Logger name="DataClayObject" level="off" /> <!--  This is very verbose! -->
+        <Logger name="DataClayObject" level="debug" />
         
         <!--  Data service -->
         <Logger name="DataService" level="debug"/>
@@ -23,15 +23,18 @@
         
         <!--  Lockers -->
         <Logger name="dataclay.util.classloaders.SyncClass" level="off"/>
-        <Logger name="dataclay.heap.LockerPool" level="off"/>
         <Logger name="LockerPool" level="off"/>
         <Logger name="dataclay.util.classloaders.ClassLockers" level="off"/> 
         
         <!--  Garbage collection -->
-        <Logger name="GlobalGC" level="off"/>
+        <Logger name="GlobalGC" level="debug"/>
         <Logger name="heap.HeapManager" level="debug"/>
         <Logger name="ReferenceCounting" level="off"/>
         <Logger name="StorageLocation" level="debug"/>
+
+        <!-- Serialization -->
+        <Logger name="DataClaySerializationLib" level="off"/>
+        <Logger name="DataClayDeserializationLib" level="off"/>
         
         <!--  Logic module -->
         <Logger name="LogicModule" level="debug"/>
@@ -47,8 +50,8 @@
         <Logger name="io.netty" level="off"/>
         <Logger name="NettyClientHandler" level="off"/>
         <Logger name="grpc.client" level="off"/>
-        <Logger name="communication.LogicModule.service" level="off"/>
-        <Logger name="communication.DataService.service" level="off"/>
+        <Logger name="communication.LogicModule.service" level="debug"/>
+        <Logger name="communication.DataService.service" level="debug"/>
         <Logger name="grpc.client.logicmodule" level="debug"/>
         <Logger name="grpc.client.dataservice" level="debug" />
 

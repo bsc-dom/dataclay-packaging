@@ -1,6 +1,6 @@
 ARG CLIENT_TAG
 ARG REGISTRY=""
-FROM ${REGISTRY}bscdataclay/client:${CLIENT_TAG}
+FROM ${REGISTRY}/client:${CLIENT_TAG}
 ARG BUILD_DATE
 ARG VCS_REF
 LABEL org.opencontainers.image.title="dataClay initializer image" \
