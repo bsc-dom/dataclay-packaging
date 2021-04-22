@@ -39,7 +39,7 @@ printf "HOST=${LOGICMODULE_HOST}\nTCPPORT=${LOGICMODULE_PORT_TCP}" > ${DATACLAYC
 # Wait for dataclay to be alive (max retries 10 and 5 seconds per retry)
 dataclaycmd WaitForDataClayToBeAlive 10 5 ${ARGS}
 if [ ! -z $NUM_JAVA_DS ]; then
-  dataclaycmd WaitForBackends java $NUM_JAVA_DSç
+  dataclaycmd WaitForBackends java $NUM_JAVA_DS
 fi
 if [ ! -z $NUM_PYTHON_DS ]; then
   dataclaycmd WaitForBackends python $NUM_PYTHON_DS
