@@ -178,13 +178,15 @@ function prepare_docker_buildx {
 #=============================================================================
 function deploy_base {
   IMAGE=base
-  pushd $SCRIPTDIR/$IMAGE
-  deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/$IMAGE:$BASE_VERSION_TAG \
-         --build-arg VCS_REF=$VCS_REF \
-         --build-arg BUILD_DATE=$BUILD_DATE \
-				 $PLATFORMS_COMMAND $DOCKER_PROGRESS \
-				 $DOCKER_COMMAND .
-  popd
+  if [ "$ONLY_TAGS" = false ] ; then
+    pushd $SCRIPTDIR/$IMAGE
+    deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/$IMAGE:$BASE_VERSION_TAG \
+           --build-arg VCS_REF=$VCS_REF \
+           --build-arg BUILD_DATE=$BUILD_DATE \
+           $PLATFORMS_COMMAND $DOCKER_PROGRESS \
+           $DOCKER_COMMAND .
+    popd
+  fi
   if [ "$DEV" = false ] ; then
     tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/$IMAGE:$BASE_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/$IMAGE
     [[ ! -z "$TAG_SUFFIX" ]] && tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/$IMAGE:$BASE_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/$IMAGE:"${TAG_SUFFIX//-}" # alpine or slim tags
@@ -205,6 +207,7 @@ function deploy_python_requirements {
     IMAGE=dspython
     EXECUTION_ENVIRONMENT_TAG="$(get_container_version $EXECUTION_ENVIRONMENT)${TAG_SUFFIX}"
     REQUIREMENTS_TAG=${EXECUTION_ENVIRONMENT_TAG}-requirements
+
     pushd $SCRIPTDIR/$IMAGE
     deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/$IMAGE:$REQUIREMENTS_TAG \
         --build-arg DATACLAY_PYVER=$PYTHON_VERSION \
@@ -228,23 +231,25 @@ function deploy_logicmodule {
     EXECUTION_ENVIRONMENT=jdk${JAVA_VERSION}
     IMAGE=logicmodule
     EXECUTION_ENVIRONMENT_TAG="$(get_container_version $EXECUTION_ENVIRONMENT)${TAG_SUFFIX}"
-    JAR_VERSION=$(grep version $SCRIPTDIR/logicmodule/javaclay/pom.xml | grep -v -e '<?xml|~' | head -n 1 | sed 's/[[:space:]]//g' | sed -E 's/<.{0,1}version>//g' | awk '{print $1}')
+    if [ "$ONLY_TAGS" = false ] ; then
+      JAR_VERSION=$(grep version $SCRIPTDIR/logicmodule/javaclay/pom.xml | grep -v -e '<?xml|~' | head -n 1 | sed 's/[[:space:]]//g' | sed -E 's/<.{0,1}version>//g' | awk '{print $1}')
 
-    pushd $SCRIPTDIR/$IMAGE
-    JAVACLAY_CONTAINER=$(docker create --rm bscdataclay/javaclay)
-    docker cp $JAVACLAY_CONTAINER:/javaclay/target/dataclay-${JAR_VERSION}-shaded.jar ./dataclay.jar
-    docker rm $JAVACLAY_CONTAINER
+      pushd $SCRIPTDIR/$IMAGE
+      JAVACLAY_CONTAINER=$(docker create --rm bscdataclay/javaclay)
+      docker cp $JAVACLAY_CONTAINER:/javaclay/target/dataclay-${JAR_VERSION}-shaded.jar ./dataclay.jar
+      docker rm $JAVACLAY_CONTAINER
 
-    deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/logicmodule:$EXECUTION_ENVIRONMENT_TAG \
-      --build-arg VCS_REF=$VCS_REF \
-      --build-arg BUILD_DATE=$BUILD_DATE \
-      --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
-      --build-arg JDK=$JAVA_VERSION \
-      --build-arg BASE_VERSION=$BASE_VERSION_TAG \
-      --build-arg REGISTRY=$REGISTRY \
-      $PLATFORMS_COMMAND $DOCKER_PROGRESS \
-      $DOCKER_COMMAND .
-    popd
+      deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/logicmodule:$EXECUTION_ENVIRONMENT_TAG \
+        --build-arg VCS_REF=$VCS_REF \
+        --build-arg BUILD_DATE=$BUILD_DATE \
+        --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
+        --build-arg JDK=$JAVA_VERSION \
+        --build-arg BASE_VERSION=$BASE_VERSION_TAG \
+        --build-arg REGISTRY=$REGISTRY \
+        $PLATFORMS_COMMAND $DOCKER_PROGRESS \
+        $DOCKER_COMMAND .
+      popd
+    fi
     if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
       ## Tag default versions 2.6.dev is 2.6.jdk11.dev // 2.6 is 2.6.dev
       tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/logicmodule:$DEFAULT_JDK_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/logicmodule:$DEFAULT_TAG
@@ -278,17 +283,18 @@ function deploy_dsjava {
     IMAGE=dsjava
     EXECUTION_ENVIRONMENT_TAG="$(get_container_version $EXECUTION_ENVIRONMENT)${TAG_SUFFIX}"
 
-    pushd $SCRIPTDIR/$IMAGE
-
-    deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/dsjava:$EXECUTION_ENVIRONMENT_TAG \
-             --build-arg VCS_REF=$VCS_REF \
-             --build-arg REGISTRY=$REGISTRY \
-             --build-arg BUILD_DATE=$BUILD_DATE \
-             --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
-             --build-arg LOGICMODULE_VERSION=$EXECUTION_ENVIRONMENT_TAG \
-             $PLATFORMS_COMMAND $DOCKER_PROGRESS \
-             $DOCKER_COMMAND .
-    popd
+    if [ "$ONLY_TAGS" = false ] ; then
+      pushd $SCRIPTDIR/$IMAGE
+      deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/dsjava:$EXECUTION_ENVIRONMENT_TAG \
+               --build-arg VCS_REF=$VCS_REF \
+               --build-arg REGISTRY=$REGISTRY \
+               --build-arg BUILD_DATE=$BUILD_DATE \
+               --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
+               --build-arg LOGICMODULE_VERSION=$EXECUTION_ENVIRONMENT_TAG \
+               $PLATFORMS_COMMAND $DOCKER_PROGRESS \
+               $DOCKER_COMMAND .
+      popd
+    fi
     if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_JDK_TAG ]; then
       ## Tag default versions
       tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/dsjava:$DEFAULT_JDK_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/dsjava:$DEFAULT_TAG
@@ -330,21 +336,23 @@ function deploy_dspython {
     PYTHON_VERSION=${EXECUTION_ENVIRONMENT#"py"}
     # Get python version without subversion to install it in some packages
     PYTHON_PIP_VERSION=$(echo $PYTHON_VERSION | awk -F '.' '{print $1}')
-    pushd $SCRIPTDIR/$IMAGE
 
-    deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/dspython:$EXECUTION_ENVIRONMENT_TAG \
-        --build-arg VCS_REF=$VCS_REF \
-        --build-arg BUILD_DATE=$BUILD_DATE \
-        --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
-        --build-arg BASE_VERSION=$BASE_VERSION_TAG \
-        --build-arg REQUIREMENTS_TAG=${REQUIREMENTS_TAG} \
-        --build-arg DATACLAY_PYVER=$PYTHON_VERSION \
-        --build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION \
-        --build-arg REGISTRY=$REGISTRY \
-        $PLATFORMS_COMMAND $DOCKER_PROGRESS \
-        $DOCKER_COMMAND .
+    if [ "$ONLY_TAGS" = false ] ; then
+      pushd $SCRIPTDIR/$IMAGE
+      deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/dspython:$EXECUTION_ENVIRONMENT_TAG \
+          --build-arg VCS_REF=$VCS_REF \
+          --build-arg BUILD_DATE=$BUILD_DATE \
+          --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
+          --build-arg BASE_VERSION=$BASE_VERSION_TAG \
+          --build-arg REQUIREMENTS_TAG=${REQUIREMENTS_TAG} \
+          --build-arg DATACLAY_PYVER=$PYTHON_VERSION \
+          --build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION \
+          --build-arg REGISTRY=$REGISTRY \
+          $PLATFORMS_COMMAND $DOCKER_PROGRESS \
+          $DOCKER_COMMAND .
 
-    popd
+      popd
+    fi
     if [ $EXECUTION_ENVIRONMENT_TAG == $DEFAULT_PY_TAG ]; then
       ## Tag default versions
       tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/dspython:$DEFAULT_PY_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/dspython:$DEFAULT_TAG
@@ -377,20 +385,21 @@ function deploy_client {
   CLIENT_TAG="${DEFAULT_TAG}"
   DEFAULT_JDK_CLIENT_TAG="$(get_container_version jdk$CLIENT_JAVA)${TAG_SUFFIX}"
   DEFAULT_PY_CLIENT_TAG="$(get_container_version py$CLIENT_PYTHON)${TAG_SUFFIX}"
-
-  pushd $SCRIPTDIR/$IMAGE
-  deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/client:$CLIENT_TAG \
-         --build-arg VCS_REF=$VCS_REF \
-         --build-arg REGISTRY=$REGISTRY \
-         --build-arg BUILD_DATE=$BUILD_DATE \
-         --build-arg VERSION=$CLIENT_TAG \
-				 --build-arg DATACLAY_DSPYTHON_DOCKER_TAG=$DEFAULT_PY_CLIENT_TAG \
-				 --build-arg DATACLAY_LOGICMODULE_DOCKER_TAG=$DEFAULT_JDK_CLIENT_TAG \
-				 --build-arg DATACLAY_PYVER=$CLIENT_PYTHON \
-			   --build-arg JDK=$CLIENT_JAVA \
-				 $PLATFORMS_COMMAND $DOCKER_PROGRESS \
-				 $DOCKER_COMMAND .
-  popd
+  if [ "$ONLY_TAGS" = false ] ; then
+    pushd $SCRIPTDIR/$IMAGE
+    deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/client:$CLIENT_TAG \
+           --build-arg VCS_REF=$VCS_REF \
+           --build-arg REGISTRY=$REGISTRY \
+           --build-arg BUILD_DATE=$BUILD_DATE \
+           --build-arg VERSION=$CLIENT_TAG \
+           --build-arg DATACLAY_DSPYTHON_DOCKER_TAG=$DEFAULT_PY_CLIENT_TAG \
+           --build-arg DATACLAY_LOGICMODULE_DOCKER_TAG=$DEFAULT_JDK_CLIENT_TAG \
+           --build-arg DATACLAY_PYVER=$CLIENT_PYTHON \
+           --build-arg JDK=$CLIENT_JAVA \
+           $PLATFORMS_COMMAND $DOCKER_PROGRESS \
+           $DOCKER_COMMAND .
+    popd
+  fi
   if [ "$DEV" = false ] ; then
     tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/client:$CLIENT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/client
     [[ ! -z "$TAG_SUFFIX" ]] && tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/client:$CLIENT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/client:"${TAG_SUFFIX//-}" # alpine or slim tags
@@ -407,15 +416,17 @@ function deploy_client {
 #=============================================================================
 function deploy_initializer {
   IMAGE=initializer
-  pushd $SCRIPTDIR/$IMAGE
-  deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/initializer:$DEFAULT_TAG \
-           --build-arg REGISTRY=$REGISTRY \
-           --build-arg VCS_REF=$VCS_REF \
-           --build-arg BUILD_DATE=$BUILD_DATE \
-           --build-arg CLIENT_TAG=$CLIENT_TAG \
-           $PLATFORMS_COMMAND $DOCKER_PROGRESS \
-           $DOCKER_COMMAND .
-  popd
+  if [ "$ONLY_TAGS" = false ] ; then
+    pushd $SCRIPTDIR/$IMAGE
+    deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/initializer:$DEFAULT_TAG \
+             --build-arg REGISTRY=$REGISTRY \
+             --build-arg VCS_REF=$VCS_REF \
+             --build-arg BUILD_DATE=$BUILD_DATE \
+             --build-arg CLIENT_TAG=$CLIENT_TAG \
+             $PLATFORMS_COMMAND $DOCKER_PROGRESS \
+             $DOCKER_COMMAND .
+    popd
+  fi
   if [ "$DEV" = false ] ; then
     tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/initializer:$DATACLAY_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/initializer
     [[ ! -z "$TAG_SUFFIX" ]] && tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/initializer:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/initializer:"${TAG_SUFFIX//-}" # alpine or slim tags
@@ -442,6 +453,7 @@ DOCKER_BUILDX_COMMAND="buildx"
 DOCKER_TAG_COMMAND="buildx imagetools create"
 DOCKER_TAG_SUFFIX="--tag"
 ADD_DATE_TAG=false
+ONLY_TAGS=false
 VCS_REF=$(git rev-parse --short HEAD)
 BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 CUR_DATE_TAG=$(date -u +"%Y%m%d")
@@ -473,6 +485,10 @@ while test $# -gt 0; do
     ADD_DATE_TAG=true
     REGISTRY=bscdataclay
     printWarn "Deploying development version to DockerHub"
+    ;;
+  --only-tags)
+    ONLY_TAGS=true
+    printWarn "Only creating new tags "
     ;;
   --image-types)
     shift

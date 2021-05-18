@@ -57,6 +57,7 @@
 
         <!--  Databases -->
         <Logger name="dataclay.dbhandler" level="off"/>
+        <Logger name="LogicMetadata.db" level="off"/>
         <Logger name="SQLHandler" level="off"/>
         <Logger name="SQLiteHandler" level="off"/>
 

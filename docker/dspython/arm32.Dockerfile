@@ -43,7 +43,7 @@ ENV PATH="$DATACLAY_VIRTUAL_ENV/bin:$PATH"
 RUN python -c "import dataclay; print('import ok')"
 # prepare storage dir
 RUN mkdir -p /dataclay/storage
-
+RUN mkdir -p /dataclay/metadata
 COPY ./health_check.sh ${DATACLAY_HOME}/health/health_check.sh
 
 # Entrypoint

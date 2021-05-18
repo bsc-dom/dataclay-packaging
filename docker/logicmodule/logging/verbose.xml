@@ -53,11 +53,11 @@
         <Logger name="grpc.client.dataservice" level="debug" />
         
         <!--  Databases -->
-        <Logger name="dataclay.dbhandler" level="off"/>
+        <Logger name="dataclay.dbhandler" level="debug"/>
         <Logger name="dbhandler.PostgresConnection" level="off" />
         <Logger name="org.apache.commons.dbcp2" level="off"/>
         <Logger name="PostgresHandler" level="off"/>
-        <Logger name="SQLHandler" level="off"/>
+        <Logger name="SQLHandler" level="debug"/>
 
         <!--  Misc -->
         <Logger name="util" level="debug" />

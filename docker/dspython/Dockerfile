@@ -47,7 +47,7 @@ COPY ./pyclay/ ${DATACLAY_HOME}/pyclay/
 
 # prepare storage dir
 RUN mkdir -p /dataclay/storage
-
+RUN mkdir -p /dataclay/metadata
 # Create source
 RUN mkdir -p ${DATACLAY_HOME}/deploy/source
 

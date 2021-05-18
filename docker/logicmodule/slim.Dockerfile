@@ -37,7 +37,7 @@ COPY logging/debug.xml ${DATACLAY_LOG_CONFIG}
 COPY ./dataclay.jar ${DATACLAY_JAR}
 # prepare storage dir
 RUN mkdir -p /dataclay/storage
-
+RUN mkdir -p /dataclay/metadata
 
 # Copy entrypoint
 COPY ./dataclay-java-entry-point.sh ${DATACLAY_HOME}/entrypoints/dataclay-java-entry-point
