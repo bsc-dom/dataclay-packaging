@@ -1,5 +1,5 @@
 FROM alpine:3 as minijdk
-RUN apk --no-cache add openjdk11-jdk openjdk11-jmods
+RUN apk update && apk --no-cache add openjdk11-jdk openjdk11-jmods
 ENV JAVA_MINIMAL="/opt/java-minimal"
 # build minimal JRE
 RUN /usr/lib/jvm/java-11-openjdk/bin/jlink \
@@ -35,7 +35,7 @@ ENV JAVA_MINIMAL="/opt/java-minimal"
 ENV PATH="$PATH:$JAVA_MINIMAL/bin"
 COPY --from=minijdk "$JAVA_MINIMAL" "$JAVA_MINIMAL"
 RUN java -version
-RUN apk --no-cache --update add sqlite
+RUN apk update && apk --no-cache --update add sqlite
 
 ENV DATACLAY_HOME=/home/dataclayusr/dataclay
 ENV DATACLAY_LOG_CONFIG=${DATACLAY_HOME}/logging/log4j2.xml

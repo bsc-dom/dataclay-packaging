@@ -44,7 +44,11 @@ fi
 
 ### ========================== EXTRA LIBRARIES ============================= ##
 if [ ! -z ${PYCLAY_LIBS+x} ]; then
-  pip install $PYCLAY_LIBS
+  if [ ! -z ${PYPI_URL+x} ]; then
+    pip install -i $PYPI_URL $PYCLAY_LIBS
+  else
+    pip install $PYCLAY_LIBS
+  fi
 fi
 
 ### ========================== ENTRYPOINT ============================= ##
