@@ -188,8 +188,10 @@ function deploy_base {
     popd
   fi
   if [ "$DEV" = false ] ; then
-    tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/$IMAGE:$BASE_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/$IMAGE
-    [[ ! -z "$TAG_SUFFIX" ]] && tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/$IMAGE:$BASE_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/$IMAGE:"${TAG_SUFFIX//-}" # alpine or slim tags
+    tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/$IMAGE:$BASE_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/$IMAGE:latest
+    if [ ! -z "$TAG_SUFFIX" ]; then
+      tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/$IMAGE:$BASE_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/$IMAGE:"${TAG_SUFFIX//-}"
+    fi
   else
     tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/$IMAGE:$BASE_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/$IMAGE:develop${TAG_SUFFIX}
     if [ "$ADD_DATE_TAG" = true ] ; then
@@ -255,8 +257,10 @@ function deploy_logicmodule {
       tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/logicmodule:$DEFAULT_JDK_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/logicmodule:$DEFAULT_TAG
       ##### TAG LATEST #####
       if [ "$DEV" = false ] ; then
-        tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/logicmodule:$DATACLAY_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/logicmodule
-        [[ ! -z "$TAG_SUFFIX" ]] && tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/logicmodule:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/logicmodule:"${TAG_SUFFIX//-}" # alpine or slim tags
+        tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/logicmodule:$DATACLAY_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/logicmodule:latest
+        if [ ! -z "$TAG_SUFFIX" ]; then
+          tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/logicmodule:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/logicmodule:"${TAG_SUFFIX//-}"
+        fi
       else
         tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/logicmodule:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/logicmodule:develop${TAG_SUFFIX}
         if [ "$ADD_DATE_TAG" = true ] ; then
@@ -301,8 +305,10 @@ function deploy_dsjava {
 
       ##### TAG LATEST #####
       if [ "$DEV" = false ] ; then
-        tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/dsjava:$DATACLAY_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/dsjava
-        [[ ! -z "$TAG_SUFFIX" ]] && tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/dsjava:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/dsjava:"${TAG_SUFFIX//-}" # alpine or slim tags
+        tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/dsjava:$DATACLAY_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/dsjava:latest
+        if [ ! -z "$TAG_SUFFIX" ]; then
+          tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/dsjava:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/dsjava:"${TAG_SUFFIX//-}"
+        fi
       else
         tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/dsjava:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/dsjava:develop${TAG_SUFFIX}
         if [ "$ADD_DATE_TAG" = true ] ; then
@@ -359,8 +365,10 @@ function deploy_dspython {
       tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/dspython:$DEFAULT_PY_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/dspython:$DEFAULT_TAG
       ##### TAG LATEST #####
       if [ "$DEV" = false ] ; then
-        tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/dspython:$DATACLAY_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/dspython
-        [[ ! -z "$TAG_SUFFIX" ]] && tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/dspython:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/dspython:"${TAG_SUFFIX//-}"# alpine or slim tags
+        tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/dspython:$DATACLAY_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/dspython:latest
+        if [ ! -z "$TAG_SUFFIX" ]; then
+            tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/dspython:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/dspython:"${TAG_SUFFIX//-}"
+        fi
       else
         tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/dspython:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/dspython:develop${TAG_SUFFIX}
         if [ "$ADD_DATE_TAG" = true ] ; then
@@ -402,8 +410,10 @@ function deploy_client {
     popd
   fi
   if [ "$DEV" = false ] ; then
-    tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/client:$CLIENT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/client
-    [[ ! -z "$TAG_SUFFIX" ]] && tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/client:$CLIENT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/client:"${TAG_SUFFIX//-}" # alpine or slim tags
+    tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/client:$CLIENT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/client:latest
+    if [ ! -z "$TAG_SUFFIX" ]; then
+      tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/client:$CLIENT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/client:${TAG_SUFFIX//-}
+    fi
   else
     tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/client:$CLIENT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/client:develop${TAG_SUFFIX}
     if [ "$ADD_DATE_TAG" = true ] ; then
@@ -417,6 +427,7 @@ function deploy_client {
 #=============================================================================
 function deploy_initializer {
   IMAGE=initializer
+  CLIENT_TAG="${DEFAULT_TAG}"
   if [ "$ONLY_TAGS" = false ] ; then
     pushd $SCRIPTDIR/$IMAGE
     deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/initializer:$DEFAULT_TAG \
@@ -429,8 +440,10 @@ function deploy_initializer {
     popd
   fi
   if [ "$DEV" = false ] ; then
-    tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/initializer:$DATACLAY_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/initializer
-    [[ ! -z "$TAG_SUFFIX" ]] && tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/initializer:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/initializer:"${TAG_SUFFIX//-}" # alpine or slim tags
+    tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/initializer:$DATACLAY_VERSION_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/initializer:latest
+    if [ ! -z "$TAG_SUFFIX" ]; then
+      tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/initializer:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/initializer:"${TAG_SUFFIX//-}"
+    fi
   else
     tag docker $DOCKER_TAG_COMMAND ${REGISTRY}/initializer:$DEFAULT_TAG $DOCKER_TAG_SUFFIX ${REGISTRY}/initializer:develop${TAG_SUFFIX}
     if [ "$ADD_DATE_TAG" = true ] ; then
@@ -578,6 +591,7 @@ for IMAGE_TYPE in "${IMAGE_TYPES[@]}"; do
   popd
 
   for IMAGE in "${IMAGES[@]}"; do
+    printInfo "Deploying $IMAGE"
     deploy_$IMAGE
   done
 done

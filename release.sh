@@ -70,50 +70,7 @@ cd $SCRIPTDIR/hpc/mn
 ./deploy.sh $DEV_ARG $PROMPT_ARG
 
 if [ "$DEV" = false ] ; then
-  printMsg "Post-processing files in master"
-  export VERSION=$(cat $SCRIPTDIR/orchestration/VERSION.txt)
-  export PREV_VERSION=$(echo "$VERSION - 0.1" | bc)
-  export NEW_VERSION=$(echo "$VERSION + 0.1" | bc)
-  GIT_TAG=$VERSION
-
-  # Update all submodules recursively
-  # Add submodule changes
-  git add docker/logicmodule/javaclay/
-  git add docker/dspython/pyclay
-  git add orchestration
-  # Modify README.md
-  sed -i "s/\.dev//g" README.md
-  sed -i "s/develop-//g" README.md
-  sed -i "s/develop/latest/g" README.md
-
-  git add README.md
-  git commit -m "Release ${GIT_TAG}"
-  git push
-
-  printMsg "Tagging new release in Git"
-  git tag -a ${GIT_TAG} -m "Release ${GIT_TAG}"
-  git push origin ${GIT_TAG}
-
-  printMsg "Preparing develop branch"
-  ## update develop branch also ##
-  git checkout develop
-  git merge master
-  bash misc/prepare_dev_readme.sh
-
-  pushd $SCRIPTDIR/docker/logicmodule/javaclay/ && git checkout develop && popd
-  pushd $SCRIPTDIR/docker/dspython/pyclay && git checkout develop && popd
-  pushd $SCRIPTDIR/orchestration && git checkout develop && popd
-
-  # Add submodule changes
-  git add docker/logicmodule/javaclay/
-  git add docker/dspython/pyclay
-  git add orchestration
-  git add README.md
-  git commit -m "Preparing new development version"
-  git push
-
-  # back to master
-  git checkout master
+  bash misc/prepare_release.sh
 fi
 
 printMsg "dataClay successfully released! :)"
