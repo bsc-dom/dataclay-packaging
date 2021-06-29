@@ -1,7 +1,8 @@
 ARG BASE_VERSION
+ARG EXECUTION_ENVIRONMENT
 ARG REQUIREMENTS_TAG
 # ============================================================ #
-FROM bscdataclay/dspython:${REQUIREMENTS_TAG} as pyclay-installer
+FROM bscdataclay/dspython:2.6.${EXECUTION_ENVIRONMENT}.dev-slim-requirements as pyclay-installer
 ENV DATACLAY_HOME=/home/dataclayusr/dataclay
 ENV DATACLAY_VIRTUAL_ENV=${DATACLAY_HOME}/dataclay_venv
 ENV PATH="$DATACLAY_VIRTUAL_ENV/bin:$PATH"

@@ -208,7 +208,7 @@ function deploy_python_requirements {
     EXECUTION_ENVIRONMENT_TAG="$(get_container_version $EXECUTION_ENVIRONMENT)${TAG_SUFFIX}"
     REQUIREMENTS_TAG=${EXECUTION_ENVIRONMENT_TAG}-requirements
 
-    pushd $SCRIPTDIR/$IMAGE
+    pushd $SCRIPTDIR/$IMAGE/requirements
     deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/$IMAGE:$REQUIREMENTS_TAG \
         --build-arg DATACLAY_PYVER=$PYTHON_VERSION \
         --build-arg PYTHON_PIP_VERSION=$PYTHON_PIP_VERSION \
@@ -343,6 +343,7 @@ function deploy_dspython {
           --build-arg VCS_REF=$VCS_REF \
           --build-arg BUILD_DATE=$BUILD_DATE \
           --build-arg VERSION=$EXECUTION_ENVIRONMENT_TAG \
+          --build-arg EXECUTION_ENVIRONMENT=${EXECUTION_ENVIRONMENT//./} \
           --build-arg BASE_VERSION=$BASE_VERSION_TAG \
           --build-arg REQUIREMENTS_TAG=${REQUIREMENTS_TAG} \
           --build-arg DATACLAY_PYVER=$PYTHON_VERSION \
@@ -457,7 +458,7 @@ ONLY_TAGS=false
 VCS_REF=$(git rev-parse --short HEAD)
 BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 CUR_DATE_TAG=$(date -u +"%Y%m%d")
-IMAGE_TYPES=(alpine slim arm32 normal)
+IMAGE_TYPES=(normal alpine slim arm32)
 IMAGES=(logicmodule dsjava dspython client initializer)
 REGISTRY=bscdataclay
 DEV=false
@@ -480,6 +481,9 @@ while test $# -gt 0; do
     DOCKER_TAG_SUFFIX=""
     REGISTRY=dom-ci.bsc.es/bscdataclay
     printWarn "Build in local docker"
+    ;;
+  --release)
+    #IMAGES=(python_requirements logicmodule dsjava dspython client initializer)
     ;;
   --dev-release)
     ADD_DATE_TAG=true
