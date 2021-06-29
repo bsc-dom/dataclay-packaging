@@ -59,12 +59,17 @@ if [ "$DEV" = false ] ; then
 fi
 
 cd $SCRIPTDIR/docker
-# TODO: make sure dspython requirements are pushed
-VERSION=$(cat VERSION.txt)
-VERSION="${VERSION//.dev/}"
-echo "${VERSION}" > VERSION.txt
-./deploy.sh $DEV_ARG $PROMPT_ARG --release
-git add VERSION.txt
+if [ "$DEV" = false ] ; then
+  # TODO: make sure dspython requirements are pushed
+  VERSION=$(cat VERSION.txt)
+  VERSION="${VERSION//.dev/}"
+  echo "${VERSION}" > VERSION.txt
+  ./deploy.sh $DEV_ARG $PROMPT_ARG --release
+  git add VERSION.txt
+else
+  ./deploy.sh $PROMPT_ARG
+fi
+cd $SCRIPTDIR
 
 cd $SCRIPTDIR/hpc/mn
 ./deploy.sh $DEV_ARG $PROMPT_ARG
