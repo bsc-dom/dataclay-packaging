@@ -68,9 +68,10 @@ git add VERSION.txt
 
 cd $SCRIPTDIR/hpc/mn
 ./deploy.sh $DEV_ARG $PROMPT_ARG
+cd $SCRIPTDIR
 
 if [ "$DEV" = false ] ; then
-  bash misc/prepare_release.sh
+  bash $SCRIPTDIR/misc/prepare_release.sh
 fi
 
 printMsg "dataClay successfully released! :)"
