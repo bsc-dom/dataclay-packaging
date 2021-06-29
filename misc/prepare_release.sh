@@ -40,23 +40,7 @@ printMsg "Tagging new release in Git"
 git tag -a ${GIT_TAG} -m "Release ${GIT_TAG}"
 git push origin ${GIT_TAG}
 
-printMsg "Preparing develop branch"
-## update develop branch also ##
-git checkout develop
-git merge master
-bash $SCRIPTDIR/prepare_dev_readme.sh
-
-pushd $BASEDIR/docker/logicmodule/javaclay/ && git checkout develop && popd
-pushd $BASEDIR/docker/dspython/pyclay && git checkout develop && popd
-pushd $BASEDIR/orchestration && git checkout develop && popd
-
-# Add submodule changes
-git add $BASEDIR/docker/logicmodule/javaclay/
-git add $BASEDIR/docker/dspython/pyclay
-git add $BASEDIR/orchestration
-git add $BASEDIR/README.md
-git commit -m "Preparing new development version"
-git push
+bash $SCRIPTDIR/prepare_develop.sh
 
 # back to master
 git checkout master

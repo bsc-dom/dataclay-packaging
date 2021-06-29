@@ -1,5 +1,5 @@
-[![License](https://img.shields.io/github/license/bsc.dev.dev-dom/dataclay.dev.dev-packaging)](https://github.com/bsc.dev.dev-dom/dataclay.dev.dev-packaging/blob/develop/LICENSE.txt)
-[![Build status](https://ci.appveyor.com/api/projects/status/kugl74xd5aq6pubr/branch/develop?svg=true)](https://ci.appveyor.com/project/support.dev.dev-dataclay/dataclay.dev.dev-packaging.dev.dev-as6o1/branch/develop)
+[![License](https://img.shields.io/github/license/bsc-dom/dataclay-packaging)](https://github.com/bsc-dom/dataclay-packaging/blob/develop/LICENSE.txt)
+[![Build status](https://ci.appveyor.com/api/projects/status/kugl74xd5aq6pubr/branch/develop?svg=true)](https://ci.appveyor.com/project/support-dataclay/dataclay-packaging-as6o1/branch/develop)
 
 
 # dataClay packaging
@@ -9,138 +9,138 @@ containers (docker and singularity) in multiple architectures
 
 Singularity images are build from normal dataClay docker images (not slim or alpine)
 
-BSC Extrae Tracing is not available in Slim and Alpine images. 
+BSC Extrae Tracing is not available in Slim and Alpine images.
 
-Alpine images are only available in JDK 11 due to gRPC.dev.dev-SSL security issues. 
+Alpine images are only available in JDK 11 due to gRPC-SSL security issues.
 
-<img src="https://img.shields.io/badge/docker%20.dev.dev-%230db7ed.svg?&style=for.dev.dev-the.dev.dev-badge&logo=docker&logoColor=white"/><br/>
+<img src="https://img.shields.io/badge/docker%20-%230db7ed.svg?&style=for-the-badge&logo=docker&logoColor=white"/><br/>
 
 
-[LM:size:develop]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/logicmodule/develop "https://hub.docker.com/repository/docker/bscdataclay/logicmodule/tags?name=develop&page=1"
-[LM:layers:develop]: https://img.shields.io/microbadger/layers/bscdataclay/logicmodule:develop 
+[LM:size:develop]: https://img.shields.io/docker/image-size/bscdataclay/logicmodule/develop "https://hub.docker.com/repository/docker/bscdataclay/logicmodule/tags?name=develop&page=1"
+[LM:layers:develop]: https://img.shields.io/microbadger/layers/bscdataclay/logicmodule:develop
 [LM:commit:develop]: https://images.microbadger.com/badges/commit/bscdataclay/logicmodule:develop.svg "https://microbadger.com/images/bscdataclay/logicmodule:develop"
 
-[LM:size:2.6.jdk11.dev.dev]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/logicmodule/2.6.jdk11.dev.dev "https://hub.docker.com/repository/docker/bscdataclay/logicmodule/tags?name=2.6.jdk11.dev.dev&page=1"
-[LM:layers:2.6.jdk11.dev.dev]: https://img.shields.io/microbadger/layers/bscdataclay/logicmodule:2.6.jdk11.dev.dev 
-[LM:commit:2.6.jdk11.dev.dev]: https://images.microbadger.com/badges/commit/bscdataclay/logicmodule:2.6.jdk11.dev.dev.svg "https://microbadger.com/images/bscdataclay/logicmodule:2.6.jdk11.dev.dev"
+[LM:size:2.7.jdk11.dev]: https://img.shields.io/docker/image-size/bscdataclay/logicmodule/2.7.jdk11.dev "https://hub.docker.com/repository/docker/bscdataclay/logicmodule/tags?name=2.7.jdk11.dev&page=1"
+[LM:layers:2.7.jdk11.dev]: https://img.shields.io/microbadger/layers/bscdataclay/logicmodule:2.7.jdk11.dev
+[LM:commit:2.7.jdk11.dev]: https://images.microbadger.com/badges/commit/bscdataclay/logicmodule:2.7.jdk11.dev.svg "https://microbadger.com/images/bscdataclay/logicmodule:2.7.jdk11.dev"
 
-[LM:size:develop.dev.dev-slim]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/logicmodule/develop.dev.dev-slim "https://hub.docker.com/repository/docker/bscdataclay/logicmodule/tags?name=slim&page=1"
-[LM:layers:develop.dev.dev-slim]: https://img.shields.io/microbadger/layers/bscdataclay/logicmodule:develop.dev.dev-slim 
-[LM:commit:develop.dev.dev-slim]: https://images.microbadger.com/badges/commit/bscdataclay/logicmodule:develop.dev.dev-slim.svg "https://microbadger.com/images/bscdataclay/logicmodule:develop.dev.dev-slim"
+[LM:size:develop-slim]: https://img.shields.io/docker/image-size/bscdataclay/logicmodule/develop-slim "https://hub.docker.com/repository/docker/bscdataclay/logicmodule/tags?name=slim&page=1"
+[LM:layers:develop-slim]: https://img.shields.io/microbadger/layers/bscdataclay/logicmodule:develop-slim
+[LM:commit:develop-slim]: https://images.microbadger.com/badges/commit/bscdataclay/logicmodule:develop-slim.svg "https://microbadger.com/images/bscdataclay/logicmodule:develop-slim"
 
-[LM:size:2.6.jdk11.dev.dev.dev.dev-slim]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/logicmodule/2.6.jdk11.dev.dev.dev.dev-slim "https://hub.docker.com/repository/docker/bscdataclay/logicmodule/tags?name=2.6.jdk11.dev.dev.dev.dev-slim&page=1"
-[LM:layers:2.6.jdk11.dev.dev.dev.dev-slim]: https://img.shields.io/microbadger/layers/bscdataclay/logicmodule:2.6.jdk11.dev.dev.dev.dev-slim 
-[LM:commit:2.6.jdk11.dev.dev.dev.dev-slim]: https://images.microbadger.com/badges/commit/bscdataclay/logicmodule:2.6.jdk11.dev.dev.dev.dev-slim.svg "https://microbadger.com/images/bscdataclay/logicmodule:2.6.jdk11.dev.dev.dev.dev-slim"
+[LM:size:2.7.jdk11.dev-slim]: https://img.shields.io/docker/image-size/bscdataclay/logicmodule/2.7.jdk11.dev-slim "https://hub.docker.com/repository/docker/bscdataclay/logicmodule/tags?name=2.7.jdk11.dev-slim&page=1"
+[LM:layers:2.7.jdk11.dev-slim]: https://img.shields.io/microbadger/layers/bscdataclay/logicmodule:2.7.jdk11.dev-slim
+[LM:commit:2.7.jdk11.dev-slim]: https://images.microbadger.com/badges/commit/bscdataclay/logicmodule:2.7.jdk11.dev-slim.svg "https://microbadger.com/images/bscdataclay/logicmodule:2.7.jdk11.dev-slim"
 
-[LM:size:develop.dev.dev-alpine]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/logicmodule/develop.dev.dev-alpine "https://hub.docker.com/repository/docker/bscdataclay/logicmodule/tags?name=alpine&page=1"
-[LM:layers:develop.dev.dev-alpine]: https://img.shields.io/microbadger/layers/bscdataclay/logicmodule:develop.dev.dev-alpine 
-[LM:commit:develop.dev.dev-alpine]: https://images.microbadger.com/badges/commit/bscdataclay/logicmodule:develop.dev.dev-alpine.svg "https://microbadger.com/images/bscdataclay/logicmodule:develop.dev.dev-alpine"
+[LM:size:develop-alpine]: https://img.shields.io/docker/image-size/bscdataclay/logicmodule/develop-alpine "https://hub.docker.com/repository/docker/bscdataclay/logicmodule/tags?name=alpine&page=1"
+[LM:layers:develop-alpine]: https://img.shields.io/microbadger/layers/bscdataclay/logicmodule:develop-alpine
+[LM:commit:develop-alpine]: https://images.microbadger.com/badges/commit/bscdataclay/logicmodule:develop-alpine.svg "https://microbadger.com/images/bscdataclay/logicmodule:develop-alpine"
 
-[DSjava:size:develop]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/dsjava/develop "https://hub.docker.com/repository/docker/bscdataclay/dsjava/tags?name=develop&page=1"
-[DSjava:layers:develop]: https://img.shields.io/microbadger/layers/bscdataclay/dsjava:develop 
+[DSjava:size:develop]: https://img.shields.io/docker/image-size/bscdataclay/dsjava/develop "https://hub.docker.com/repository/docker/bscdataclay/dsjava/tags?name=develop&page=1"
+[DSjava:layers:develop]: https://img.shields.io/microbadger/layers/bscdataclay/dsjava:develop
 [DSjava:commit:develop]: https://images.microbadger.com/badges/commit/bscdataclay/dsjava:develop.svg "https://microbadger.com/images/bscdataclay/dsjava:develop"
 
-[DSjava:size:2.6.jdk11.dev.dev]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/dsjava/2.6.jdk11.dev.dev "https://hub.docker.com/repository/docker/bscdataclay/dsjava/tags?name=2.6.jdk11.dev.dev&page=1"
-[DSjava:layers:2.6.jdk11.dev.dev]: https://img.shields.io/microbadger/layers/bscdataclay/dsjava:2.6.jdk11.dev.dev 
-[DSjava:commit:2.6.jdk11.dev.dev]: https://images.microbadger.com/badges/commit/bscdataclay/dsjava:2.6.jdk11.dev.dev.svg "https://microbadger.com/images/bscdataclay/dsjava:2.6.jdk11.dev.dev"
+[DSjava:size:2.7.jdk11.dev]: https://img.shields.io/docker/image-size/bscdataclay/dsjava/2.7.jdk11.dev "https://hub.docker.com/repository/docker/bscdataclay/dsjava/tags?name=2.7.jdk11.dev&page=1"
+[DSjava:layers:2.7.jdk11.dev]: https://img.shields.io/microbadger/layers/bscdataclay/dsjava:2.7.jdk11.dev
+[DSjava:commit:2.7.jdk11.dev]: https://images.microbadger.com/badges/commit/bscdataclay/dsjava:2.7.jdk11.dev.svg "https://microbadger.com/images/bscdataclay/dsjava:2.7.jdk11.dev"
 
-[DSjava:size:develop.dev.dev-slim]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/dsjava/develop.dev.dev-slim "https://hub.docker.com/repository/docker/bscdataclay/dsjava/tags?name=slim&page=1"
-[DSjava:layers:develop.dev.dev-slim]: https://img.shields.io/microbadger/layers/bscdataclay/dsjava:develop.dev.dev-slim 
-[DSjava:commit:develop.dev.dev-slim]: https://images.microbadger.com/badges/commit/bscdataclay/dsjava:develop.dev.dev-slim.svg "https://microbadger.com/images/bscdataclay/dsjava:develop.dev.dev-slim"
+[DSjava:size:develop-slim]: https://img.shields.io/docker/image-size/bscdataclay/dsjava/develop-slim "https://hub.docker.com/repository/docker/bscdataclay/dsjava/tags?name=slim&page=1"
+[DSjava:layers:develop-slim]: https://img.shields.io/microbadger/layers/bscdataclay/dsjava:develop-slim
+[DSjava:commit:develop-slim]: https://images.microbadger.com/badges/commit/bscdataclay/dsjava:develop-slim.svg "https://microbadger.com/images/bscdataclay/dsjava:develop-slim"
 
-[DSjava:size:2.6.jdk11.dev.dev.dev.dev-slim]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/dsjava/2.6.jdk11.dev.dev.dev.dev-slim "https://hub.docker.com/repository/docker/bscdataclay/dsjava/tags?name=2.6.jdk11.dev.dev.dev.dev-slim&page=1"
-[DSjava:layers:2.6.jdk11.dev.dev.dev.dev-slim]: https://img.shields.io/microbadger/layers/bscdataclay/dsjava:2.6.jdk11.dev.dev.dev.dev-slim 
-[DSjava:commit:2.6.jdk11.dev.dev.dev.dev-slim]: https://images.microbadger.com/badges/commit/bscdataclay/dsjava:2.6.jdk11.dev.dev.dev.dev-slim.svg "https://microbadger.com/images/bscdataclay/dsjava:2.6.jdk11.dev.dev.dev.dev-slim"
+[DSjava:size:2.7.jdk11.dev-slim]: https://img.shields.io/docker/image-size/bscdataclay/dsjava/2.7.jdk11.dev-slim "https://hub.docker.com/repository/docker/bscdataclay/dsjava/tags?name=2.7.jdk11.dev-slim&page=1"
+[DSjava:layers:2.7.jdk11.dev-slim]: https://img.shields.io/microbadger/layers/bscdataclay/dsjava:2.7.jdk11.dev-slim
+[DSjava:commit:2.7.jdk11.dev-slim]: https://images.microbadger.com/badges/commit/bscdataclay/dsjava:2.7.jdk11.dev-slim.svg "https://microbadger.com/images/bscdataclay/dsjava:2.7.jdk11.dev-slim"
 
-[DSjava:size:develop.dev.dev-alpine]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/dsjava/develop.dev.dev-alpine "https://hub.docker.com/repository/docker/bscdataclay/dsjava/tags?name=alpine&page=1"
-[DSjava:layers:develop.dev.dev-alpine]: https://img.shields.io/microbadger/layers/bscdataclay/dsjava:develop.dev.dev-alpine 
-[DSjava:commit:develop.dev.dev-alpine]: https://images.microbadger.com/badges/commit/bscdataclay/dsjava:develop.dev.dev-alpine.svg "https://microbadger.com/images/bscdataclay/dsjava:develop.dev.dev-alpine"
+[DSjava:size:develop-alpine]: https://img.shields.io/docker/image-size/bscdataclay/dsjava/develop-alpine "https://hub.docker.com/repository/docker/bscdataclay/dsjava/tags?name=alpine&page=1"
+[DSjava:layers:develop-alpine]: https://img.shields.io/microbadger/layers/bscdataclay/dsjava:develop-alpine
+[DSjava:commit:develop-alpine]: https://images.microbadger.com/badges/commit/bscdataclay/dsjava:develop-alpine.svg "https://microbadger.com/images/bscdataclay/dsjava:develop-alpine"
 
-[D.python:size:develop]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/d.python/develop "https://hub.docker.com/repository/docker/bscdataclay/d.python/tags?name=develop&page=1"
-[D.python:layers:develop]: https://img.shields.io/microbadger/layers/bscdataclay/d.python:develop 
-[D.python:commit:develop]: https://images.microbadger.com/badges/commit/bscdataclay/d.python:develop.svg "https://microbadger.com/images/bscdataclay/d.python:develop"
+[DSpython:size:develop]: https://img.shields.io/docker/image-size/bscdataclay/dspython/develop "https://hub.docker.com/repository/docker/bscdataclay/dspython/tags?name=develop&page=1"
+[DSpython:layers:develop]: https://img.shields.io/microbadger/layers/bscdataclay/dspython:develop
+[DSpython:commit:develop]: https://images.microbadger.com/badges/commit/bscdataclay/dspython:develop.svg "https://microbadger.com/images/bscdataclay/dspython:develop"
 
-[D.python:size:2.6.py36.dev.dev]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/d.python/2.6.py36.dev.dev "https://hub.docker.com/repository/docker/bscdataclay/d.python/tags?name=2.6.py36.dev.dev&page=1"
-[D.python:layers:2.6.py36.dev.dev]: https://img.shields.io/microbadger/layers/bscdataclay/d.python:2.6.py36.dev.dev 
-[D.python:commit:2.6.py36.dev.dev]: https://images.microbadger.com/badges/commit/bscdataclay/d.python:2.6.py36.dev.dev.svg "https://microbadger.com/images/bscdataclay/d.python:2.6.py36.dev.dev"
+[DSpython:size:2.7.py36.dev]: https://img.shields.io/docker/image-size/bscdataclay/dspython/2.7.py36.dev "https://hub.docker.com/repository/docker/bscdataclay/dspython/tags?name=2.7.py36.dev&page=1"
+[DSpython:layers:2.7.py36.dev]: https://img.shields.io/microbadger/layers/bscdataclay/dspython:2.7.py36.dev
+[DSpython:commit:2.7.py36.dev]: https://images.microbadger.com/badges/commit/bscdataclay/dspython:2.7.py36.dev.svg "https://microbadger.com/images/bscdataclay/dspython:2.7.py36.dev"
 
-[D.python:size:2.6.py38.dev.dev]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/d.python/2.6.py38.dev.dev "https://hub.docker.com/repository/docker/bscdataclay/d.python/tags?name=2.6.py38.dev.dev&page=1"
-[D.python:layers:2.6.py38.dev.dev]: https://img.shields.io/microbadger/layers/bscdataclay/d.python:2.6.py38.dev.dev 
-[D.python:commit:2.6.py38.dev.dev]: https://images.microbadger.com/badges/commit/bscdataclay/d.python:2.6.py38.dev.dev.svg "https://microbadger.com/images/bscdataclay/d.python:2.6.py38.dev.dev"
+[DSpython:size:2.7.py38.dev]: https://img.shields.io/docker/image-size/bscdataclay/dspython/2.7.py38.dev "https://hub.docker.com/repository/docker/bscdataclay/dspython/tags?name=2.7.py38.dev&page=1"
+[DSpython:layers:2.7.py38.dev]: https://img.shields.io/microbadger/layers/bscdataclay/dspython:2.7.py38.dev
+[DSpython:commit:2.7.py38.dev]: https://images.microbadger.com/badges/commit/bscdataclay/dspython:2.7.py38.dev.svg "https://microbadger.com/images/bscdataclay/dspython:2.7.py38.dev"
 
-[D.python:size:develop.dev.dev-slim]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/d.python/develop.dev.dev-slim "https://hub.docker.com/repository/docker/bscdataclay/d.python/tags?name=slim&page=1"
-[D.python:layers:develop.dev.dev-slim]: https://img.shields.io/microbadger/layers/bscdataclay/d.python:develop.dev.dev-slim 
-[D.python:commit:develop.dev.dev-slim]: https://images.microbadger.com/badges/commit/bscdataclay/d.python:develop.dev.dev-slim.svg "https://microbadger.com/images/bscdataclay/d.python:develop.dev.dev-slim"
+[DSpython:size:develop-slim]: https://img.shields.io/docker/image-size/bscdataclay/dspython/develop-slim "https://hub.docker.com/repository/docker/bscdataclay/dspython/tags?name=slim&page=1"
+[DSpython:layers:develop-slim]: https://img.shields.io/microbadger/layers/bscdataclay/dspython:develop-slim
+[DSpython:commit:develop-slim]: https://images.microbadger.com/badges/commit/bscdataclay/dspython:develop-slim.svg "https://microbadger.com/images/bscdataclay/dspython:develop-slim"
 
-[D.python:size:2.6.py36.dev.dev.dev.dev-slim]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/d.python/2.6.py36.dev.dev.dev.dev-slim "https://hub.docker.com/repository/docker/bscdataclay/d.python/tags?name=2.6.py36.dev.dev.dev.dev-slim&page=1"
-[D.python:layers:2.6.py36.dev.dev.dev.dev-slim]: https://img.shields.io/microbadger/layers/bscdataclay/d.python:2.6.py36.dev.dev.dev.dev-slim 
-[D.python:commit:2.6.py36.dev.dev.dev.dev-slim]: https://images.microbadger.com/badges/commit/bscdataclay/d.python:2.6.py36.dev.dev.dev.dev-slim.svg "https://microbadger.com/images/bscdataclay/d.python:2.6.py36.dev.dev.dev.dev-slim"
+[DSpython:size:2.7.py36.dev-slim]: https://img.shields.io/docker/image-size/bscdataclay/dspython/2.7.py36.dev-slim "https://hub.docker.com/repository/docker/bscdataclay/dspython/tags?name=2.7.py36.dev-slim&page=1"
+[DSpython:layers:2.7.py36.dev-slim]: https://img.shields.io/microbadger/layers/bscdataclay/dspython:2.7.py36.dev-slim
+[DSpython:commit:2.7.py36.dev-slim]: https://images.microbadger.com/badges/commit/bscdataclay/dspython:2.7.py36.dev-slim.svg "https://microbadger.com/images/bscdataclay/dspython:2.7.py36.dev-slim"
 
-[D.python:size:2.6.py38.dev.dev.dev.dev-slim]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/d.python/2.6.py38.dev.dev.dev.dev-slim "https://hub.docker.com/repository/docker/bscdataclay/d.python/tags?name=2.6.py38.dev.dev.dev.dev-slim&page=1"
-[D.python:layers:2.6.py38.dev.dev.dev.dev-slim]: https://img.shields.io/microbadger/layers/bscdataclay/d.python:2.6.py38.dev.dev.dev.dev-slim 
-[D.python:commit:2.6.py38.dev.dev.dev.dev-slim]: https://images.microbadger.com/badges/commit/bscdataclay/d.python:2.6.py38.dev.dev.dev.dev-slim.svg "https://microbadger.com/images/bscdataclay/d.python:2.6.py38.dev.dev.dev.dev-slim"
+[DSpython:size:2.7.py38.dev-slim]: https://img.shields.io/docker/image-size/bscdataclay/dspython/2.7.py38.dev-slim "https://hub.docker.com/repository/docker/bscdataclay/dspython/tags?name=2.7.py38.dev-slim&page=1"
+[DSpython:layers:2.7.py38.dev-slim]: https://img.shields.io/microbadger/layers/bscdataclay/dspython:2.7.py38.dev-slim
+[DSpython:commit:2.7.py38.dev-slim]: https://images.microbadger.com/badges/commit/bscdataclay/dspython:2.7.py38.dev-slim.svg "https://microbadger.com/images/bscdataclay/dspython:2.7.py38.dev-slim"
 
-[D.python:size:develop.dev.dev-alpine]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/d.python/develop.dev.dev-alpine "https://hub.docker.com/repository/docker/bscdataclay/d.python/tags?name=alpine&page=1"
-[D.python:layers:develop.dev.dev-alpine]: https://img.shields.io/microbadger/layers/bscdataclay/d.python:develop.dev.dev-alpine 
-[D.python:commit:develop.dev.dev-alpine]: https://images.microbadger.com/badges/commit/bscdataclay/d.python:develop.dev.dev-alpine.svg "https://microbadger.com/images/bscdataclay/d.python:develop.dev.dev-alpine"
+[DSpython:size:develop-alpine]: https://img.shields.io/docker/image-size/bscdataclay/dspython/develop-alpine "https://hub.docker.com/repository/docker/bscdataclay/dspython/tags?name=alpine&page=1"
+[DSpython:layers:develop-alpine]: https://img.shields.io/microbadger/layers/bscdataclay/dspython:develop-alpine
+[DSpython:commit:develop-alpine]: https://images.microbadger.com/badges/commit/bscdataclay/dspython:develop-alpine.svg "https://microbadger.com/images/bscdataclay/dspython:develop-alpine"
 
-[D.python:size:2.6.py36.dev.dev.dev.dev-alpine]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/d.python/2.6.py36.dev.dev.dev.dev-alpine "https://hub.docker.com/repository/docker/bscdataclay/d.python/tags?name=2.6.py36.dev.dev.dev.dev-alpine&page=1"
-[D.python:layers:2.6.py36.dev.dev.dev.dev-alpine]: https://img.shields.io/microbadger/layers/bscdataclay/d.python:2.6.py36.dev.dev.dev.dev-alpine 
-[D.python:commit:2.6.py36.dev.dev.dev.dev-alpine]: https://images.microbadger.com/badges/commit/bscdataclay/d.python:2.6.py36.dev.dev.dev.dev-alpine.svg "https://microbadger.com/images/bscdataclay/d.python:2.6.py36.dev.dev.dev.dev-alpine"
+[DSpython:size:2.7.py36.dev-alpine]: https://img.shields.io/docker/image-size/bscdataclay/dspython/2.7.py36.dev-alpine "https://hub.docker.com/repository/docker/bscdataclay/dspython/tags?name=2.7.py36.dev-alpine&page=1"
+[DSpython:layers:2.7.py36.dev-alpine]: https://img.shields.io/microbadger/layers/bscdataclay/dspython:2.7.py36.dev-alpine
+[DSpython:commit:2.7.py36.dev-alpine]: https://images.microbadger.com/badges/commit/bscdataclay/dspython:2.7.py36.dev-alpine.svg "https://microbadger.com/images/bscdataclay/dspython:2.7.py36.dev-alpine"
 
-[D.python:size:2.6.py38.dev.dev.dev.dev-alpine]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/d.python/2.6.py38.dev.dev.dev.dev-alpine "https://hub.docker.com/repository/docker/bscdataclay/d.python/tags?name=2.6.py38.dev.dev.dev.dev-alpine&page=1"
-[D.python:layers:2.6.py38.dev.dev.dev.dev-alpine]: https://img.shields.io/microbadger/layers/bscdataclay/d.python:2.6.py38.dev.dev.dev.dev-alpine 
-[D.python:commit:2.6.py38.dev.dev.dev.dev-alpine]: https://images.microbadger.com/badges/commit/bscdataclay/d.python:2.6.py38.dev.dev.dev.dev-alpine.svg "https://microbadger.com/images/bscdataclay/d.python:2.6.py38.dev.dev.dev.dev-alpine"
+[DSpython:size:2.7.py38.dev-alpine]: https://img.shields.io/docker/image-size/bscdataclay/dspython/2.7.py38.dev-alpine "https://hub.docker.com/repository/docker/bscdataclay/dspython/tags?name=2.7.py38.dev-alpine&page=1"
+[DSpython:layers:2.7.py38.dev-alpine]: https://img.shields.io/microbadger/layers/bscdataclay/dspython:2.7.py38.dev-alpine
+[DSpython:commit:2.7.py38.dev-alpine]: https://images.microbadger.com/badges/commit/bscdataclay/dspython:2.7.py38.dev-alpine.svg "https://microbadger.com/images/bscdataclay/dspython:2.7.py38.dev-alpine"
 
 
-[Client:size:develop]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/client/develop "https://hub.docker.com/repository/docker/bscdataclay/client/tags?name=develop&page=1"
+[Client:size:develop]: https://img.shields.io/docker/image-size/bscdataclay/client/develop "https://hub.docker.com/repository/docker/bscdataclay/client/tags?name=develop&page=1"
 [Client:layers:develop]: https://img.shields.io/microbadger/layers/bscdataclay/client:develop
 [Client:commit:develop]: https://images.microbadger.com/badges/commit/bscdataclay/client:develop.svg "https://microbadger.com/images/bscdataclay/client:develop"
 
-[Client:size:develop.dev.dev-slim]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/client/develop.dev.dev-slim "https://hub.docker.com/repository/docker/bscdataclay/client/tags?name=slim&page=1"
-[Client:layers:develop.dev.dev-slim]: https://img.shields.io/microbadger/layers/bscdataclay/client:develop.dev.dev-slim
-[Client:commit:develop.dev.dev-slim]: https://images.microbadger.com/badges/commit/bscdataclay/client:develop.dev.dev-slim.svg "https://microbadger.com/images/bscdataclay/client:develop.dev.dev-slim"
+[Client:size:develop-slim]: https://img.shields.io/docker/image-size/bscdataclay/client/develop-slim "https://hub.docker.com/repository/docker/bscdataclay/client/tags?name=slim&page=1"
+[Client:layers:develop-slim]: https://img.shields.io/microbadger/layers/bscdataclay/client:develop-slim
+[Client:commit:develop-slim]: https://images.microbadger.com/badges/commit/bscdataclay/client:develop-slim.svg "https://microbadger.com/images/bscdataclay/client:develop-slim"
 
-[Client:size:develop.dev.dev-alpine]: https://img.shields.io/docker/image.dev.dev-size/bscdataclay/client/develop.dev.dev-alpine "https://hub.docker.com/repository/docker/bscdataclay/client/tags?name=alpine&page=1"
-[Client:layers:develop.dev.dev-alpine]: https://img.shields.io/microbadger/layers/bscdataclay/client:develop.dev.dev-alpine
-[Client:commit:develop.dev.dev-alpine]: https://images.microbadger.com/badges/commit/bscdataclay/client:develop.dev.dev-alpine.svg "https://microbadger.com/images/bscdataclay/client:develop.dev.dev-slim"
+[Client:size:develop-alpine]: https://img.shields.io/docker/image-size/bscdataclay/client/develop-alpine "https://hub.docker.com/repository/docker/bscdataclay/client/tags?name=alpine&page=1"
+[Client:layers:develop-alpine]: https://img.shields.io/microbadger/layers/bscdataclay/client:develop-alpine
+[Client:commit:develop-alpine]: https://images.microbadger.com/badges/commit/bscdataclay/client:develop-alpine.svg "https://microbadger.com/images/bscdataclay/client:develop-slim"
 
 
 
 
 | image                   | tags             |                                                                                 |
-|.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-|.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-|.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-.dev.dev-|
-| bscdataclay/logicmodule |   .dev.dev`develop.dev.dev` .dev.dev`2.6.dev.dev` .dev.dev`2.6.jdk8.dev.dev.dev.dev` |  ![LM:size:develop] ![LM:layers:develop] ![LM:commit:develop] |
-|                         |   .dev.dev`2.6.jdk11.dev.dev.dev.dev`    |  ![LM:size:2.6.jdk11.dev.dev] ![LM:layers:2.6.jdk11.dev.dev] ![LM:commit:2.6.jdk11.dev.dev] |
-|                         |   .dev.dev`develop.dev.dev-slim.dev.dev` .dev.dev`2.6.jdk8.dev.dev.dev.dev-slim.dev.dev`    |  ![LM:size:develop.dev.dev-slim] ![LM:layers:develop.dev.dev-slim] ![LM:commit:develop.dev.dev-slim] |
-|                         |   .dev.dev`2.6.jdk11.dev.dev.dev.dev-slim.dev.dev`    |  ![LM:size:2.6.jdk11.dev.dev.dev.dev-slim] ![LM:layers:2.6.jdk11.dev.dev.dev.dev-slim] ![LM:commit:2.6.jdk11.dev.dev.dev.dev-slim]  |
-|                         |   .dev.dev`develop.dev.dev-alpine.dev.dev` .dev.dev`2.6.jdk11.dev.dev.dev.dev-alpine.dev.dev`    |  ![LM:size:develop.dev.dev-alpine] ![LM:layers:develop.dev.dev-alpine] ![LM:commit:develop.dev.dev-alpine] |
-| bscdataclay/dsjava |   .dev.dev`develop.dev.dev` .dev.dev`2.6.dev.dev` .dev.dev`2.6.jdk8.dev.dev.dev.dev` |  ![DSjava:size:develop] ![DSjava:layers:develop] ![DSjava:commit:develop] |
-|                         |   .dev.dev`2.6.jdk11.dev.dev.dev.dev`    |  ![DSjava:size:2.6.jdk11.dev.dev] ![DSjava:layers:2.6.jdk11.dev.dev] ![DSjava:commit:2.6.jdk11.dev.dev] |
-|                         |   .dev.dev`develop.dev.dev-slim.dev.dev` .dev.dev`2.6.jdk8.dev.dev.dev.dev-slim.dev.dev`    |  ![DSjava:size:develop.dev.dev-slim] ![DSjava:layers:develop.dev.dev-slim] ![DSjava:commit:develop.dev.dev-slim] |
-|                         |   .dev.dev`2.6.jdk11.dev.dev.dev.dev-slim.dev.dev`    |  ![DSjava:size:2.6.jdk11.dev.dev.dev.dev-slim] ![DSjava:layers:2.6.jdk11.dev.dev.dev.dev-slim] ![DSjava:commit:2.6.jdk11.dev.dev.dev.dev-slim]  |
-|                         |   .dev.dev`develop.dev.dev-alpine.dev.dev` .dev.dev`2.6.jdk11.dev.dev.dev.dev-alpine.dev.dev`    |  ![DSjava:size:develop.dev.dev-alpine] ![DSjava:layers:develop.dev.dev-alpine] ![DSjava:commit:develop.dev.dev-alpine] |
-| bscdataclay/d.python      |   .dev.dev`develop.dev.dev` .dev.dev`2.6.dev.dev` .dev.dev`2.6.py37.dev.dev.dev.dev` |  ![D.python:size:develop] ![D.python:layers:develop] ![D.python:commit:develop] |
-|                         |   .dev.dev`2.6.py36.dev.dev.dev.dev`    |  ![D.python:size:2.6.py36.dev.dev] ![D.python:layers:2.6.py36.dev.dev] ![D.python:commit:2.6.py36.dev.dev]  |
-|                         |   .dev.dev`2.6.py38.dev.dev.dev.dev`    |  ![D.python:size:2.6.py38.dev.dev] ![D.python:layers:2.6.py38.dev.dev] ![D.python:commit:2.6.py38.dev.dev]  |
-|                         |   .dev.dev`develop.dev.dev-slim.dev.dev` .dev.dev`2.6.dev.dev-slim.dev.dev` .dev.dev`2.6.py37.dev.dev.dev.dev-slim.dev.dev` |  ![D.python:size:develop.dev.dev-slim] ![D.python:layers:develop.dev.dev-slim] ![D.python:commit:develop.dev.dev-slim] |
-|                         |   .dev.dev`2.6.py36.dev.dev.dev.dev`    |  ![D.python:size:2.6.py36.dev.dev.dev.dev-slim] ![D.python:layers:2.6.py36.dev.dev.dev.dev-slim] ![D.python:commit:2.6.py36.dev.dev.dev.dev-slim]  |
-|                         |   .dev.dev`2.6.py38.dev.dev.dev.dev`    |  ![D.python:size:2.6.py38.dev.dev.dev.dev-slim] ![D.python:layers:2.6.py38.dev.dev.dev.dev-slim] ![D.python:commit:2.6.py38.dev.dev.dev.dev-slim]  |
-|                         |   .dev.dev`develop.dev.dev-alpine.dev.dev` .dev.dev`2.6.dev.dev-alpine.dev.dev` .dev.dev`2.6.py37.dev.dev.dev.dev-alpine.dev.dev` |  ![D.python:size:develop.dev.dev-alpine] ![D.python:layers:develop.dev.dev-alpine] ![D.python:commit:develop.dev.dev-alpine] |
-|                         |   .dev.dev`2.6.py36.dev.dev.dev.dev`    |  ![D.python:size:2.6.py36.dev.dev.dev.dev-alpine] ![D.python:layers:2.6.py36.dev.dev.dev.dev-alpine] ![D.python:commit:2.6.py36.dev.dev.dev.dev-alpine]  |
-|                         |   .dev.dev`2.6.py38.dev.dev.dev.dev`    |  ![D.python:size:2.6.py38.dev.dev.dev.dev-alpine] ![D.python:layers:2.6.py38.dev.dev.dev.dev-alpine] ![D.python:commit:2.6.py38.dev.dev.dev.dev-alpine]  |
-| bscdataclay/client |   .dev.dev`develop.dev.dev` .dev.dev`2.6.dev.dev`  |  ![Client:size:develop]  ![Client:layers:develop] ![Client:commit:develop]  |
-|                         |   .dev.dev`develop.dev.dev-slim.dev.dev` .dev.dev`2.6.dev.dev-slim.dev.dev` |  ![Client:size:develop.dev.dev-slim] ![Client:layers:develop.dev.dev-slim] ![Client:commit:develop.dev.dev-slim]  |
-|                         |   .dev.dev`develop.dev.dev-alpine.dev.dev` .dev.dev`2.6.dev.dev-alpine.dev.dev` |  ![Client:size:develop.dev.dev-alpine] ![Client:layers:develop.dev.dev-alpine] ![Client:commit:develop.dev.dev-alpine]  |
+|-------------------------|------------------|---------------------------------------------------------------------------------|
+| bscdataclay/logicmodule |   `develop` `2.7` `2.7.jdk8.dev` |  ![LM:size:develop] ![LM:layers:develop] ![LM:commit:develop] |
+|                         |   `2.7.jdk11.dev`    |  ![LM:size:2.7.jdk11.dev] ![LM:layers:2.7.jdk11.dev] ![LM:commit:2.7.jdk11.dev] |
+|                         |   `develop-slim` `2.7.jdk8.dev-slim`    |  ![LM:size:develop-slim] ![LM:layers:develop-slim] ![LM:commit:develop-slim] |
+|                         |   `2.7.jdk11.dev-slim`    |  ![LM:size:2.7.jdk11.dev-slim] ![LM:layers:2.7.jdk11.dev-slim] ![LM:commit:2.7.jdk11.dev-slim]  |
+|                         |   `develop-alpine` `2.7.jdk11.dev-alpine`    |  ![LM:size:develop-alpine] ![LM:layers:develop-alpine] ![LM:commit:develop-alpine] |
+| bscdataclay/dsjava |   `develop` `2.7` `2.7.jdk8.dev` |  ![DSjava:size:develop] ![DSjava:layers:develop] ![DSjava:commit:develop] |
+|                         |   `2.7.jdk11.dev`    |  ![DSjava:size:2.7.jdk11.dev] ![DSjava:layers:2.7.jdk11.dev] ![DSjava:commit:2.7.jdk11.dev] |
+|                         |   `develop-slim` `2.7.jdk8.dev-slim`    |  ![DSjava:size:develop-slim] ![DSjava:layers:develop-slim] ![DSjava:commit:develop-slim] |
+|                         |   `2.7.jdk11.dev-slim`    |  ![DSjava:size:2.7.jdk11.dev-slim] ![DSjava:layers:2.7.jdk11.dev-slim] ![DSjava:commit:2.7.jdk11.dev-slim]  |
+|                         |   `develop-alpine` `2.7.jdk11.dev-alpine`    |  ![DSjava:size:develop-alpine] ![DSjava:layers:develop-alpine] ![DSjava:commit:develop-alpine] |
+| bscdataclay/dspython      |   `develop` `2.7` `2.7.py37.dev` |  ![DSpython:size:develop] ![DSpython:layers:develop] ![DSpython:commit:develop] |
+|                         |   `2.7.py36.dev`    |  ![DSpython:size:2.7.py36.dev] ![DSpython:layers:2.7.py36.dev] ![DSpython:commit:2.7.py36.dev]  |
+|                         |   `2.7.py38.dev`    |  ![DSpython:size:2.7.py38.dev] ![DSpython:layers:2.7.py38.dev] ![DSpython:commit:2.7.py38.dev]  |
+|                         |   `develop-slim` `2.7-slim` `2.7.py37.dev-slim` |  ![DSpython:size:develop-slim] ![DSpython:layers:develop-slim] ![DSpython:commit:develop-slim] |
+|                         |   `2.7.py36.dev`    |  ![DSpython:size:2.7.py36.dev-slim] ![DSpython:layers:2.7.py36.dev-slim] ![DSpython:commit:2.7.py36.dev-slim]  |
+|                         |   `2.7.py38.dev`    |  ![DSpython:size:2.7.py38.dev-slim] ![DSpython:layers:2.7.py38.dev-slim] ![DSpython:commit:2.7.py38.dev-slim]  |
+|                         |   `develop-alpine` `2.7-alpine` `2.7.py37.dev-alpine` |  ![DSpython:size:develop-alpine] ![DSpython:layers:develop-alpine] ![DSpython:commit:develop-alpine] |
+|                         |   `2.7.py36.dev`    |  ![DSpython:size:2.7.py36.dev-alpine] ![DSpython:layers:2.7.py36.dev-alpine] ![DSpython:commit:2.7.py36.dev-alpine]  |
+|                         |   `2.7.py38.dev`    |  ![DSpython:size:2.7.py38.dev-alpine] ![DSpython:layers:2.7.py38.dev-alpine] ![DSpython:commit:2.7.py38.dev-alpine]  |
+| bscdataclay/client |   `develop` `2.7`  |  ![Client:size:develop]  ![Client:layers:develop] ![Client:commit:develop]  |
+|                         |   `develop-slim` `2.7-slim` |  ![Client:size:develop-slim] ![Client:layers:develop-slim] ![Client:commit:develop-slim]  |
+|                         |   `develop-alpine` `2.7-alpine` |  ![Client:size:develop-alpine] ![Client:layers:develop-alpine] ![Client:commit:develop-alpine]  |
 
 ## Documentation
 
-Official documentation available at [read the docs](https:/.pyclay.readthedocs.io/en/develop/)
+Official documentation available at [read the docs](https://pyclay.readthedocs.io/en/develop/)
 
 ## Other resources
 
 [BSC official dataClay webpage](https://www.bsc.es/dataclay)
 
-.dev.dev-.dev.dev-.dev.dev-
+---
 
-![dataClay logo](https://www.bsc.es/sites/default/files/public/styles/bscw2_.dev.dev-_simple_crop_style/public/bscw2/content/software.dev.dev-app/logo/logo_dataclay_web_bsc.jpg)
+![dataClay logo](https://www.bsc.es/sites/default/files/public/styles/bscw2_-_simple_crop_style/public/bscw2/content/software-app/logo/logo_dataclay_web_bsc.jpg)
