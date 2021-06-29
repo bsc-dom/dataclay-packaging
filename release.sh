@@ -52,11 +52,11 @@ then
   printError "Please release both packages first"
 fi
 
-#if [ "$DEV" = false ] ; then
-#  cd $SCRIPTDIR/orchestration
-#  ./release.sh $PROMPT_ARG
-#  cd $SCRIPTDIR
-#fi
+if [ "$DEV" = false ] ; then
+  cd $SCRIPTDIR/orchestration
+  ./release.sh $PROMPT_ARG
+  cd $SCRIPTDIR
+fi
 
 cd $SCRIPTDIR/docker
 # TODO: make sure dspython requirements are pushed
