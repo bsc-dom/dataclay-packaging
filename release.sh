@@ -45,11 +45,12 @@ if [[ "$GIT_BRANCH" != "$BRANCH_TO_CHECK" ]]; then
   exit 1;
 fi
 
-cd $SCRIPTDIR/docker/dspython/pyclay
-./release.sh $DEV_ARG $PROMPT_ARG
-
-cd $SCRIPTDIR/docker/logicmodule/javaclay
-./release.sh $DEV_ARG $PROMPT_ARG
+read -p "Did you release javaclay and pyclay? (y/n) " -n 1 -r
+echo    # (optional) move to a new line
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+  printError "Please release both packages first"
+fi
 
 if [ "$DEV" = false ] ; then
   cd $SCRIPTDIR/orchestration
