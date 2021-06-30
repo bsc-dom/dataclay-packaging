@@ -124,11 +124,11 @@ Alpine images are only available in JDK 11 due to gRPC-SSL security issues.
 |                         |   `2.7.py36.dev`    |  ![DSpython:size:2.7.py36.dev] ![DSpython:layers:2.7.py36.dev] ![DSpython:commit:2.7.py36.dev]  |
 |                         |   `2.7.py38.dev`    |  ![DSpython:size:2.7.py38.dev] ![DSpython:layers:2.7.py38.dev] ![DSpython:commit:2.7.py38.dev]  |
 |                         |   `develop-slim` `2.7-slim` `2.7.py37.dev-slim` |  ![DSpython:size:develop-slim] ![DSpython:layers:develop-slim] ![DSpython:commit:develop-slim] |
-|                         |   `2.7.py36.dev`    |  ![DSpython:size:2.7.py36.dev-slim] ![DSpython:layers:2.7.py36.dev-slim] ![DSpython:commit:2.7.py36.dev-slim]  |
-|                         |   `2.7.py38.dev`    |  ![DSpython:size:2.7.py38.dev-slim] ![DSpython:layers:2.7.py38.dev-slim] ![DSpython:commit:2.7.py38.dev-slim]  |
+|                         |   `2.7.py36.dev-slim`    |  ![DSpython:size:2.7.py36.dev-slim] ![DSpython:layers:2.7.py36.dev-slim] ![DSpython:commit:2.7.py36.dev-slim]  |
+|                         |   `2.7.py38.dev-slim`    |  ![DSpython:size:2.7.py38.dev-slim] ![DSpython:layers:2.7.py38.dev-slim] ![DSpython:commit:2.7.py38.dev-slim]  |
 |                         |   `develop-alpine` `2.7-alpine` `2.7.py37.dev-alpine` |  ![DSpython:size:develop-alpine] ![DSpython:layers:develop-alpine] ![DSpython:commit:develop-alpine] |
-|                         |   `2.7.py36.dev`    |  ![DSpython:size:2.7.py36.dev-alpine] ![DSpython:layers:2.7.py36.dev-alpine] ![DSpython:commit:2.7.py36.dev-alpine]  |
-|                         |   `2.7.py38.dev`    |  ![DSpython:size:2.7.py38.dev-alpine] ![DSpython:layers:2.7.py38.dev-alpine] ![DSpython:commit:2.7.py38.dev-alpine]  |
+|                         |   `2.7.py36.dev-alpine`    |  ![DSpython:size:2.7.py36.dev-alpine] ![DSpython:layers:2.7.py36.dev-alpine] ![DSpython:commit:2.7.py36.dev-alpine]  |
+|                         |   `2.7.py38.dev-alpine`    |  ![DSpython:size:2.7.py38.dev-alpine] ![DSpython:layers:2.7.py38.dev-alpine] ![DSpython:commit:2.7.py38.dev-alpine]  |
 | bscdataclay/client |   `develop` `2.7`  |  ![Client:size:develop]  ![Client:layers:develop] ![Client:commit:develop]  |
 |                         |   `develop-slim` `2.7-slim` |  ![Client:size:develop-slim] ![Client:layers:develop-slim] ![Client:commit:develop-slim]  |
 |                         |   `develop-alpine` `2.7-alpine` |  ![Client:size:develop-alpine] ![Client:layers:develop-alpine] ![Client:commit:develop-alpine]  |

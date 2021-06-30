@@ -1,6 +1,7 @@
 ARG BASE_VERSION
 ARG EXECUTION_ENVIRONMENT
 ARG REQUIREMENTS_TAG
+ARG REGISTRY=""
 # ============================================================ #
 FROM bscdataclay/dspython:2.6.${EXECUTION_ENVIRONMENT}.dev-slim-requirements as pyclay-installer
 ENV DATACLAY_HOME=/home/dataclayusr/dataclay
@@ -11,7 +12,7 @@ COPY ./pyclay/ /pyclay/
 RUN sed -i '/numpy*/d' /pyclay/requirements.txt
 RUN cd /pyclay/ && python setup.py -q install
 # ============================================================ #
-FROM bscdataclay/base:${BASE_VERSION}
+FROM ${REGISTRY}/base:${BASE_VERSION}
 ARG BUILD_DATE
 ARG VCS_REF
 ARG VERSION
