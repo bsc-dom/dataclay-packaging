@@ -22,6 +22,11 @@ gc_image "bscdataclay/continuous-integration"
 
 # gc
 docker exec -it registry bin/registry garbage-collect /etc/docker/registry/config.yml -m
-docker exec registry rm -rf /var/lib/registry/docker/registry/v2/repositories/bscdataclay
+docker exec registry rm -rf /var/lib/registry/docker/registry/v2/repositories/bscdataclay/logicmodule
+docker exec registry rm -rf /var/lib/registry/docker/registry/v2/repositories/bscdataclay/dsjava
+docker exec registry rm -rf /var/lib/registry/docker/registry/v2/repositories/bscdataclay/dspython
+docker exec registry rm -rf /var/lib/registry/docker/registry/v2/repositories/bscdataclay/client
+docker exec registry rm -rf /var/lib/registry/docker/registry/v2/repositories/bscdataclay/initializer
+docker exec registry rm -rf /var/lib/registry/docker/registry/v2/repositories/bscdataclay/continuous-integration
 docker exec -it registry bin/registry garbage-collect /etc/docker/registry/config.yml -m
 

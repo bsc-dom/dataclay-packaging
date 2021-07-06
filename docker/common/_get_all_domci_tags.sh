@@ -5,7 +5,8 @@ function list_all_tags() {
   curl -X GET https://dom-ci.bsc.es/v2/${name}/tags/list
 
 }
-
+curl -X GET https://dom-ci.bsc.es/v2/_catalog
+list_all_tags "bscdataclay/base"
 list_all_tags "bscdataclay/logicmodule"
 list_all_tags "bscdataclay/dsjava"
 list_all_tags "bscdataclay/dspython"
