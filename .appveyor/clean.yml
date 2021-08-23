@@ -9,9 +9,11 @@ image: Ubuntu1804
 max_jobs: 1
 deploy_script:
   - |
+      docker exec -it registry bin/registry garbage-collect /etc/docker/registry/config.yml -m
+      docker buildx rm dataclay-builderx
       git submodule init
       git submodule update
-      ./docker/deploy.sh --plain
+      ./docker/deploy.sh --images "base"
 notifications:
   - provider: Email
     to:
