@@ -9,11 +9,10 @@ image: Ubuntu1804
 max_jobs: 1
 deploy_script:
   - |
+      docker exec -it registry bin/registry garbage-collect /etc/docker/registry/config.yml -m
       git submodule init
       git submodule update
       ./docker/deploy.sh --plain
-      docker system prune
-
 notifications:
   - provider: Email
     to:
