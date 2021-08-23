@@ -13,7 +13,7 @@ deploy_script:
       docker buildx rm dataclay-builderx
       git submodule init
       git submodule update
-      ./docker/deploy.sh --images "base"
+      ./docker/deploy.sh --plain --images base
 notifications:
   - provider: Email
     to:
