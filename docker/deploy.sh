@@ -472,7 +472,7 @@ VCS_REF=$(git rev-parse --short HEAD)
 BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 CUR_DATE_TAG=$(date -u +"%Y%m%d")
 IMAGE_TYPES=(normal alpine slim arm32)
-IMAGES=(logicmodule dsjava dspython client initializer)
+IMAGES=(base logicmodule dsjava dspython client initializer)
 REGISTRY=bscdataclay
 DEV=false
 if [[ $DATACLAY_CUR_VERSION == *"dev"* ]]; then
