@@ -180,7 +180,7 @@ function deploy_base {
   IMAGE=base
   if [ "$ONLY_TAGS" = false ] ; then
     pushd $SCRIPTDIR/$IMAGE
-    deploy docker $DOCKER_BUILDX_COMMAND build --rm $DOCKERFILE -t ${REGISTRY}/$IMAGE:$BASE_VERSION_TAG \
+    deploy docker $DOCKER_BUILDX_COMMAND build --quiet --rm $DOCKERFILE -t ${REGISTRY}/$IMAGE:$BASE_VERSION_TAG \
            --build-arg VCS_REF=$VCS_REF \
            --build-arg BUILD_DATE=$BUILD_DATE \
            $PLATFORMS_COMMAND $DOCKER_PROGRESS \
