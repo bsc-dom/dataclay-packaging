@@ -10,6 +10,7 @@ max_jobs: 1
 deploy_script:
   - |
       docker rm -f $(docker ps -aq)
+      docker buildx rm dataclay-builderx
       docker system prune --force --all --volumes
       bash $HOME/start_registry.sh
       git submodule init
