@@ -65,14 +65,17 @@ printf " ${CONSOLE_BLUE}**  dataClay command tool ** ${CONSOLE_NORMAL} \n"
 
 # WARNING: Note that this script must be located among with pom.xml
 
-# Base ops commands
-if [ -z "${DATACLAY_JAR}" ]; then
-	errorMsg "ERROR: DATACLAY_JAR environemnt variable not defined."
-	exit 1
-fi
+JAVA_OPSBASE="docker run \
+--network host -u $UID:$GID \
+-v $PWD/:/workdir/ \
+--entrypoint java bscdataclay/dsjava:2.7-jdk11-bullseye \
+-cp /javaclay/dataclay.jar"
 
-JAVA_OPSBASE="dataclay-java-entry-point"
-PY_OPSBASE="dataclay-python-entry-point -m dataclay.tool"
+PY_OPSBASE="docker run \
+--network host -u $UID:$GID \
+-v $PWD/:/workdir/ \
+--entrypoint python3 bscdataclay/dspython:2.7-py3.10-bullseye \
+-m dataclay.tool"
 
 # Check if aspects must be applied to Java 
 
@@ -118,10 +121,6 @@ case $OPERATION in
 		;;
 	'NewAccount')
 		$NEW_ACCOUNT $PARAMS
-#		proposal for defaults:
-#		$NEW_NAMESPACE $PARAMS $2_java java
-#		$NEW_NAMESPACE $PARAMS $2_py python
-#		$NEW_DATACONTRACT $PARAMS $2_ds $2
 		;;
 	'GetBackends')
 		$GET_BACKENDS $PARAMS
@@ -145,16 +144,16 @@ case $OPERATION in
 		if [ $# -lt 5 ]; then
 			errorMsg "Missing arguments. Usage: NewModel <user_name> <user_pass> <namespace_name> <class_path> <$SUPPORTEDLANGS>"
 		fi
-	  USER_NAME=$1
-	  shift
-	  USER_PASS=$1
-	  shift
-	  NAMESPACE=$1
-	  shift
-	  CLASSPATH=$1
-	  shift
-	  LANGUAGE=$1
-	  shift
+		USER_NAME=$1
+		shift
+		USER_PASS=$1
+		shift
+		NAMESPACE=$1
+		shift
+		CLASSPATH=$1
+		shift
+		LANGUAGE=$1
+		shift
 		if [ ! -d $CLASSPATH ]; then
 			errorMsg "Model path $CLASSPATH is not a valid directory."
 		fi
@@ -180,14 +179,14 @@ case $OPERATION in
 		if [ $# -lt 4 ]; then
 			errorMsg "Missing arguments. Usage: GetStubs <user_name> <user_pass> <namespace_name> <stubs_path>"
 		fi
-    USER_NAME=$1
-	  shift
-	  USER_PASS=$1
-	  shift
-	  NAMESPACE=$1
-	  shift
-	  STUBSPATH=$1
-	  shift
+		USER_NAME=$1
+		shift
+		USER_PASS=$1
+		shift
+		NAMESPACE=$1
+		shift
+		STUBSPATH=$1
+		shift
 		if [ ! -d $STUBSPATH ]; then
 			errorMsg "Stubs path $STUBSPATH is not a valid directory."
 		fi
@@ -198,8 +197,8 @@ case $OPERATION in
 				if [ $? -ge 0 ]; then
 					$JAVA_GETSTUBS $USER_NAME $USER_PASS $NAMESPACE $STUBSPATH $@
 					if [ ! -z $HOST_USER_ID ] && [ ! -z $HOST_GROUP_ID ]; then
-					  chown $HOST_USER_ID:$HOST_GROUP_ID $STUBSPATH -R
-					  chmod 755 $STUBSPATH -R
+						chown $HOST_USER_ID:$HOST_GROUP_ID $STUBSPATH -R
+						chmod 755 $STUBSPATH -R
 					fi
 				fi
 				;;
@@ -208,8 +207,8 @@ case $OPERATION in
 				if [ $? -ge 0 ] && [ ! -z $CONTRACTID ]; then
 					$PY_GETSTUBS $USER_NAME $USER_PASS $CONTRACTID $STUBSPATH $@
 					if [ ! -z $HOST_USER_ID ] && [ ! -z $HOST_GROUP_ID ]; then
-					  chown $HOST_USER_ID:$HOST_GROUP_ID $STUBSPATH -R
-					  chmod 755 $STUBSPATH -R
+						chown $HOST_USER_ID:$HOST_GROUP_ID $STUBSPATH -R
+						chmod 755 $STUBSPATH -R
 					fi
 				fi
 				;;
@@ -227,9 +226,9 @@ case $OPERATION in
 	'GetExtDataClayID')
 		$GET_EXT_DATACLAYID $PARAMS
 		;;
-  'ImportModelsFromExternalDataClay')
-    $IMPORT_MODELS_FROM_EXT_DATACLAY $PARAMS
-    ;;
+  	'ImportModelsFromExternalDataClay')
+    	$IMPORT_MODELS_FROM_EXT_DATACLAY $PARAMS
+    	;;
 	'WaitForDataClayToBeAlive')
 		$WAIT_DATACLAY_ALIVE $PARAMS
 		;;
